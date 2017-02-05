@@ -6,7 +6,9 @@ public class ExecutionModule extends Module{
 
     public ExecutionModule(int mSentences){
         queue = new LinkedBlockingQueue<>();
+        timeQueue = new LinkedBlockingQueue<>();
         this.mSentences = mSentences;
         currentSentences = 0;
+        hasBeenInQueue = 0;
     }
 }
