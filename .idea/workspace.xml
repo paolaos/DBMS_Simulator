@@ -2,14 +2,8 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="d5a56ad7-1a00-4620-8de3-b892901127a1" name="Default" comment="">
-      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/src/QueryType.java" />
-      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Bla.class" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/CustomerManagementModule.java" afterPath="$PROJECT_DIR$/src/CustomerManagementModule.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ExecutionModule.java" afterPath="$PROJECT_DIR$/src/ExecutionModule.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Module.java" afterPath="$PROJECT_DIR$/src/Module.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ProcessManagerModule.java" afterPath="$PROJECT_DIR$/src/ProcessManagerModule.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/QueryProcessingModule.java" afterPath="$PROJECT_DIR$/src/QueryProcessingModule.java" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Query.java" afterPath="$PROJECT_DIR$/src/Query.java" />
     </list>
     <ignored path="TP1_B42868_B42322_B55204.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -54,7 +48,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="CustomerManagementModule.java" pinned="false" current-in-tab="true">
+      <file leaf-file-name="CustomerManagementModule.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/CustomerManagementModule.java">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="238">
@@ -74,12 +68,15 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="Query.java" pinned="false" current-in-tab="false">
+      <file leaf-file-name="Query.java" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Query.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="306">
-              <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="425">
+              <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+              <folding>
+                <element signature="e#346#347#0" expanded="true" />
+                <element signature="e#387#388#0" expanded="true" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -130,6 +127,7 @@
         <option value="$PROJECT_DIR$/src/ProcessManagerModule.java" />
         <option value="$PROJECT_DIR$/src/ExecutionModule.java" />
         <option value="$PROJECT_DIR$/src/CustomerManagementModule.java" />
+        <option value="$PROJECT_DIR$/src/Query.java" />
       </list>
     </option>
   </component>
@@ -683,7 +681,7 @@
       <workItem from="1486055058863" duration="596000" />
       <workItem from="1486178055456" duration="2885000" />
       <workItem from="1486185654514" duration="163000" />
-      <workItem from="1486301925184" duration="1310000" />
+      <workItem from="1486301925184" duration="2168000" />
     </task>
     <task id="LOCAL-00001" summary="Cambios de Paola (prueba git)">
       <created>1486009538134</created>
@@ -706,11 +704,18 @@
       <option name="project" value="LOCAL" />
       <updated>1486185805507</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="Ian: Meti el enum y lo mapee a los valores de la prioridad&#10;Puse la cola de floats y el entero de los que han pasado por cola">
+      <created>1486303318838</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1486303318839</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="8448000" />
+    <option name="totallyTimeSpent" value="9306000" />
   </component>
   <component name="ToolWindowManager">
     <frame x="-8" y="-8" width="1376" height="744" extended-state="6" />
@@ -765,7 +770,8 @@
     <MESSAGE value="Cambios de Paola (prueba git)" />
     <MESSAGE value="Cambios de Paola: creación de clases Simulation y System con sus respectivos métodos y constructores acordados en la versión 4 del diagrama de clases. Además, se le cambió el nombre a la clase de prueba para el repo, ahora es la clase Main. Se eliminaron sus respectivos prints." />
     <MESSAGE value="Me volé Main.java" />
-    <option name="LAST_COMMIT_MESSAGE" value="Me volé Main.java" />
+    <MESSAGE value="Ian: Meti el enum y lo mapee a los valores de la prioridad&#10;Puse la cola de floats y el entero de los que han pasado por cola" />
+    <option name="LAST_COMMIT_MESSAGE" value="Ian: Meti el enum y lo mapee a los valores de la prioridad&#10;Puse la cola de floats y el entero de los que han pasado por cola" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />
@@ -809,7 +815,7 @@
         <state relative-caret-position="-2448">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <marker date="1486303150885" expanded="true" signature="48839:48856" ph="..." />
+            <marker date="1486304060199" expanded="true" signature="49635:49652" ph="..." />
           </folding>
         </state>
       </provider>
@@ -872,14 +878,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Query.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="306">
-          <caret line="18" column="0" lean-forward="true" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/QueryType.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="187">
@@ -932,6 +930,17 @@
         <state relative-caret-position="238">
           <caret line="14" column="27" lean-forward="false" selection-start-line="14" selection-start-column="27" selection-end-line="14" selection-end-column="27" />
           <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Query.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="425">
+          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding>
+            <element signature="e#346#347#0" expanded="true" />
+            <element signature="e#387#388#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
