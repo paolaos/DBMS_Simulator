@@ -4,15 +4,13 @@ import java.util.Random;
  * Created by jesus on 03/02/2017.
  */
 
-
 public class DistributionGenerator {
 
     public enum Type{
         SELECT, UPDATE, JOIN, DDL
     }
 
-    Random rnd;
-
+    private Random rnd;
 
 
         public DistributionGenerator(){
@@ -20,7 +18,12 @@ public class DistributionGenerator {
 
         }
 
-        public Type  generetaType(){
+
+    /**
+     *
+     * @return
+     */
+    public Type  generetaType(){
 
             float randomNumber= rnd.nextFloat();
             Type query;
@@ -38,18 +41,34 @@ public class DistributionGenerator {
             return  query;
         }
 
-
-         public float getNextArrival(float lambda){
+    /**
+     *
+     * @param lambda
+     * @return
+     */
+    public float getNextArrival(float lambda){
             float aleatoryNumber = this.rnd.nextFloat();
             return  (float) -Math.log(aleatoryNumber)/lambda;
          }
 
-         public float getNextRandomValueByuniform(float a, float b){
+    /**
+     *
+     * @param a
+     * @param b
+     * @return
+     */
+    public float getNextRandomValueByuniform(float a, float b){
              float r = this.rnd.nextFloat();
              return (float)  (r*(b-a))+ a;
          }
 
-         public  float getNextRandomValueByExponential( float lambda ){
+
+    /**
+     *
+     * @param lambda
+     * @return
+     */
+    public  float getNextRandomValueByExponential( float lambda ){
              float r = this.rnd.nextFloat();
 
              return  (float) (-1/(lambda*Math.log(r)));
@@ -93,11 +112,12 @@ public class DistributionGenerator {
               }else{
                   queryOptimizationTime =(float) 0.5;
               }
-             System.out.println("lexicalValidationTime "+ lexicalValidationTime);
-             System.out.println("syntacticalValidationTime "+  syntacticalValidationTime);
-             System.out.println("semanticValidationTime "+ semanticValidationTime);
-             System.out.println("permitVerificationTime "+ permitVerificationTime);
-             System.out.println("queryOptimizationTime "+ queryOptimizationTime+"\n");
+
+             //System.out.println("lexicalValidationTime "+ lexicalValidationTime);
+             //System.out.println("syntacticalValidationTime "+  syntacticalValidationTime);
+             //System.out.println("semanticValidationTime "+ semanticValidationTime);
+             //System.out.println("permitVerificationTime "+ permitVerificationTime);
+             //System.out.println("queryOptimizationTime "+ queryOptimizationTime+"\n");
              totalTime=lexicalValidationTime + syntacticalValidationTime + semanticValidationTime + permitVerificationTime +queryOptimizationTime;
              return totalTime;
          }
