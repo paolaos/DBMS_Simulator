@@ -1,18 +1,29 @@
 public class Query implements Comparable<Query>{
     private float timeOfEntry;
     private float totalTime;
-    private String queryType;
     private boolean readOnly;
+    private QueryType type;
 
-    public Query(float timeOfEntry, String queryType){
+    public Query(float timeOfEntry, QueryType type){
         this.timeOfEntry = timeOfEntry;
-        this.queryType = queryType;
+        this.type = type;
         totalTime = 0;
 
     }
+
+    public int getPriority(){
+        return type.getPriority();
+    }
+
     @Override
     public int compareTo(Query query) {
+        int toReturn = 0;
+        if(type.getPriority() < query.getPriority())
+            toReturn = -1;
 
-        return 0;
+        else if(type.getPriority() > query.getPriority())
+            toReturn = 1;
+
+        return toReturn;
     }
 }
