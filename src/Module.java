@@ -2,10 +2,12 @@ import java.util.Queue;
 
 public class Module {
     protected Queue<Query> queue;
+    protected Queue<Float> timeQueue;
     protected float accumulatedTimeInQueue;
     protected float accumulatedTimeInService;
     protected int totalProcessedQueries;
     protected float avgTimeInQueue;
+    protected int hasBeenInQueue;
 
     public void insertQuery(Query query){
         queue.offer(query);

@@ -9,8 +9,10 @@ public class CustomerManagementModule extends Module{
     public CustomerManagementModule(int kConnections){
         this.kConnections = kConnections;
         queue = new LinkedBlockingQueue<>();
+        timeQueue = new LinkedBlockingQueue<>();
         rejectedConnections = 0;
         currentConnections = 0;
+        hasBeenInQueue = 0;
     }
 
     public int getRejectedConnections() {
