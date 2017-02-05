@@ -1,4 +1,3 @@
-import java.lang.*;
 import java.util.concurrent.LinkedBlockingQueue;
 public class QueryProcessingModule extends Module{
     private int nAvailableProcesses;
@@ -16,7 +15,4 @@ public class QueryProcessingModule extends Module{
         return nAvailableProcesses;
     }
 
-    public static void main(String... args){
-        java.lang.System.out.println(QueryType.JOIN.getPriority());
-    }
 }
