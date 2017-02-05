@@ -6,9 +6,6 @@ import java.util.Random;
 
 public class DistributionGenerator {
 
-    public enum Type{
-        SELECT, UPDATE, JOIN, DDL
-    }
 
     private Random rnd;
 
@@ -23,19 +20,19 @@ public class DistributionGenerator {
      *
      * @return
      */
-    public Type  generetaType(){
+    public QueryType  generetaType(){
 
             float randomNumber= rnd.nextFloat();
-            Type query;
+            QueryType query;
 
             if(randomNumber<0.32){
-                query= Type.SELECT;
+                query= QueryType.SELECT;
             }else if(randomNumber>0.31 && randomNumber <0.60){
-                query = Type.UPDATE;
+                query = QueryType.UPDATE;
             }else if (randomNumber > 0.59 && randomNumber <0.93 ){
-                query = Type.JOIN;
+                query = QueryType.JOIN;
             }else{
-                query =Type.DDL;
+                query =QueryType.DDL;
             }
 
             return  query;
@@ -88,7 +85,7 @@ public class DistributionGenerator {
 
 
 
-         public float timeInQueryProcessingModule(Type query){
+         public float timeInQueryProcessingModule(QueryType query){
              float totalTime=0;
              float lexicalValidationTime ;
              float syntacticalValidationTime;
@@ -107,7 +104,7 @@ public class DistributionGenerator {
               semanticValidationTime    = this.getNextRandomValueByNormal(1, (float) 0.5 );
               permitVerificationTime    = this.getNextRandomValueByExponential((float) (1/0.7));
 
-              if(query.equals(Type.SELECT)|| query.equals(Type.JOIN)){
+              if(query.equals(QueryType.SELECT)|| query.equals(QueryType.JOIN)){
                   queryOptimizationTime =(float)0.1;
               }else{
                   queryOptimizationTime =(float) 0.5;
