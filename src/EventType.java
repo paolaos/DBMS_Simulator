@@ -3,5 +3,4 @@
  */
 public enum EventType {
     ARRIVAL, EXIT, KILL;
-
 }

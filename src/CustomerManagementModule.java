@@ -1,7 +1,7 @@
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class CustomerManagementModule extends Module{
-    private final int LAMBDA = 35;
+    //private final int LAMBDA = 35;
     private int kConnections;
     private int rejectedConnections;
     private int currentConnections;
@@ -27,12 +27,21 @@ public class CustomerManagementModule extends Module{
         this.rejectedConnections = rejectedConnections;
     }
 
-    @Override
-    public void insertQuery(Query query){
-        if(queue.size() < kConnections)
-            queue.offer(query);
 
-        else
+    public boolean wasInserted(Query query){
+        if(queue.size() < kConnections) {
+            super.insertQuery(query);
+            return true;
+        } else
             rejectedConnections++;
+
+        return false;
+
+
+    }
+
+    @Override
+    public float getNextExitTime(){
+        return DistributionGenerator.getNextRandomValueByNormal((float) 0.01 , (float)0.05);
     }
 }

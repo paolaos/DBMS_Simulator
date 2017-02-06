@@ -6,12 +6,22 @@ import java.util.Comparator;
 public class Event implements Comparable<Event>{
 
     private float executionTime;
+    private EventType eventType;
     private ModuleType destinationModule;
+    private Query queryToKill;
 
-    public Event(float executionTime, ModuleType destinationModule){
+    public Event(float executionTime, EventType eventType, ModuleType destinationModule){
         this.destinationModule = destinationModule;
+        this.eventType= eventType;
         this.executionTime = executionTime;
     }
+
+    public Event(float executionTime, ModuleType destinationModule, Query queryToKill){
+        this.executionTime = executionTime;
+        this.destinationModule = destinationModule;
+        this.queryToKill = queryToKill;
+    }
+
 
     public void setExecutionTime(float executionTime) {
         this.executionTime = executionTime;
@@ -19,6 +29,11 @@ public class Event implements Comparable<Event>{
 
     public float getExecutionTime() {
         return executionTime;
+    }
+
+
+    public EventType getEventType() {
+        return eventType;
     }
 
     public ModuleType getDestinationModule(){
