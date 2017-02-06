@@ -6,7 +6,8 @@ import java.util.Random;
 
 public class DistributionGenerator {
 
-
+    private final float DDL_RESTRUCTRATION_TIME = (float)0.5;
+    private final float UPDATE_RESTRUCTURATION_TIME = 1;
     private Random rnd;
 
 
@@ -14,6 +15,7 @@ public class DistributionGenerator {
             rnd = new Random();
 
         }
+
 
 
     /**
@@ -99,7 +101,6 @@ public class DistributionGenerator {
              }else {
                  lexicalValidationTime=(float) 0.4;
              }
-
               syntacticalValidationTime = this.getNextRandomValueByuniform(0,(float) 0.8);
               semanticValidationTime    = this.getNextRandomValueByNormal(1, (float) 0.5 );
               permitVerificationTime    = this.getNextRandomValueByExponential((float) (1/0.7));
@@ -109,14 +110,64 @@ public class DistributionGenerator {
               }else{
                   queryOptimizationTime =(float) 0.5;
               }
-
-             //System.out.println("lexicalValidationTime "+ lexicalValidationTime);
-             //System.out.println("syntacticalValidationTime "+  syntacticalValidationTime);
-             //System.out.println("semanticValidationTime "+ semanticValidationTime);
-             //System.out.println("permitVerificationTime "+ permitVerificationTime);
-             //System.out.println("queryOptimizationTime "+ queryOptimizationTime+"\n");
              totalTime=lexicalValidationTime + syntacticalValidationTime + semanticValidationTime + permitVerificationTime +queryOptimizationTime;
              return totalTime;
+         }
+
+
+         public  int getBlockNumber(QueryType  query){
+             int numberOfBlocks=0;
+
+
+             switch(query){
+
+                 case DDL:
+                     numberOfBlocks=0;
+
+                     break;
+
+                 case UPDATE:
+                     numberOfBlocks=0;
+                     break;
+
+                 case JOIN:
+                     int x =(int)  Math.nextUp( getNextRandomValueByuniform( (float) 1, (float) 16));
+                     int y = (int)  Math.nextUp( getNextRandomValueByuniform( (float) 1, (float) 12));
+
+                     numberOfBlocks = x + y;
+                     break;
+
+                 case SELECT:
+                     numberOfBlocks =(int)  Math.nextUp( getNextRandomValueByuniform( (float)1, (float) 64));
+                     break;
+             }
+             return  numberOfBlocks;
+         }
+
+
+         public float getLoadingTime(int numberOfBlocks){
+             return  numberOfBlocks*(float) 0.1;
+         }
+
+
+         public float  getBlockExecutingTime(int numberOfBlocks){
+             return (float) Math.pow(numberOfBlocks,2)/1000;
+
+         }
+
+         public  float getRestructurationTime (QueryType query){
+             float time;
+             if(query == QueryType.DDL){
+                 time =DDL_RESTRUCTRATION_TIME;
+             }else {
+                 time =UPDATE_RESTRUCTURATION_TIME;
+             }
+             return time;
+         }
+
+         public float getResultantTime(int numberOfBlocks){
+             float average = (float)numberOfBlocks/3;
+             return average + numberOfBlocks/2;
          }
 
 

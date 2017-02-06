@@ -26,4 +26,13 @@ public class CustomerManagementModule extends Module{
     public void setRejectedConnections(int rejectedConnections) {
         this.rejectedConnections = rejectedConnections;
     }
+
+    @Override
+    public void insertQuery(Query query){
+        if(queue.size() < kConnections)
+            queue.offer(query);
+
+        else
+            rejectedConnections++;
+    }
 }

@@ -11,6 +11,10 @@ public class Query implements Comparable<Query>{
 
     }
 
+    public float getTotalTime() {
+        return totalTime;
+    }
+
     public int getPriority(){
         return type.getPriority();
     }
