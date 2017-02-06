@@ -1,3 +1,8 @@
+import com.sun.org.apache.bcel.internal.generic.RETURN;
+
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -8,7 +13,7 @@ public class Simulation {
     private float clock;
     private int numberOfTrials;
     private float timePerTrial;
-    private PriorityQueue<Query> eventList;
+    private PriorityQueue<Event> eventList;
     private CustomerManagementModule customerManagementModule;
     private ProcessManagerModule processManagerModule;
     private QueryProcessingModule queryProcessingModule;
@@ -19,9 +24,10 @@ public class Simulation {
     private int qDelayTime;
     private float rho;
     private Statistics statistics;
+    private List<Query> queryList;
 
-    public Simulation(boolean slowMode, int qDelayTime, Statistics statistics){
-        timeout = 0;
+    public Simulation(boolean slowMode, int qDelayTime, float timeout,Statistics statistics){
+        this.timeout = timeout;
         clock = 0;
         numberOfTrials = 0;
         timePerTrial = 0;
@@ -38,6 +44,20 @@ public class Simulation {
         this.statistics = statistics;
 
     }
+
+    public List<Query> getTimeoutQueries(){
+        List<Query> l= new LinkedList<>();
+        Iterator<Query>  iterator = l.iterator();
+
+        while(iterator.hasNext()){
+            Query temp = iterator.next();
+            if(temp.getTotalTime()>= timeout){
+                l.add(temp);
+            }
+        }
+        return  l;
+    }
+
 
     public void runSimulation(){}
 
