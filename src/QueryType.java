@@ -13,4 +13,5 @@ public enum QueryType {
     public int getPriority(){
         return priority;
     }
+     //prueba
 }
