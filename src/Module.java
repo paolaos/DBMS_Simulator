@@ -40,4 +40,8 @@ public class Module {
     public void fillStatistics(Statistics statistics){
 
     }
+
+    public float getNextExitTime(){
+        return 0;
+    }
 }

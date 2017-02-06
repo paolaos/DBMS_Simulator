@@ -6,171 +6,160 @@ import java.util.Random;
 
 public class DistributionGenerator {
 
-    private final float DDL_RESTRUCTRATION_TIME = (float)0.5;
+    private final float DDL_RESTRUCTRATION_TIME = (float) 0.5;
     private final float UPDATE_RESTRUCTURATION_TIME = 1;
     private Random rnd;
 
 
-        public DistributionGenerator(){
-            rnd = new Random();
-
-        }
-
-
-
     /**
-     *
      * @return
      */
-    public QueryType  generetaType(){
+    public static QueryType generateType() {
+        Random rnd = new Random();
+        float randomNumber = rnd.nextFloat();
+        QueryType query;
 
-            float randomNumber= rnd.nextFloat();
-            QueryType query;
-
-            if(randomNumber<0.32){
-                query= QueryType.SELECT;
-            }else if(randomNumber>0.31 && randomNumber <0.60){
-                query = QueryType.UPDATE;
-            }else if (randomNumber > 0.59 && randomNumber <0.93 ){
-                query = QueryType.JOIN;
-            }else{
-                query =QueryType.DDL;
-            }
-
-            return  query;
+        if (randomNumber < 0.32) {
+            query = QueryType.SELECT;
+        } else if (randomNumber > 0.31 && randomNumber < 0.60) {
+            query = QueryType.UPDATE;
+        } else if (randomNumber > 0.59 && randomNumber < 0.93) {
+            query = QueryType.JOIN;
+        } else {
+            query = QueryType.DDL;
         }
 
+        return query;
+    }
+
     /**
-     *
      * @param lambda
      * @return
      */
-    public float getNextArrival(float lambda){
-            float aleatoryNumber = this.rnd.nextFloat();
-            return  (float) -Math.log(aleatoryNumber)/lambda;
-         }
+    public static float getNextArrivalTime(float lambda) {
+        Random rnd = new Random();
+        float aleatoryNumber = rnd.nextFloat();
+        return (float) -Math.log(aleatoryNumber) / lambda;
+    }
 
     /**
-     *
      * @param a
      * @param b
      * @return
      */
-    public float getNextRandomValueByuniform(float a, float b){
-             float r = this.rnd.nextFloat();
-             return (float)  (r*(b-a))+ a;
-         }
+    public float getNextRandomValueByUniform(float a, float b) {
+        float r = this.rnd.nextFloat();
+        return (float) (r * (b - a)) + a;
+    }
 
 
     /**
-     *
      * @param lambda
      * @return
      */
-    public  float getNextRandomValueByExponential( float lambda ){
-             float r = this.rnd.nextFloat();
+    public float getNextRandomValueByExponential(float lambda) {
+        float r = this.rnd.nextFloat();
 
-             return  (float) (-1/(lambda*Math.log(r)));
+        return (float) (-1 / (lambda * Math.log(r)));
 
-         }
+    }
 
-         public float getNextRandomValueByNormal( float average, float estandarDeviation){
-            float z=0;
-            float x;
-            for (int i =0; i <12; i++){
-                z+=this.rnd.nextFloat();
-            }
-            z = z -6;
-            x = average + estandarDeviation* z;
-            return  x;
-         }
+    public static float getNextRandomValueByNormal(float average, float estandarDeviation) {
+        float z = 0;
+        float x;
+        Random rnd = new Random();
 
-
-
-         public float timeInQueryProcessingModule(QueryType query){
-             float totalTime=0;
-             float lexicalValidationTime ;
-             float syntacticalValidationTime;
-             float semanticValidationTime;
-             float permitVerificationTime;
-             float queryOptimizationTime;
-             float aleatoryNumber=this.rnd.nextFloat();
-
-             if(aleatoryNumber <0.7){
-                 lexicalValidationTime =(float)0.1;
-             }else {
-                 lexicalValidationTime=(float) 0.4;
-             }
-              syntacticalValidationTime = this.getNextRandomValueByuniform(0,(float) 0.8);
-              semanticValidationTime    = this.getNextRandomValueByNormal(1, (float) 0.5 );
-              permitVerificationTime    = this.getNextRandomValueByExponential((float) (1/0.7));
-
-              if(query.equals(QueryType.SELECT)|| query.equals(QueryType.JOIN)){
-                  queryOptimizationTime =(float)0.1;
-              }else{
-                  queryOptimizationTime =(float) 0.5;
-              }
-             totalTime=lexicalValidationTime + syntacticalValidationTime + semanticValidationTime + permitVerificationTime +queryOptimizationTime;
-             return totalTime;
-         }
+        for (int i = 0; i < 12; i++) {
+            z += rnd.nextFloat();
+        }
+        z = z - 6;
+        x = average + estandarDeviation * z;
+        return x;
+    }
 
 
-         public  int getBlockNumber(QueryType  query){
-             int numberOfBlocks=0;
+    public float timeInQueryProcessingModule(QueryType query) {
+        float totalTime = 0;
+        float lexicalValidationTime;
+        float syntacticalValidationTime;
+        float semanticValidationTime;
+        float permitVerificationTime;
+        float queryOptimizationTime;
+        float aleatoryNumber = this.rnd.nextFloat();
+
+        if (aleatoryNumber < 0.7) {
+            lexicalValidationTime = (float) 0.1;
+        } else {
+            lexicalValidationTime = (float) 0.4;
+        }
+        syntacticalValidationTime = this.getNextRandomValueByUniform(0, (float) 0.8);
+        semanticValidationTime = this.getNextRandomValueByNormal(1, (float) 0.5);
+        permitVerificationTime = this.getNextRandomValueByExponential((float) (1 / 0.7));
+
+        if (query.equals(QueryType.SELECT) || query.equals(QueryType.JOIN)) {
+            queryOptimizationTime = (float) 0.1;
+        } else {
+            queryOptimizationTime = (float) 0.5;
+        }
+        totalTime = lexicalValidationTime + syntacticalValidationTime + semanticValidationTime + permitVerificationTime + queryOptimizationTime;
+        return totalTime;
+    }
 
 
-             switch(query){
-
-                 case DDL:
-                     numberOfBlocks=0;
-
-                     break;
-
-                 case UPDATE:
-                     numberOfBlocks=0;
-                     break;
-
-                 case JOIN:
-                     int x =(int)  Math.nextUp( getNextRandomValueByuniform( (float) 1, (float) 16));
-                     int y = (int)  Math.nextUp( getNextRandomValueByuniform( (float) 1, (float) 12));
-
-                     numberOfBlocks = x + y;
-                     break;
-
-                 case SELECT:
-                     numberOfBlocks =(int)  Math.nextUp( getNextRandomValueByuniform( (float)1, (float) 64));
-                     break;
-             }
-             return  numberOfBlocks;
-         }
+    public int getBlockNumber(QueryType query) {
+        int numberOfBlocks = 0;
 
 
-         public float getLoadingTime(int numberOfBlocks){
-             return  numberOfBlocks*(float) 0.1;
-         }
+        switch (query) {
+
+            case DDL:
+                numberOfBlocks = 0;
+
+                break;
+
+            case UPDATE:
+                numberOfBlocks = 0;
+                break;
+
+            case JOIN:
+                int x = (int) Math.nextUp(getNextRandomValueByUniform((float) 1, (float) 16));
+                int y = (int) Math.nextUp(getNextRandomValueByUniform((float) 1, (float) 12));
+
+                numberOfBlocks = x + y;
+                break;
+
+            case SELECT:
+                numberOfBlocks = (int) Math.nextUp(getNextRandomValueByUniform((float) 1, (float) 64));
+                break;
+        }
+        return numberOfBlocks;
+    }
 
 
-         public float  getBlockExecutingTime(int numberOfBlocks){
-             return (float) Math.pow(numberOfBlocks,2)/1000;
-
-         }
-
-         public  float getRestructurationTime (QueryType query){
-             float time;
-             if(query == QueryType.DDL){
-                 time =DDL_RESTRUCTRATION_TIME;
-             }else {
-                 time =UPDATE_RESTRUCTURATION_TIME;
-             }
-             return time;
-         }
-
-         public float getResultantTime(int numberOfBlocks){
-             float average = (float)numberOfBlocks/3;
-             return average + numberOfBlocks/2;
-         }
+    public float getLoadingTime(int numberOfBlocks) {
+        return numberOfBlocks * (float) 0.1;
+    }
 
 
+    public float getBlockExecutingTime(int numberOfBlocks) {
+        return (float) Math.pow(numberOfBlocks, 2) / 1000;
+
+    }
+
+    public float getRestructurationTime(QueryType query) {
+        float time;
+        if (query == QueryType.DDL) {
+            time = DDL_RESTRUCTRATION_TIME;
+        } else {
+            time = UPDATE_RESTRUCTURATION_TIME;
+        }
+        return time;
+    }
+
+    public float getResultantTime(int numberOfBlocks) {
+        float average = (float) numberOfBlocks / 3;
+        return average + numberOfBlocks / 2;
+    }
 
 
 }
