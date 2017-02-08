@@ -1,31 +1,39 @@
 import java.util.Queue;
 
-public class Module {
+public abstract class Module {
     protected Queue<Query> queue;
-    protected Queue<Float> timeQueue;
-    protected float accumulatedTimeInQueue;
-    protected float accumulatedTimeInService;
+    protected Queue<Double> timeQueue;
+    protected double accumulatedTimeInQueue;
+    protected double accumulatedTimeInService;
     protected int totalProcessedQueries;
-    protected float avgTimeInQueue;
+    protected double avgTimeInQueue;
     protected int hasBeenInQueue;
+    protected ModuleType type;
+    protected int servers;
+    protected Module nextModule;
+    protected Simulation simulation;
+    protected ModuleStatistics moduleStatistics;
+    protected boolean busy;
+    
+    //TODO algoritmo general y métodos abstractos (override)
 
-    public void insertQuery(Query query){
-        queue.offer(query);
-    }
+    public abstract void processArrival(Query query);
 
-    public Query getNextQuery(){
-        return queue.poll();
-    }
+    public abstract void generateServiceEvent(Query query);
+
+    public abstract void processDeparture(Query query); //procesar salida
+
+    public abstract boolean isBusy();
 
     public int getQueueSize(){
         return queue.size();
     }
 
-    public float getAccumulatedTimeInQueue() {
+    public double getAccumulatedTimeInQueue() {
         return accumulatedTimeInQueue;
     }
 
-    public float getAccumulatedTimeInService() {
+    public double getAccumulatedTimeInService() {
         return accumulatedTimeInService;
     }
 
@@ -33,7 +41,7 @@ public class Module {
         return totalProcessedQueries;
     }
 
-    public float getAvgTimeInQueue() {
+    public double getAvgTimeInQueue() {
         return avgTimeInQueue;
     }
 
@@ -41,7 +49,7 @@ public class Module {
 
     }
 
-    public float getNextExitTime(){
-        return 0;
-    }
+
+
+    public abstract double getNextExitTime();
 }

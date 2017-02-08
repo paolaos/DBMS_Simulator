@@ -1,18 +1,29 @@
 public class Query implements Comparable<Query>{
-    private float timeOfEntry;
-    private float totalTime;
+    private double timeOfEntry;
+    private double totalTime;
     private boolean isInQueue;
-    private boolean readOnly;
     private QueryType type;
     private ModuleType currentModule;
+    private boolean timeOut;
+    private QueryStatistics queryStatistics;
+    private int id;
 
-    public Query(float timeOfEntry , QueryType type, ModuleType currentModule){
+    public Query(int id, double timeOfEntry , QueryType type, ModuleType currentModule){
+        this.id = id;
         this.timeOfEntry = timeOfEntry;
         this.type = type;
         totalTime = 0;
         isInQueue = false;
         this.currentModule = currentModule;
+        timeOut = false;
+
     }
+
+
+    public QueryStatistics getQueryStatistics() {
+        return queryStatistics;
+    }
+
 
     public ModuleType getCurrentModule() {
         return currentModule;
@@ -30,7 +41,7 @@ public class Query implements Comparable<Query>{
         isInQueue = inQueue;
     }
 
-    public float getTotalTime() {
+    public double getTotalTime() {
         return totalTime;
     }
 
@@ -48,5 +59,9 @@ public class Query implements Comparable<Query>{
             toReturn = 1;
 
         return toReturn;
+    }
+
+    public int getId() {
+        return id;
     }
 }
