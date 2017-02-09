@@ -1,5 +1,4 @@
 import com.sun.org.apache.bcel.internal.generic.RETURN;
-import com.sun.org.apache.xml.internal.security.utils.JavaUtils;
 
 import java.util.Iterator;
 import java.util.LinkedList;
@@ -170,6 +169,5 @@ public class Simulation {
     public void fillStatistics(Statistics statistics){
 
     }
-
 
 }

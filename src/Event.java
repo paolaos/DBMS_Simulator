@@ -1,34 +1,33 @@
-import java.util.Comparator;
-
 /**
  * Created by jesus on 06/02/2017.
  */
 public class Event implements Comparable<Event>{
 
-    private float executionTime;
+    private double time;
     private EventType eventType;
-    private ModuleType destinationModule;
-    private Query queryToKill;
+    private ModuleType destinationModule; // para kill no aplica
+    private Query query;
 
-    public Event(float executionTime, EventType eventType, ModuleType destinationModule){
+    public Event(double time, Query query, EventType eventType, ModuleType destinationModule){
         this.destinationModule = destinationModule;
+        this.query = query;
         this.eventType= eventType;
-        this.executionTime = executionTime;
+        this.time = time;
     }
 
-    public Event(float executionTime, ModuleType destinationModule, Query queryToKill){
-        this.executionTime = executionTime;
+    public Event(double time, ModuleType destinationModule, Query query){
+        this.time = time;
         this.destinationModule = destinationModule;
-        this.queryToKill = queryToKill;
+        this.query = query;
     }
 
 
-    public void setExecutionTime(float executionTime) {
-        this.executionTime = executionTime;
+    public void setTime(double time) {
+        this.time = time;
     }
 
-    public float getExecutionTime() {
-        return executionTime;
+    public double getTime() {
+        return time;
     }
 
 
@@ -40,15 +39,21 @@ public class Event implements Comparable<Event>{
         return destinationModule;
     }
 
+
+
     @Override
     public int compareTo(Event o) {
         int toReturn = 0;
-        if(executionTime < o.getExecutionTime())
+        if(time < o.getTime())
             toReturn = -1;
 
-        else if(executionTime > o.getExecutionTime())
+        else if(time > o.getTime())
             toReturn = 1;
 
         return toReturn;
+    }
+
+    public Query getQuery() {
+        return query;
     }
 }
