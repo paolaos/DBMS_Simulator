@@ -1,7 +1,7 @@
 import java.util.PriorityQueue;
 
 public class TransactionAndDataAccessModule extends Module{
-    private final double DDL_RESTRUCTRATION_TIME = (double) 0.5;
+    private final double DDL_RESTRUCTRATION_TIME = 0.5;
     private final double UPDATE_RESTRUCTURATION_TIME = 1;
     private int pQueries;
     private int currentQueries;
@@ -51,20 +51,20 @@ public class TransactionAndDataAccessModule extends Module{
                 break;
 
             case JOIN:
-                int x = (int) Math.nextUp(DistributionGenerator.getNextRandomValueByUniform((double) 1, (double) 16));
-                int y = (int) Math.nextUp(DistributionGenerator.getNextRandomValueByUniform((double) 1, (double) 12));
+                int x = (int) Math.nextUp(DistributionGenerator.getNextRandomValueByUniform(1, 16));
+                int y = (int) Math.nextUp(DistributionGenerator.getNextRandomValueByUniform(1, 12));
                 numberOfBlocks = x + y;
                 break;
 
             case SELECT:
-                numberOfBlocks = (int) Math.nextUp(DistributionGenerator.getNextRandomValueByUniform((double) 1, (double) 64));
+                numberOfBlocks = (int) Math.nextUp(DistributionGenerator.getNextRandomValueByUniform(1, 64));
                 break;
         }
         return numberOfBlocks;
     }
 
     public double getBlockLoadingTime(int numberOfBlocks) {
-        return numberOfBlocks * (double) 0.1;
+        return numberOfBlocks * 0.1;
     }
 
     public double getRestructurationTime(QueryType query) {
