@@ -25,6 +25,8 @@ public abstract class Module {
 
     public abstract boolean isBusy();
 
+    public abstract double getNextExitTime();
+
     public int getQueueSize(){
         return queue.size();
     }
@@ -49,7 +51,4 @@ public abstract class Module {
 
     }
 
-
-
-    public abstract double getNextExitTime();
 }
