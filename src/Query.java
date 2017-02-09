@@ -1,3 +1,5 @@
+import java.lang.reflect.Type;
+
 public class Query implements Comparable<Query>{
     private double timeOfEntry;
     private double totalTime;
@@ -19,7 +21,9 @@ public class Query implements Comparable<Query>{
 
     }
 
-
+    public QueryType getQueryType(){
+        return type;
+    }
     public QueryStatistics getQueryStatistics() {
         return queryStatistics;
     }

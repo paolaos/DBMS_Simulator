@@ -1,10 +1,10 @@
 import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
-public class QueryProcessingModule extends Module{
+public class QueryProcessingModule extends Module {
     private int nAvailableProcesses;
     private int currentProcesses;
 
-    public QueryProcessingModule(Simulation simulation, Module nextModule,int nAvailableProcesses){
+    public QueryProcessingModule(Simulation simulation, Module nextModule, int nAvailableProcesses) {
         this.simulation = simulation;
         this.nextModule = nextModule;
         queue = new LinkedBlockingQueue<>();
@@ -20,22 +20,36 @@ public class QueryProcessingModule extends Module{
 
     @Override
     public void processArrival(Query query) {
-
+        if (isBusy()) {
+            queue.offer(query);
+        } else {
+            currentProcesses++;
+            simulation.addEvent(new Event(simulation.getClock() + timeInQueryProcessingModule(query.getQueryType()),
+                    query, EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
+        }
     }
 
     @Override
     public void generateServiceEvent(Query query) {
-
+        query.setCurrentModule(ModuleType.QUERY_PROCESSING_MODULE);
+        simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.QUERY_PROCESSING_MODULE));
     }
 
+    //Se saca de la cola el siguiente y el query que llega de parámetro se envia al siguiente modulo
     @Override
     public void processDeparture(Query query) {
-
+        if(queue.size()>0){
+            simulation.addEvent(new Event(simulation.getClock() + DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1)),
+                    queue.poll(), EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
+        }else {
+            currentProcesses--;
+        }
+        nextModule.generateServiceEvent(query);
     }
 
     @Override
     public boolean isBusy() {
-        return false;
+       return nAvailableProcesses == currentProcesses;
     }
 
     @Override

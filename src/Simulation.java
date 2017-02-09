@@ -1,34 +1,29 @@
-import com.sun.org.apache.bcel.internal.generic.RETURN;
-
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 
 /**
  * Created by Paola Ortega S on 2/3/2017.
  */
 public class Simulation {
-    private float timeout;
-    private float clock;
+    private double timeout;
+    private double clock;
     private int numberOfTrials;
-    private float timePerTrial;
+    private double timePerTrial;
     private PriorityQueue<Event> eventList;
-    private CustomerManagementModule customerManagementModule;
+    private ClientConnectionModule clientConnectionModule;
     private ProcessManagerModule processManagerModule;
     private QueryProcessingModule queryProcessingModule;
     private TransactionAndDataAccessModule transactionAndDataAccessModule;
     private ExecutionModule executionModule;
-    private float totalTimeSimulation;
+    private double totalTimeSimulation;
     private boolean slowMode;
     private int qDelayTime;
-    private float rho;
     private Statistics statistics;
     private List<Query> queryList;
-    private final int LAMBDA = 35;
+    private Hashtable<Integer, QueryStatistics> statisticsTable;
+
 
     public Simulation(boolean slowMode, int qDelayTime, int kConnections, int nAvailableProcesses,
-                      int pQueries, int mSentences, float timeout, Statistics statistics, float timePerTrial){
+                      int pQueries, int mSentences, double timeout, Statistics statistics, double timePerTrial){
 
         // Variable initialization
         this.timeout = timeout;
@@ -36,29 +31,35 @@ public class Simulation {
         numberOfTrials = 0;
         this.timePerTrial = timePerTrial;
         eventList = new PriorityQueue<>();
-        customerManagementModule = new CustomerManagementModule(kConnections);
-        processManagerModule = new ProcessManagerModule();
-        queryProcessingModule = new QueryProcessingModule(nAvailableProcesses);
-        transactionAndDataAccessModule = new TransactionAndDataAccessModule(pQueries);
-        executionModule = new ExecutionModule(mSentences);
+
+        executionModule = new ExecutionModule(this, mSentences);
+        transactionAndDataAccessModule = new TransactionAndDataAccessModule(this, executionModule, pQueries);
+        queryProcessingModule = new QueryProcessingModule(this, transactionAndDataAccessModule, nAvailableProcesses);
+        processManagerModule = new ProcessManagerModule(this, queryProcessingModule);
+        clientConnectionModule = new ClientConnectionModule(this, processManagerModule, kConnections);
+        executionModule.setNextModule(clientConnectionModule);
+
         totalTimeSimulation = 0;
         this.slowMode = slowMode;
         this.qDelayTime = qDelayTime;
-        rho = 0;
         this.statistics = statistics;
 
         // First arrival
-        eventList.add(new Event(0, EventType.ARRIVAL, ModuleType.CUSTOMER_MANAGEMENT_MODULE));
+        //eventList.add(new Event(0, EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
 
     }
 
-    public List<Query> getTimeoutQueries(){
+    public void addEvent(Event event){
+        eventList.add(event);
+    }
+
+    private List<Query> getTimeoutQueries(){
         List<Query> l= new LinkedList<>();
         Iterator<Query>  iterator = l.iterator();
 
         while(iterator.hasNext()){
             Query temp = iterator.next();
-            if(temp.getTotalTime()>= timeout){
+            if(temp.getTotalTime()>= getTimeout()){
                 l.add(temp);
             }
         }
@@ -67,30 +68,24 @@ public class Simulation {
 
     private void manageArrivalEvent(Event event){
         switch (event.getDestinationModule()){
-            case CUSTOMER_MANAGEMENT_MODULE:
-                QueryType queryType = DistributionGenerator.generateType();
-                Query query = new Query(clock,queryType, ModuleType.CUSTOMER_MANAGEMENT_MODULE );
-                queryList.add(query);
-                if(customerManagementModule.wasInserted(query)){
-                    eventList.offer(new Event(customerManagementModule.getNextExitTime() + clock, EventType.EXIT,
-                            ModuleType.PROCESS_MANAGER_MODULE));
-                }
-
-                eventList.offer(new Event(DistributionGenerator.getNextArrivalTime(LAMBDA) + clock, EventType.ARRIVAL,
-                        ModuleType.CUSTOMER_MANAGEMENT_MODULE));
-
+            case CLIENT_CONNECTION_MODULE:
+                clientConnectionModule.processArrival(event.getQuery());
                 break;
 
             case PROCESS_MANAGER_MODULE:
+                processManagerModule.processArrival(event.getQuery());
                 break;
 
             case QUERY_PROCESSING_MODULE:
+                queryProcessingModule.processArrival(event.getQuery());
                 break;
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
+                queryProcessingModule.processArrival(event.getQuery());
                 break;
 
             case EXECUTION_MODULE:
+                executionModule.processArrival(event.getQuery());
                 break;
         }
 
@@ -100,8 +95,7 @@ public class Simulation {
     private void manageExitEvent(Event event){
         switch (event.getDestinationModule()){
 
-            case CUSTOMER_MANAGEMENT_MODULE:
-
+            case CLIENT_CONNECTION_MODULE:
 
                 break;
 
@@ -124,17 +118,32 @@ public class Simulation {
 
 
     private void manageKillEvent(Event event){
+        switch (event.getQuery().getCurrentModule()){
 
+            case CLIENT_CONNECTION_MODULE:
+                break;
 
+            case PROCESS_MANAGER_MODULE:
+                break;
 
+            case QUERY_PROCESSING_MODULE:
+                break;
+
+            case TRANSACTION_AND_DATA_ACCESS_MODULE:
+                break;
+
+            case EXECUTION_MODULE:
+                break;
+        }
 
     }
+
+
+
     public void startSimulation(){
-
-
-        while(clock<timePerTrial){
+        while(getClock() <timePerTrial){
             Event e = eventList.poll();
-            clock = e.getExecutionTime();
+            clock = e.getTime();
             switch (e.getEventType()){
 
                 case ARRIVAL:
@@ -142,9 +151,11 @@ public class Simulation {
                     break;
 
                 case EXIT:
+                    manageExitEvent(e);
                     break;
 
                 case KILL:
+                    manageKillEvent(e);
                     break;
             }
 
@@ -158,7 +169,7 @@ public class Simulation {
         Iterator<Query> iterator = l.iterator();
         while(iterator.hasNext()){
             Query temp = iterator.next();
-            Event event = new Event(clock, temp.getCurrentModule(), temp);
+            Event event = new Event(getClock(), temp.getCurrentModule(), temp);
             eventList.add(event);
         }
     }
@@ -170,4 +181,11 @@ public class Simulation {
 
     }
 
+    public double getClock() {
+        return clock;
+    }
+
+    public double getTimeout() {
+        return timeout;
+    }
 }
