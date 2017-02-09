@@ -48,4 +48,6 @@ public class System {
             allStatistics.add(currentStatistics);
         }
     }
+
+
 }

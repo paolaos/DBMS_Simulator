@@ -1,4 +1,8 @@
+import com.sun.org.apache.xml.internal.security.utils.JavaUtils;
+
+import javax.swing.*;
 import java.util.Random;
+import java.util.StringTokenizer;
 
 /**
  * Created by jesus on 03/02/2017.
@@ -42,14 +46,24 @@ public class DistributionGenerator {
         return (float) -Math.log(aleatoryNumber) / lambda;
     }
 
+    public static float getNextArrivalTime(float lambda, float random) {
+
+        return (float) -Math.log(random) / lambda;
+    }
+
     /**
      * @param a
      * @param b
      * @return
      */
-    public float getNextRandomValueByUniform(float a, float b) {
-        float r = this.rnd.nextFloat();
+    public static float getNextRandomValueByUniform(float a, float b) {
+       Random rnd = new Random();
+        float r = rnd.nextFloat();
         return (float) (r * (b - a)) + a;
+    }
+    public static float getNextRandomValueByUniform(float a, float b , float c) {
+
+        return (float) (c* (b - a)) + a;
     }
 
 
@@ -57,8 +71,9 @@ public class DistributionGenerator {
      * @param lambda
      * @return
      */
-    public float getNextRandomValueByExponential(float lambda) {
-        float r = this.rnd.nextFloat();
+    public static float getNextRandomValueByExponential(float lambda) {
+        Random rnd = new Random();
+        float r = rnd.nextFloat();
 
         return (float) (-1 / (lambda * Math.log(r)));
 
@@ -162,4 +177,10 @@ public class DistributionGenerator {
     }
 
 
-}
+
+
+
+
+
+};
+
