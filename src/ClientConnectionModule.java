@@ -18,10 +18,12 @@ public class ClientConnectionModule extends Module{
         finishedQueries = new LinkedList<>();
         queue = new LinkedBlockingQueue<>();
         timeQueue = new LinkedBlockingQueue<>();
-        currentId = 0;
+        currentId = -1;
         rejectedConnections = 0;
         currentConnections = 0;
         hasBeenInQueue = 0;
+
+
     }
 
     public int getRejectedConnections() {
@@ -68,7 +70,7 @@ public class ClientConnectionModule extends Module{
     }
 
     public void generateFirstArrival(){
-        Query quer = new Query(currentId, simulation.getClock(), DistributionGenerator.generateType(),
+        Query quer = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
                 ModuleType.CLIENT_CONNECTION_MODULE);
         simulation.addEvent(new Event(simulation.getClock() , quer,
                 EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
@@ -77,7 +79,7 @@ public class ClientConnectionModule extends Module{
 
     @Override
     public void generateServiceEvent(Query query){
-        Query quer = new Query(currentId, simulation.getClock(), DistributionGenerator.generateType(),
+        Query quer = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
                 ModuleType.CLIENT_CONNECTION_MODULE);
         double nextArrivalTime = DistributionGenerator.getNextArrivalTime(LAMBDA);
         simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime, quer,
@@ -119,7 +121,7 @@ public class ClientConnectionModule extends Module{
 
     @Override
     public double getNextExitTime(){
-        return DistributionGenerator.getNextRandomValueByNormal(0.01,0.05);
+        return DistributionGenerator.getNextRandomValueByUniform(0.01,0.05);
     }
 
     public double getResultantTime(int numberOfBlocks) {

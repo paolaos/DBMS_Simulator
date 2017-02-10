@@ -98,10 +98,8 @@ public class TransactionAndDataAccessModule extends Module {
     @Override
     public void processKill(Query query) {
 
-                if (queue.peek().getQueryType() == QueryType.DDL) {
-                    blocked = true;
-                }
-            }
+        if (queue.peek() != null && (queue.peek().getQueryType() == QueryType.DDL)) {
+            blocked = true;
 
         } else {
             currentQueries--;
@@ -123,11 +121,6 @@ public class TransactionAndDataAccessModule extends Module {
     @Override
     public double getNextExitTime() {
         return 0;
-    }
-
-    //coordinacion
-    private double getExecutionCoordinationTime() {
-        return pQueries * 0.03;
     }
 
     private int getBlockNumber(QueryType query) {
@@ -168,6 +161,5 @@ public class TransactionAndDataAccessModule extends Module {
         query.setNumberOfBlocks(blockNumber);
         double totalTime= getExecutionCoordinationTime()+getBlockLoadingTime(blockNumber);
         return  totalTime;
-    
     }
 }

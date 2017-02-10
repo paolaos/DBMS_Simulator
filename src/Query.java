@@ -23,6 +23,8 @@ public class Query implements Comparable<Query>{
         solved = false;
     }
 
+
+
     public boolean isSolved() {
         return solved;
     }
@@ -86,6 +88,10 @@ public class Query implements Comparable<Query>{
 
     public int getId() {
         return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
     }
 
     public void setTotalTime(double totalTime) {

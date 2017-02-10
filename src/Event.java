@@ -47,7 +47,7 @@ public class Event implements Comparable<Event>{
         if(time < o.getTime())
             toReturn = -1;
 
-        else if(time > o.getTime())
+        else if(time >= o.getTime())
             toReturn = 1;
 
         return toReturn;

@@ -1,3 +1,5 @@
+import java.lang.*;
+import java.lang.System;
 import java.util.*;
 
 /**
@@ -65,7 +67,7 @@ public class Simulation {
                 break;
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
-                queryProcessingModule.processArrival(event.getQuery());
+                transactionAndDataAccessModule.processArrival(event.getQuery());
                 break;
 
             case EXECUTION_MODULE:
@@ -134,6 +136,8 @@ public class Simulation {
         while(getClock() <timePerTrial){
             Event e = eventList.poll();
             clock = e.getTime();
+            if(e.getQuery().getId() == 1)
+                System.out.println(e.getEventType() + " " + e.getDestinationModule());
             switch (e.getEventType()){
                 case ARRIVAL:
                     this.manageArrivalEvent(e);
@@ -165,4 +169,11 @@ public class Simulation {
     public double getTimeout() {
         return timeout;
     }
+
+    public static void main(String[]args){
+        java.lang.System.out.println("Probando Simulacion");
+        Simulation s = new Simulation(false, 0, 15, 7, 2, 1, 150, null, 1500);
+        s.startSimulation();
+    }
+
 }
