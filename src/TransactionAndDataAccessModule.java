@@ -13,7 +13,7 @@ public class TransactionAndDataAccessModule extends Module{
         this.pQueries = pQueries;
         currentQueries = 0;
     }
-    
+
     @Override
     public void processArrival(Query query) {
 
