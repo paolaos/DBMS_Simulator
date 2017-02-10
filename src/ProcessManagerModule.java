@@ -25,11 +25,24 @@ public class ProcessManagerModule extends Module{
 
     }
 
-    @Override //proceamiento de salida
+    @Override //procesamiento de salida
+    //por Brayan
     public void processDeparture(Query query) {
-
+        if(queue.size()>0){
+            busy=true;
+            // 0.316227766 sqrt of 0.1
+            simulation.addEvent(new Event(simulation.getClock() + DistributionGenerator.getNextRandomValueByNormal(1.5, 0.316227766),
+                   queue.poll(), EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
+        }else {
+            busy= false;
+        }
+        nextModule.generateServiceEvent(query);
     }
 
+    @Override
+    public void processKill(Query query) {
+
+    }
 
     public boolean isBusy() {
         return isBusy;

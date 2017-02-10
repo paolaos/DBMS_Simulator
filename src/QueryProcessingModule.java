@@ -39,8 +39,8 @@ public class QueryProcessingModule extends Module {
     @Override
     public void processDeparture(Query query) {
         if(queue.size()>0){
-            simulation.addEvent(new Event(simulation.getClock() + DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1)),
-                    queue.poll(), EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
+            simulation.addEvent(new Event(simulation.getClock()+ timeInQueryProcessingModule(queue.peek().getQueryType()),
+                                queue.poll(), EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
         }else {
             currentProcesses--;
         }
@@ -48,8 +48,13 @@ public class QueryProcessingModule extends Module {
     }
 
     @Override
+    public void processKill(Query query) {
+      
+    }
+
+    @Override
     public boolean isBusy() {
-        return nAvailableProcesses == currentProcesses;
+       return nAvailableProcesses == currentProcesses;
     }
 
     @Override
@@ -57,7 +62,7 @@ public class QueryProcessingModule extends Module {
         return 0;
     }
 
-    public static double timeInQueryProcessingModule(QueryType query) {
+    private double timeInQueryProcessingModule(QueryType query) {
         Random rnd = new Random();
         double totalTime = 0;
         double lexicalValidationTime;
