@@ -40,7 +40,7 @@ public class QueryProcessingModule extends Module {
     public void processDeparture(Query query) {
         if(queue.size()>0){
             simulation.addEvent(new Event(simulation.getClock()+ timeInQueryProcessingModule(queue.peek().getQueryType()),
-                    queue.poll(), EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
+                                queue.poll(), EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
         }else {
             currentProcesses--;
         }
@@ -49,7 +49,7 @@ public class QueryProcessingModule extends Module {
 
     @Override
     public void processKill(Query query) {
-
+      
     }
 
     @Override

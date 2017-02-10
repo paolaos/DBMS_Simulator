@@ -46,6 +46,7 @@ public class TransactionAndDataAccessModule extends Module {
             } else {
                 // si la consulta no es DDL => atienda
 
+
                 currentQueries++;
                 // Agregar el tiempo Respectivo que se debe sumar al clock
                 simulation.addEvent(new Event(simulation.getClock(),
@@ -66,6 +67,7 @@ public class TransactionAndDataAccessModule extends Module {
         if (query.getQueryType() == QueryType.DDL) {
             blocked = false;
         }
+
         if (queue.size() > 0) {
             if (!blocked) {
                 //agregar tiempo que suma al clock
@@ -96,6 +98,21 @@ public class TransactionAndDataAccessModule extends Module {
     @Override
     public void processKill(Query query) {
 
+                if (queue.peek().getQueryType() == QueryType.DDL) {
+                    blocked = true;
+                }
+            }
+
+        } else {
+            currentQueries--;
+            if (currentQueries == 0 && blocked) {
+                //Ejecuta consulta pendinte
+                simulation.addEvent(new Event(simulation.getClock(),
+                        pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                pendingQuery = null;
+            }
+        }
+        nextModule.generateServiceEvent(query);
     }
 
     @Override
@@ -136,7 +153,12 @@ public class TransactionAndDataAccessModule extends Module {
         }
         return numberOfBlocks;
     }
-    //cargando de disco
+
+
+    public double getExecutionCoordinationTime() {
+        return pQueries * 0.03;
+    }
+
     public double getBlockLoadingTime(int numberOfBlocks) {
         return numberOfBlocks * 0.1;
     }
@@ -146,5 +168,6 @@ public class TransactionAndDataAccessModule extends Module {
         query.setNumberOfBlocks(blockNumber);
         double totalTime= getExecutionCoordinationTime()+getBlockLoadingTime(blockNumber);
         return  totalTime;
+    
     }
 }

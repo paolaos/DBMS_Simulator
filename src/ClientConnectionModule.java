@@ -10,7 +10,7 @@ public class ClientConnectionModule extends Module{
     private int rejectedConnections;
     private int currentConnections;
     private int currentId;
-    
+
     public ClientConnectionModule(Simulation simulation, Module nextModule, int kConnections){
         this.simulation = simulation;
         this.nextModule = nextModule;
@@ -130,4 +130,6 @@ public class ClientConnectionModule extends Module{
     public List<Query> getFinishedQueries(){
         return finishedQueries;
     }
+
 }
+

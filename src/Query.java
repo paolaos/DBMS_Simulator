@@ -27,6 +27,7 @@ public class Query implements Comparable<Query>{
         return solved;
     }
 
+
     public void setSolved(boolean solved) {
         this.solved = solved;
     }
