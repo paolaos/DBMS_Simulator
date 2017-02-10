@@ -34,7 +34,7 @@ public class DistributionGenerator {
     public static double getNextArrivalTime(double lambda) {
         Random rnd = new Random();
         double aleatoryNumber = rnd.nextDouble();
-        return (double) -Math.log(aleatoryNumber) / lambda;
+        return -Math.log(aleatoryNumber) / lambda;
     }
 
     /**
@@ -45,7 +45,7 @@ public class DistributionGenerator {
     public static double getNextRandomValueByUniform(double a, double b) {
         Random rnd = new Random();
         double r = rnd.nextDouble();
-        return (double) (r * (b - a)) + a;
+        return (r * (b - a)) + a;
     }
 
 
@@ -56,20 +56,17 @@ public class DistributionGenerator {
     public static double getNextRandomValueByExponential(double lambda) {
         Random rnd = new Random();
         double r = rnd.nextDouble();
-
-        return (double) (-1 / (lambda * Math.log(r)));
-
+        return -1 / (lambda * Math.log(r));
     }
 
     public static double getNextRandomValueByNormal(double average, double standardDeviation) {
         double z = 0;
         double x;
         Random rnd = new Random();
-
         for (int i = 0; i < 12; i++) {
             z += rnd.nextDouble();
         }
-        z = z - 6;
+        z -= 6;
         x = average + standardDeviation * z;
         return x;
     }

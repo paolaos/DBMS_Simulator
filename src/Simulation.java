@@ -145,7 +145,6 @@ public class Simulation {
             Event e = eventList.poll();
             clock = e.getTime();
             switch (e.getEventType()){
-
                 case ARRIVAL:
                     this.manageArrivalEvent(e);
                     break;
@@ -156,10 +155,6 @@ public class Simulation {
                 case KILL:
                     break;
             }
-
-
-
-
         }
     }
 
