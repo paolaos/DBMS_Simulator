@@ -15,7 +15,6 @@ public class QueryStatistics {
         private double timeOfServiceEntry;
         private double timeOfServiceExit;
         //TODO acordarnos del quinto atributo (preguntarle a Barty)
-
     }
 
 

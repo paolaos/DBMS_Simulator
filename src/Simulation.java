@@ -99,9 +99,6 @@ public class Simulation {
                 executionModule.processDeparture(event.getQuery());
                 break;
         }
-
-
-
     }
 
 
