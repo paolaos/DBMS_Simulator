@@ -18,7 +18,6 @@ public class Simulation {
     private boolean slowMode;
     private int qDelayTime;
     private Statistics statistics;
-    private List<Query> queryList;
     private Hashtable<Integer, QueryStatistics> statisticsTable;
 
 
@@ -38,33 +37,18 @@ public class Simulation {
         processManagerModule = new ProcessManagerModule(this, queryProcessingModule);
         clientConnectionModule = new ClientConnectionModule(this, processManagerModule, kConnections);
         executionModule.setNextModule(clientConnectionModule);
-
         totalTimeSimulation = 0;
         this.slowMode = slowMode;
         this.qDelayTime = qDelayTime;
         this.statistics = statistics;
-
-        // First arrival
-        //eventList.add(new Event(0, EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
-
+        clientConnectionModule.generateFirstArrival();
     }
 
     public void addEvent(Event event){
         eventList.add(event);
     }
 
-    private List<Query> getTimeoutQueries(){
-        List<Query> l= new LinkedList<>();
-        Iterator<Query>  iterator = l.iterator();
 
-        while(iterator.hasNext()){
-            Query temp = iterator.next();
-            if(temp.getTotalTime()>= getTimeout()){
-                l.add(temp);
-            }
-        }
-        return  l;
-    }
 
     private void manageArrivalEvent(Event event){
         switch (event.getDestinationModule()){
@@ -96,19 +80,23 @@ public class Simulation {
         switch (event.getDestinationModule()){
 
             case CLIENT_CONNECTION_MODULE:
-
+                clientConnectionModule.processDeparture(event.getQuery());
                 break;
 
             case PROCESS_MANAGER_MODULE:
+                processManagerModule.processDeparture(event.getQuery());
                 break;
 
             case QUERY_PROCESSING_MODULE:
+                queryProcessingModule.processDeparture(event.getQuery());
                 break;
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
+                transactionAndDataAccessModule.processDeparture(event.getQuery());
                 break;
 
             case EXECUTION_MODULE:
+                executionModule.processDeparture(event.getQuery());
                 break;
         }
 
@@ -121,18 +109,23 @@ public class Simulation {
         switch (event.getQuery().getCurrentModule()){
 
             case CLIENT_CONNECTION_MODULE:
+                clientConnectionModule.processKill(event.getQuery());
                 break;
 
             case PROCESS_MANAGER_MODULE:
+                processManagerModule.processKill(event.getQuery());
                 break;
 
             case QUERY_PROCESSING_MODULE:
+                queryProcessingModule.processKill(event.getQuery());
                 break;
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
+                transactionAndDataAccessModule.processKill(event.getQuery());
                 break;
 
             case EXECUTION_MODULE:
+                executionModule.processKill(event.getQuery());
                 break;
         }
 
@@ -158,21 +151,10 @@ public class Simulation {
                     manageKillEvent(e);
                     break;
             }
-
-
-
-
         }
     }
 
-    public void createKillEvents(List<Query> l){
-        Iterator<Query> iterator = l.iterator();
-        while(iterator.hasNext()){
-            Query temp = iterator.next();
-            Event event = new Event(getClock(), temp.getCurrentModule(), temp);
-            eventList.add(event);
-        }
-    }
+
 
 
     public void runSimulation(){}
@@ -180,7 +162,6 @@ public class Simulation {
     public void fillStatistics(Statistics statistics){
 
     }
-
     public double getClock() {
         return clock;
     }

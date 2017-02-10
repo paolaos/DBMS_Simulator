@@ -9,7 +9,8 @@ public class Query implements Comparable<Query>{
     private boolean timeOut;
     private QueryStatistics queryStatistics;
     private int id;
-
+    private int numberOfBlocks;
+    private boolean solved;
     public Query(int id, double timeOfEntry , QueryType type, ModuleType currentModule){
         this.id = id;
         this.timeOfEntry = timeOfEntry;
@@ -18,7 +19,24 @@ public class Query implements Comparable<Query>{
         isInQueue = false;
         this.currentModule = currentModule;
         timeOut = false;
+        numberOfBlocks=0;
+        solved = false;
+    }
 
+    public boolean isSolved() {
+        return solved;
+    }
+
+    public void setSolved(boolean solved) {
+        this.solved = solved;
+    }
+
+    public int getNumberOfBlocks() {
+        return numberOfBlocks;
+    }
+
+    public void setNumberOfBlocks(int numberOfBlocks) {
+        this.numberOfBlocks = numberOfBlocks;
     }
 
     public QueryType getQueryType(){
@@ -67,5 +85,9 @@ public class Query implements Comparable<Query>{
 
     public int getId() {
         return id;
+    }
+
+    public void setTotalTime(double totalTime) {
+        this.totalTime = totalTime;
     }
 }

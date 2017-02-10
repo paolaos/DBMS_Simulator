@@ -19,9 +19,11 @@ public abstract class Module {
 
     public abstract void processArrival(Query query);
 
-    public abstract void generateServiceEvent(Query query);
-
     public abstract void processDeparture(Query query); //procesar salida
+
+    public abstract void processKill(Query query);
+
+    public abstract void generateServiceEvent(Query query);
 
     public abstract boolean isBusy();
 

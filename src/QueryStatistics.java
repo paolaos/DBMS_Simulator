@@ -17,4 +17,6 @@ public class QueryStatistics {
         //TODO acordarnos del quinto atributo (preguntarle a Barty)
 
     }
+
+
 }
