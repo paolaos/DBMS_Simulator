@@ -6,7 +6,7 @@ public class ClientConnectionModule extends Module{
     private int rejectedConnections;
     private int currentConnections;
     private int currentId;
-    
+
     public ClientConnectionModule(Simulation simulation, Module nextModule, int kConnections){
         this.simulation = simulation;
         this.nextModule = nextModule;
@@ -41,7 +41,6 @@ public class ClientConnectionModule extends Module{
     public void processArrival(Query query) {
         if(isBusy())
             rejectedConnections++;
-
         else {
             currentConnections++;
             simulation.addEvent(new Event(simulation.getClock() + getNextExitTime(), query,
@@ -69,12 +68,12 @@ public class ClientConnectionModule extends Module{
 
     @Override
     public double getNextExitTime(){
-        return DistributionGenerator.getNextRandomValueByNormal(0.01, 0.05);
+        return DistributionGenerator.getNextRandomValueByNormal(0.01,0.05);
     }
 
     public double getResultantTime(int numberOfBlocks) {
         double average = numberOfBlocks / 3;
         return average + numberOfBlocks / 2;
     }
-    
+
 }
