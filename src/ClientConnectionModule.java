@@ -79,12 +79,14 @@ public class ClientConnectionModule extends Module{
 
     @Override
     public void generateServiceEvent(Query query){
-        Query quer = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
-                ModuleType.CLIENT_CONNECTION_MODULE);
+        if(query == null){
+            query = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
+                    ModuleType.CLIENT_CONNECTION_MODULE);
+        }
         double nextArrivalTime = DistributionGenerator.getNextArrivalTime(LAMBDA);
-        simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime, quer,
+        simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime, query,
                 EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
-        simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), quer,
+        simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), query,
                 EventType.KILL, null));
     }
 
