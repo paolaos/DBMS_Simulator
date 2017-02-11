@@ -5,7 +5,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientConnectionModule extends Module{
     private List<Query> finishedQueries;
-    private final int LAMBDA = 35;
+    private final double LAMBDA = 0.58333333;
     private int kConnections;
     private int rejectedConnections;
     private int currentConnections;
@@ -22,8 +22,6 @@ public class ClientConnectionModule extends Module{
         rejectedConnections = 0;
         currentConnections = 0;
         hasBeenInQueue = 0;
-
-
     }
 
     public int getRejectedConnections() {
@@ -116,7 +114,6 @@ public class ClientConnectionModule extends Module{
 
     private void processDepartureOfSystem(Query query){
         currentConnections--;
-        java.lang.System.out.println(" sale consulta en tiempo " + simulation.getClock());
         finishedQueries.add(query);
     }
 

@@ -33,7 +33,7 @@ public class ExecutionModule extends Module{
     public void processDeparture(Query query) {
         if(queue.size()>0){
             simulation.addEvent(new Event(simulation.getClock(),
-                    queue.poll(), EventType.ARRIVAL, ModuleType.EXECUTION_MODULE));
+                    queue.poll(), EventType.EXIT, ModuleType.EXECUTION_MODULE));
         }else {
             currentSentences--;
         }
