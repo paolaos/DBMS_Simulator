@@ -14,10 +14,14 @@ public class ProcessManagerModule extends Module{
     public void processArrival(Query query) {
         if(this.isBusy()){
             queue.offer(query);
+            query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToQueue(simulation.getClock());
         }else{
             busy = true;
-            simulation.addEvent(new Event(simulation.getClock() + DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1)),
+            double normalValue = DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1));
+            simulation.addEvent(new Event(simulation.getClock() + normalValue,
                         query, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
+            query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock()); //TODO revisar esto
+            query.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromModule(simulation.getClock() + normalValue);
         }
 
     }
@@ -26,12 +30,16 @@ public class ProcessManagerModule extends Module{
     //por Brayan
     public void processDeparture(Query query) {
         if(queue.size() > 0){
-            busy=true;
+            busy = true;
             // 0.316227766 sqrt of 0.1
-            simulation.addEvent(new Event(simulation.getClock() + DistributionGenerator.getNextRandomValueByNormal(1.5, 0.316227766),
+            double normalValue = DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1));
+            simulation.addEvent(new Event(simulation.getClock() + normalValue,
                    queue.poll(), EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
+            query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock()); //TODO revisar esto
+            query.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromModule(simulation.getClock() + normalValue);
         }else {
-            busy= false;
+            busy = false;
+            //TODO ya lo procesé?
         }
         nextModule.generateServiceEvent(query);
     }
@@ -50,6 +58,7 @@ public class ProcessManagerModule extends Module{
     public void generateServiceEvent(Query query) {
         query.setCurrentModule(ModuleType.PROCESS_MANAGER_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.PROCESS_MANAGER_MODULE));
+        query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToModule(simulation.getClock());
     }
 
 

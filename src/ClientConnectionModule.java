@@ -38,23 +38,23 @@ public class ClientConnectionModule extends Module{
 
 
 
-    ///TODO implementar ultimo paso de la simulacion
     @Override
     public void processArrival(Query query) {
        if(query.isSolved())
            processArrivalLastModule(query);
 
        else
-           processArrivalFirsModule(query);
+           processArrivalFirstModule(query);
     }
 
-    private void processArrivalFirsModule(Query query){
+    private void processArrivalFirstModule(Query query){
         if(isBusy())
             rejectedConnections++;
         else {
             currentConnections++;
             simulation.addEvent(new Event(simulation.getClock() + getNextExitTime(), query,
                     EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
+            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(this.simulation.getClock());
         }
         generateServiceEvent(null);
     }
@@ -64,6 +64,7 @@ public class ClientConnectionModule extends Module{
         //sumarle al total time del query.
         simulation.addEvent(new Event(getResultantTime(query.getNumberOfBlocks()) + simulation.getClock(),
                 query, EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
+        query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfEntryToModule(this.simulation.getClock());
 
     }
 
@@ -98,6 +99,7 @@ public class ClientConnectionModule extends Module{
     }
 
     private void processDepartureToNextModule(Query  query){
+        query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         nextModule.generateServiceEvent(query);
     }
 
@@ -114,6 +116,7 @@ public class ClientConnectionModule extends Module{
 
     private void processDepartureOfSystem(Query query){
         currentConnections--;
+        query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         finishedQueries.add(query);
     }
 

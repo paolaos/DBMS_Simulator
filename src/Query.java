@@ -1,4 +1,3 @@
-import java.lang.reflect.Type;
 
 public class Query implements Comparable<Query>{
     private double timeOfEntry;

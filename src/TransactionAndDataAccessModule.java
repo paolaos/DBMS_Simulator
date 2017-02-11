@@ -23,6 +23,7 @@ public class TransactionAndDataAccessModule extends Module {
         if (isBusy() || blocked) {
             //encole
             queue.offer(query);
+            query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToQueue(simulation.getClock());
         } else {
             //en caso de que pueda atender
 
@@ -32,13 +33,12 @@ public class TransactionAndDataAccessModule extends Module {
                 blocked = true;
                 pendingQuery = query;
                 if (currentQueries == 0) {
-
-
                     // si la consulta es DDL pero no hay queries
                     currentQueries++;
                     // Agregar el tiempo Respectivo que se debe sumar al clock
                     simulation.addEvent(new Event(simulation.getClock(),
                             pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                    //TODO revisar tiempo de consulta porque aparece que es en tiempo de reloj.
 
                 }
 
@@ -51,6 +51,7 @@ public class TransactionAndDataAccessModule extends Module {
                 // Agregar el tiempo Respectivo que se debe sumar al clock
                 simulation.addEvent(new Event(simulation.getClock(),
                         query, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                //TODO revisar tiempo de consulta porque aparece que es en tiempo de reloj.
             }
         }
     }
@@ -59,10 +60,11 @@ public class TransactionAndDataAccessModule extends Module {
     public void generateServiceEvent(Query query) {
         query.setCurrentModule(ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+        query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToModule(simulation.getClock());
     }
 
     @Override
-    //Si el que sale  es DDL y el que sigue no es DDL, entonces desbloquear,
+    //Si el que sale es DDL y el que sigue no es DDL, entonces desbloquear,
     public void processDeparture(Query query) {
         if (query.getQueryType() == QueryType.DDL) {
             blocked = false;
@@ -161,5 +163,9 @@ public class TransactionAndDataAccessModule extends Module {
         query.setNumberOfBlocks(blockNumber);
         double totalTime= getExecutionCoordinationTime()+getBlockLoadingTime(blockNumber);
         return  totalTime;
+    }
+
+    private double getTransactionTime(Query query){
+        return 0;
     }
 }
