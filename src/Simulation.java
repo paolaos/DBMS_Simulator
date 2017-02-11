@@ -133,10 +133,10 @@ public class Simulation {
 
 
     public void startSimulation(){
-        while(getClock() <timePerTrial){
+        while(getClock() < timePerTrial){
             Event e = eventList.poll();
             clock = e.getTime();
-            if(e.getQuery().getId() == 1)
+            if(e.getQuery().getId() == -1)
                 System.out.println(e.getEventType() + " " + e.getDestinationModule());
             switch (e.getEventType()){
                 case ARRIVAL:
@@ -162,8 +162,13 @@ public class Simulation {
     public void fillStatistics(Statistics statistics){
 
     }
+
     public double getClock() {
         return clock;
+    }
+
+    public ClientConnectionModule getClientConnectionModule(){
+        return clientConnectionModule;
     }
 
     public double getTimeout() {
@@ -172,8 +177,9 @@ public class Simulation {
 
     public static void main(String[]args){
         java.lang.System.out.println("Probando Simulacion");
-        Simulation s = new Simulation(false, 0, 15, 7, 2, 1, 150, null, 1500);
+        Simulation s = new Simulation(false, 0, 15, 7, 2, 1, 150, null, 15000);
         s.startSimulation();
+        System.out.println(s.getClientConnectionModule().getFinishedQueries().size());
     }
 
 }
