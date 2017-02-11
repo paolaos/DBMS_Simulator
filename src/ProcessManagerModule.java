@@ -1,15 +1,12 @@
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ProcessManagerModule extends Module{
-    private boolean isBusy;
-
-
     public ProcessManagerModule(Simulation simulation, Module nextModule){
         this.simulation = simulation;
         this.nextModule = nextModule;
         queue = new LinkedBlockingQueue<>();
         timeQueue = new LinkedBlockingQueue<>();
-        isBusy = false;
+        busy = false;
         hasBeenInQueue = 0;
     }
 
@@ -18,7 +15,7 @@ public class ProcessManagerModule extends Module{
         if(this.isBusy()){
             queue.offer(query);
         }else{
-            isBusy = true;
+            busy = true;
             simulation.addEvent(new Event(simulation.getClock() + DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1)),
                         query, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
         }
@@ -45,7 +42,7 @@ public class ProcessManagerModule extends Module{
     }
 
     public boolean isBusy() {
-        return isBusy;
+        return busy;
     }
 
 
