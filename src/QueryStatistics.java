@@ -9,6 +9,15 @@ public class QueryStatistics {
     private QueryModuleStatistics executionStatistics;
     private QueryModuleStatistics clientConnectionStatisticsWithResolvedQuery;
 
+    public QueryStatistics(){
+        clientConnectionStatisticsWithoutResolvedQuery = new QueryModuleStatistics();
+        processManagerStatistics = new QueryModuleStatistics();
+        queryProcessingStatistics = new QueryModuleStatistics();
+        transactionAndDataAccessStatistics = new QueryModuleStatistics();
+        executionStatistics = new QueryModuleStatistics();
+        clientConnectionStatisticsWithResolvedQuery = new QueryModuleStatistics();
+    }
+
     public QueryModuleStatistics getClientConnectionStatisticsWithResolvedQuery() {
         return clientConnectionStatisticsWithResolvedQuery;
     }
