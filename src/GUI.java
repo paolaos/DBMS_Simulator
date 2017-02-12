@@ -155,7 +155,7 @@ public class GUI extends JFrame{
         super.add(panelTimeout);
         super.add(panelFortuna);
         super.add(panelStart);
-        super.setSize(700, 700);
+        super.setSize(570, 600);
         super.setVisible(true);
     }
 
