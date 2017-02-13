@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -16,6 +18,7 @@ public class GUI extends JFrame{
     private final String P_AVAILABLE_PROCESSES = "Number of available processes for query transactions (p)";
     private final String M_AVAILABLE_PROCESSES = "Number of available processes for query executions (m)";
     private final String T_TIMEOUT = "Connection timeout (t)";
+    private final String DELAY = "Delay";
     private final String START = "Start";
     private final String O_FORTUNA = "O Fortuna!";
 
@@ -30,6 +33,10 @@ public class GUI extends JFrame{
     private JPanel panelSlowMode;
     private JLabel lblSlowMode;
     private JCheckBox chkSlowMode;
+
+    private JPanel panelDelay;
+    private JLabel lblDelay;
+    private JTextField txtDelay;
 
     private JPanel panelKConnections;
     private JLabel lblKConnections;
@@ -57,6 +64,8 @@ public class GUI extends JFrame{
     private JPanel panelStart;
     private JButton btnStart;
 
+    private JTextArea dataDisplay;
+
     public GUI() {
         super.setTitle(TITLE);
         super.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
@@ -80,10 +89,30 @@ public class GUI extends JFrame{
 
         lblSlowMode = new JLabel(SLOW_MODE);
         chkSlowMode = new JCheckBox();
+        chkSlowMode.setSelected(false);
+        chkSlowMode.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                if(chkSlowMode.isSelected()){
+                    txtDelay.setEnabled(true);
+                }else{
+                    txtDelay.setEnabled(false);
+                }
+            }
+        });
         panelSlowMode = new JPanel();
         panelSlowMode.setLayout(new BorderLayout());
         panelSlowMode.add(lblSlowMode, BorderLayout.WEST);
         panelSlowMode.add(chkSlowMode, BorderLayout.EAST);
+
+        lblDelay = new JLabel(DELAY);
+        txtDelay = new JTextField();
+        txtDelay.setColumns(20);
+        txtDelay.setEnabled(false);
+        panelDelay = new JPanel();
+        panelDelay.setLayout(new BorderLayout());
+        panelDelay.add(lblDelay, BorderLayout.WEST);
+        panelDelay.add(txtDelay, BorderLayout.EAST);
 
         lblKConnections = new JLabel(K_CONNECTIONS);
         txtKConnections = new JTextField();
@@ -137,17 +166,14 @@ public class GUI extends JFrame{
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                JDialog jd = new JDialog();
-                jd.add(new JLabel("Todavía no está listo :)"));
-                jd.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - getHeight()/2);
-                jd.pack();
-                jd.setVisible(true);
+                displayData();
             }
         });
 
         super.add(panelNumberOfSimulations);
         super.add(panelMaxTimePerSimulation);
         super.add(panelSlowMode);
+        super.add(panelDelay);
         super.add(panelKConnections);
         super.add(panelNAvailableProcesses);
         super.add(panelPAvailableProcesses);
@@ -156,7 +182,16 @@ public class GUI extends JFrame{
         super.add(panelFortuna);
         super.add(panelStart);
         super.setSize(570, 600);
+        super.setResizable(false);
         super.setVisible(true);
+    }
+
+    public void displayData(){
+        dataDisplay = new JTextArea();
+        super.getContentPane().removeAll();
+        super.add(dataDisplay);
+        super.revalidate();
+        super.repaint();
     }
 
     public static void main(String... args){
