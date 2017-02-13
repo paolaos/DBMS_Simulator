@@ -1,3 +1,4 @@
+import java.lang.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ExecutionModule extends Module{
@@ -33,7 +34,7 @@ public class ExecutionModule extends Module{
     public void processDeparture(Query query) {
         if(queue.size()>0){
             simulation.addEvent(new Event(simulation.getClock(),
-                    queue.poll(), EventType.ARRIVAL, ModuleType.EXECUTION_MODULE));
+                    queue.poll(), EventType.EXIT, ModuleType.EXECUTION_MODULE));
         }else {
             currentSentences--;
         }
@@ -70,6 +71,7 @@ public class ExecutionModule extends Module{
     public double getTotalTime(Query query){
         double totalTime = this.getBlockExecutingTime(query.getNumberOfBlocks());
         totalTime += getRestructurationTime(query.getQueryType());
+
         return totalTime;
     }
 

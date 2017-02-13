@@ -1,3 +1,4 @@
+import java.lang.*;
 import java.util.Random;
 
 /**
@@ -37,6 +38,7 @@ public class DistributionGenerator {
         return -Math.log(aleatoryNumber) / lambda;
     }
 
+
     /**
      * @param a
      * @param b
@@ -70,4 +72,5 @@ public class DistributionGenerator {
         x = average + standardDeviation * z;
         return x;
     }
+
 }

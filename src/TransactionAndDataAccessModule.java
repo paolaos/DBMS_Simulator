@@ -2,6 +2,11 @@ import java.util.PriorityQueue;
 
 public class TransactionAndDataAccessModule extends Module {
     private int pQueries;
+
+    public int getCurrentQueries() {
+        return currentQueries;
+    }
+
     private int currentQueries;
     private boolean blocked;
     private Query pendingQuery;

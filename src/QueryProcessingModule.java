@@ -2,6 +2,8 @@ import java.util.Random;
 import java.util.concurrent.LinkedBlockingQueue;
 public class QueryProcessingModule extends Module {
     private int nAvailableProcesses;
+
+
     private int currentProcesses;
 
     public QueryProcessingModule(Simulation simulation, Module nextModule, int nAvailableProcesses) {
@@ -18,6 +20,10 @@ public class QueryProcessingModule extends Module {
         return nAvailableProcesses;
     }
 
+
+    public int getCurrentProcesses() {
+        return currentProcesses;
+    }
     @Override
     public void processArrival(Query query) {
         if (isBusy()) {
