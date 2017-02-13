@@ -179,7 +179,7 @@ public class Simulation {
         java.lang.System.out.println("Probando Simulacion");
         Simulation s = new Simulation(false, 0, 15, 7, 2, 1, 150, null, 15000);
         s.startSimulation();
-        System.out.println(s.getClientConnectionModule().getFinishedQueries().size());
+        //System.out.println(s.getClientConnectionModule().getFinishedQueries().size());
     }
 
 }

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientConnectionModule extends Module{
-    private List<Query> finishedQueries;
+    private List<Query> allQueries;
     private final double LAMBDA = 0.58333333;
     private int kConnections;
     private int rejectedConnections;
@@ -15,7 +15,7 @@ public class ClientConnectionModule extends Module{
         this.simulation = simulation;
         this.nextModule = nextModule;
         this.kConnections = kConnections;
-        finishedQueries = new LinkedList<>();
+        allQueries = new LinkedList<>();
         queue = new LinkedBlockingQueue<>();
         timeQueue = new LinkedBlockingQueue<>();
         currentId = -1;
@@ -55,6 +55,7 @@ public class ClientConnectionModule extends Module{
             simulation.addEvent(new Event(simulation.getClock() + getNextExitTime(), query,
                     EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
             query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(this.simulation.getClock());
+            allQueries.add(query);
         }
         generateServiceEvent(null);
     }
@@ -69,9 +70,9 @@ public class ClientConnectionModule extends Module{
     }
 
     public void generateFirstArrival(){
-        Query quer = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
+        Query query = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
                 ModuleType.CLIENT_CONNECTION_MODULE);
-        simulation.addEvent(new Event(simulation.getClock() , quer,
+        simulation.addEvent(new Event(simulation.getClock() , query,
                 EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
 
     }
@@ -117,7 +118,6 @@ public class ClientConnectionModule extends Module{
     private void processDepartureOfSystem(Query query){
         currentConnections--;
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
-        finishedQueries.add(query);
     }
 
 
@@ -131,8 +131,8 @@ public class ClientConnectionModule extends Module{
         return average / 2;
     }
 
-    public List<Query> getFinishedQueries(){
-        return finishedQueries;
+    public List<Query> getAllQueries(){
+        return allQueries;
     }
 
 }
