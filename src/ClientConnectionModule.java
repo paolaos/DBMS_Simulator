@@ -4,9 +4,8 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientConnectionModule extends Module{
-    private List<Query> finishedQueries;
-   private final double LAMBDA = 0.583333333;
-    //private final double LAMBDA = 35;
+    private List<Query> allQueries;
+    private final double LAMBDA = 0.58333333;
     private int kConnections;
     private int rejectedConnections;
     private int currentConnections;
@@ -16,15 +15,13 @@ public class ClientConnectionModule extends Module{
         this.simulation = simulation;
         this.nextModule = nextModule;
         this.kConnections = kConnections;
-        finishedQueries = new LinkedList<>();
+        allQueries = new LinkedList<>();
         queue = new LinkedBlockingQueue<>();
         timeQueue = new LinkedBlockingQueue<>();
         currentId = -1;
         rejectedConnections = 0;
         currentConnections = 0;
         hasBeenInQueue = 0;
-
-
     }
 
     public int getRejectedConnections() {
@@ -41,39 +38,41 @@ public class ClientConnectionModule extends Module{
 
 
 
-    ///TODO implementar ultimo paso de la simulacion
     @Override
     public void processArrival(Query query) {
        if(query.isSolved())
            processArrivalLastModule(query);
 
        else
-           processArrivalFirsModule(query);
+           processArrivalFirstModule(query);
     }
 
-    private void processArrivalFirsModule(Query query){
+    private void processArrivalFirstModule(Query query){
         if(isBusy())
             rejectedConnections++;
         else {
             currentConnections++;
             simulation.addEvent(new Event(simulation.getClock() + getNextExitTime(), query,
                     EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
+            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(this.simulation.getClock());
+            allQueries.add(query);
         }
         generateServiceEvent(null);
     }
 
 
     private void processArrivalLastModule(Query query){
-
+        //sumarle al total time del query.
         simulation.addEvent(new Event(getResultantTime(query.getNumberOfBlocks()) + simulation.getClock(),
                 query, EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
+        query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfEntryToModule(this.simulation.getClock());
 
     }
 
     public void generateFirstArrival(){
-        Query quer = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
+        Query query = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
                 ModuleType.CLIENT_CONNECTION_MODULE);
-        simulation.addEvent(new Event(simulation.getClock() , quer,
+        simulation.addEvent(new Event(simulation.getClock() , query,
                 EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
 
     }
@@ -101,6 +100,7 @@ public class ClientConnectionModule extends Module{
     }
 
     private void processDepartureToNextModule(Query  query){
+        query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         nextModule.generateServiceEvent(query);
     }
 
@@ -117,7 +117,7 @@ public class ClientConnectionModule extends Module{
 
     private void processDepartureOfSystem(Query query){
         currentConnections--;
-        finishedQueries.add(query);
+        query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
     }
 
 
@@ -131,8 +131,8 @@ public class ClientConnectionModule extends Module{
         return average / 2;
     }
 
-    public List<Query> getFinishedQueries(){
-        return finishedQueries;
+    public List<Query> getAllQueries(){
+        return allQueries;
     }
 
 }

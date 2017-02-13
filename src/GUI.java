@@ -1,6 +1,3 @@
-/**
- * Created by Paola Ortega S on 2/8/2017.
- */
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -141,7 +138,7 @@ public class GUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 JDialog jd = new JDialog();
-                jd.add(new JLabel("Puto quien lo lea"));
+                jd.add(new JLabel("Todavía no está listo :)"));
                 jd.setLocation((Toolkit.getDefaultToolkit().getScreenSize().width)/2 - getWidth()/2, (Toolkit.getDefaultToolkit().getScreenSize().height)/2 - getHeight()/2);
                 jd.pack();
                 jd.setVisible(true);

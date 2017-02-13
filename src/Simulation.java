@@ -133,10 +133,11 @@ public class Simulation {
 
 
     public void startSimulation(){
-        while(getClock() <timePerTrial){
+        while(getClock() < timePerTrial){
             Event e = eventList.poll();
             clock = e.getTime();
-
+            if(e.getQuery().getId() == -1)
+                System.out.println(e.getEventType() + " " + e.getDestinationModule());
             switch (e.getEventType()){
                 case ARRIVAL:
                     this.manageArrivalEvent(e);
@@ -161,8 +162,13 @@ public class Simulation {
     public void fillStatistics(Statistics statistics){
 
     }
+
     public double getClock() {
         return clock;
+    }
+
+    public ClientConnectionModule getClientConnectionModule(){
+        return clientConnectionModule;
     }
 
     public double getTimeout() {
@@ -171,21 +177,9 @@ public class Simulation {
 
     public static void main(String[]args){
         java.lang.System.out.println("Probando Simulacion");
-        Simulation s = new Simulation(false, 0, 15, 3, 2, 2, 15, null, 15000
-        );
+        Simulation s = new Simulation(false, 0, 15, 7, 2, 1, 150, null, 15000);
         s.startSimulation();
-        System.out.println("Clientes atendidos "+s.clientConnectionModule.getFinishedQueries().size());
-        System.out.println("conexiones actuales "+ s.clientConnectionModule.getCurrentConnections());
-        System.out.println("la cola en 2 modulo es de + "+s.processManagerModule.queue.size());
-        System.out.println("la cola en 3 modulo es de + "+s.queryProcessingModule.queue.size());
-        System.out.println("la cola en 4 modulo es de + "+s.transactionAndDataAccessModule.queue.size());
-        System.out.println("la cola en 5 modulo es de + "+s.executionModule.queue.size());
-        System.out.println("Se rechazaron "+ s.clientConnectionModule.getRejectedConnections()+" Conexiones");
-        System.out.println("\n \t\tGracias Totales");
-        ReproduceAudio.cancionDelExito();
-
-
-
+        //System.out.println(s.getClientConnectionModule().getFinishedQueries().size());
     }
 
 }

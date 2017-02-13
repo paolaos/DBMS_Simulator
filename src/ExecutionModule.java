@@ -1,4 +1,3 @@
-import java.lang.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ExecutionModule extends Module{
@@ -22,19 +21,24 @@ public class ExecutionModule extends Module{
     public void processArrival(Query query) {
         if (isBusy()) {
             queue.offer(query);
+            query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToQueue(simulation.getClock());
         } else {
             currentSentences++;
-            simulation.addEvent(new Event(simulation.getClock() + getTotalTime(query),
-                    query, EventType.EXIT, ModuleType.EXECUTION_MODULE));
+            double exitTime = simulation.getClock() + getTotalTime(query);
+            simulation.addEvent(new Event(exitTime, query, EventType.EXIT, ModuleType.EXECUTION_MODULE));
+            query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToServer(simulation.getClock());
+            query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromModule(exitTime);
         }
     }
 
 
     @Override
     public void processDeparture(Query query) {
-        if(queue.size()>0){
-            simulation.addEvent(new Event(simulation.getClock(),
-                    queue.poll(), EventType.EXIT, ModuleType.EXECUTION_MODULE));
+        if(queue.size() > 0){
+            double exitTime = simulation.getClock() + getTotalTime(query);
+            simulation.addEvent(new Event(exitTime, queue.poll(), EventType.EXIT, ModuleType.EXECUTION_MODULE)); //TODO hora estaba mala, faltaba sumar el getTotalTime(query)
+            query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToServer(simulation.getClock());
+            query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromModule(exitTime);
         }else {
             currentSentences--;
         }
@@ -46,6 +50,7 @@ public class ExecutionModule extends Module{
     public void generateServiceEvent(Query query) {
         query.setCurrentModule(ModuleType.EXECUTION_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.EXECUTION_MODULE));
+        query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToModule(simulation.getClock());
     }
 
     @Override
@@ -71,7 +76,6 @@ public class ExecutionModule extends Module{
     public double getTotalTime(Query query){
         double totalTime = this.getBlockExecutingTime(query.getNumberOfBlocks());
         totalTime += getRestructurationTime(query.getQueryType());
-
         return totalTime;
     }
 
