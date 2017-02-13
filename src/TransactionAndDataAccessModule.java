@@ -36,21 +36,22 @@ public class TransactionAndDataAccessModule extends Module {
                     // si la consulta es DDL pero no hay queries
                     currentQueries++;
                     // Agregar el tiempo Respectivo que se debe sumar al clock
-                    simulation.addEvent(new Event(simulation.getClock(),
-                            pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                    simulation.addEvent(new Event(simulation.getClock() + (getBlockNumber(query.getQueryType()) * 0.1),
+                            pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE)); // TODO revisar esto
                     //TODO revisar tiempo de consulta porque aparece que es en tiempo de reloj.
 
                 }
-
+                query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToServer(simulation.getClock() + (currentQueries * 0.03));
+                query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromModule(simulation.getClock() + (getBlockNumber(query.getQueryType()) * 0.1));
 
             } else {
                 // si la consulta no es DDL => atienda
-
-
                 currentQueries++;
                 // Agregar el tiempo Respectivo que se debe sumar al clock
-                simulation.addEvent(new Event(simulation.getClock(),
-                        query, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                simulation.addEvent(new Event(simulation.getClock() + (getBlockNumber(query.getQueryType())) * 0.1,
+                        query, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE)); //REVISAR
+                query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToServer(simulation.getClock());
+                query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromModule(simulation.getClock() + (getBlockNumber(query.getQueryType()) * 0.1));
                 //TODO revisar tiempo de consulta porque aparece que es en tiempo de reloj.
             }
         }
