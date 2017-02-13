@@ -177,6 +177,7 @@ public class GUI extends JFrame{
 
         btnStart = new JButton(START);
         btnStart.setSize(100, 100);
+        btnStart.setFont(new Font("Normal", Font.BOLD, 18));
         panelStart = new JPanel();
         panelStart.add(btnStart);
 
@@ -226,8 +227,9 @@ public class GUI extends JFrame{
         txtArea.setEditable(false);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
-        JButton next = new JButton("Next");
-        next.addActionListener(new ActionListener() {
+        JButton btnNext = new JButton("Next");
+        btnNext.setFont(new Font("Normal", Font.BOLD, 18));
+        btnNext.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 displayFinalSimulationResult(0);
@@ -235,7 +237,7 @@ public class GUI extends JFrame{
         });
         JScrollPane jsp = new JScrollPane(txtArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         panel.add(jsp);
-        panel.add(next);
+        panel.add(btnNext);
         changeLayout(panel);
     }
 
