@@ -1,3 +1,5 @@
+import java.util.Iterator;
+import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ProcessManagerModule extends Module{
@@ -22,6 +24,7 @@ public class ProcessManagerModule extends Module{
                         query, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
             query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock()); //TODO revisar esto
             query.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromModule(simulation.getClock() + normalValue);
+            totalIdleTime+= simulation.getClock()-idleTime;
         }
 
     }
@@ -39,14 +42,14 @@ public class ProcessManagerModule extends Module{
             query.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromModule(simulation.getClock() + normalValue);
         }else {
             busy = false;
-            //TODO ya lo procesé?
+            idleTime=simulation.getClock();
         }
         nextModule.generateServiceEvent(query);
     }
 
     @Override
     public void processKill(Query query) {
-
+        query.setTotalTime(simulation.getClock());
     }
 
     public boolean isBusy() {
@@ -59,6 +62,7 @@ public class ProcessManagerModule extends Module{
         query.setCurrentModule(ModuleType.PROCESS_MANAGER_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.PROCESS_MANAGER_MODULE));
         query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToModule(simulation.getClock());
+        servedQueries++;
     }
 
 
@@ -68,4 +72,146 @@ public class ProcessManagerModule extends Module{
         return 0;
     }
 
+
+    @Override
+    public int getNumberOfFreeServers() {
+        return isBusy()? 0 : 1;
+    }
+
+    @Override
+    public int getQueueSize() {
+        return queue.size();
+    }
+
+    @Override
+    public int getServedQueries() {
+        return servedQueries;
+    }
+
+
+    @Override
+    public double getIdleTime() {
+        return totalIdleTime;
+    }
+
+
+    @Override
+    public double getDdlAvgTime(List <Query> queryList) {
+        double totalTime=0;
+        double arrivalTime=0;
+        double exitTime=0;
+        Iterator<Query> iterator = queryList.iterator();
+
+        while (iterator.hasNext()){
+            Query query = iterator.next();
+            if (query.getQueryType()==QueryType.DDL){
+                arrivalTime= query.getQueryStatistics().getProcessManagerStatistics().getTimeOfEntryToModule();
+                exitTime= query.getQueryStatistics().getProcessManagerStatistics().getTimeOfExitFromModule();
+                totalTime+=exitTime-arrivalTime;
+            }
+        }
+        return totalTime;
+    }
+
+    @Override
+    public double getUpdateAvgTime(List <Query> queryList) {
+        double totalTime=0;
+        double arrivalTime=0;
+        double exitTime=0;
+        Iterator<Query> iterator = queryList.iterator();
+
+        while (iterator.hasNext()){
+            Query query = iterator.next();
+            if (query.getQueryType()==QueryType.UPDATE){
+                arrivalTime= query.getQueryStatistics().getProcessManagerStatistics().getTimeOfEntryToModule();
+                exitTime= query.getQueryStatistics().getProcessManagerStatistics().getTimeOfExitFromModule();
+                totalTime+=exitTime-arrivalTime;
+            }
+
+        }
+        return totalTime;
+    }
+
+    @Override
+    public double getJoinAvgTime(List <Query> queryList) {
+        double totalTime=0;
+        double arrivalTime=0;
+        double exitTime=0;
+        Iterator<Query> iterator = queryList.iterator();
+
+        while (iterator.hasNext()){
+            Query query = iterator.next();
+            if (query.getQueryType()==QueryType.JOIN){
+                arrivalTime= query.getQueryStatistics().getProcessManagerStatistics().getTimeOfEntryToModule();
+                exitTime= query.getQueryStatistics().getProcessManagerStatistics().getTimeOfExitFromModule();
+                totalTime+=exitTime-arrivalTime;
+            }
+        }
+        return totalTime;
+    }
+
+    @Override
+    public double getSelectAvgTime(List <Query> queryList) {
+        double totalTime=0;
+        double arrivalTime=0;
+        double exitTime=0;
+        Iterator<Query> iterator = queryList.iterator();
+
+        while (iterator.hasNext()){
+            Query query = iterator.next();
+            if (query.getQueryType()==QueryType.SELECT){
+                arrivalTime= query.getQueryStatistics().getProcessManagerStatistics().getTimeOfEntryToModule();
+                exitTime= query.getQueryStatistics().getProcessManagerStatistics().getTimeOfExitFromModule();
+                totalTime+=exitTime-arrivalTime;
+            }
+        }
+        return totalTime;
+    }
+
+
+
+    @Override
+    public void setAverageTimeW(double avergeTimeWQ, double avergeTimeWS) {
+        averageTimeW = avergeTimeWQ + avergeTimeWS;
+    }
+
+    @Override
+    public void setAverageTimeInQueue(List<Query> queryList) {
+        Iterator<Query> iterator = queryList.iterator();
+        double totalTime = 0;
+        while(iterator.hasNext()){
+            Query temp = iterator.next();
+            totalTime+= temp.getQueryStatistics().getProcessManagerStatistics().getTimeOfEntryToServer()
+                    - temp.getQueryStatistics().getProcessManagerStatistics().getTimeOfEntryToQueue();
+        }
+        averageTimeInQueue = totalTime / queryList.size();
+    }
+
+    @Override
+    public void setAverageTimeInService(List<Query> queryList) {
+        Iterator<Query> iterator = queryList.iterator();
+        double totalTime = 0;
+        while(iterator.hasNext()){
+            Query temp = iterator.next();
+            totalTime+= temp.getQueryStatistics().getProcessManagerStatistics().getTimeOfExitFromModule()
+                    - temp.getQueryStatistics().getProcessManagerStatistics().getTimeOfEntryToServer();
+        }
+        averageTimeInService = totalTime / queryList.size();
+    }
+
+
+    @Override
+    public void setAverageQueriesL(double avergeQueriesLQ, double avergeQueriesLS) {
+        averageQueriesL = avergeQueriesLQ + avergeQueriesLS;
+    }
+
+    @Override
+    public void setAverageQueriesInQueue(List<Query> queryList) {
+        averageQueriesInQueue = simulation.getClientConnectionModule().getLAMBDA() * averageTimeInQueue;
+    }
+
+    @Override
+    public void setAverageQueriesInService(List<Query> queryList) {
+        averageQueriesInService = simulation.getClientConnectionModule().getLAMBDA() * averageTimeInService;
+    }
 }

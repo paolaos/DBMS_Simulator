@@ -1,3 +1,4 @@
+import java.util.List;
 import java.util.Queue;
 
 public abstract class Module {
@@ -14,8 +15,32 @@ public abstract class Module {
     protected Simulation simulation;
     protected ModuleStatistics moduleStatistics;
     protected boolean busy;
-    
-    //TODO algoritmo general y métodos abstractos (override)
+    protected int servedQueries;
+    protected  double idleTime;
+    protected  double totalIdleTime;
+
+    // Statistics
+    protected  double averageQueriesL;
+    protected  double averageQueriesInQueue;
+    protected  double averageQueriesInService;
+    protected  double averageTimeW;
+    protected  double averageTimeInQueue;
+    protected  double averageTimeInService;
+
+    public abstract void setAverageQueriesL(double avergeQueriesLQ, double avergeQueriesLS ) ;
+
+    public abstract void setAverageQueriesInQueue(List<Query> queryList) ;
+
+    public abstract void setAverageQueriesInService(List<Query> queryList);
+
+    public abstract void setAverageTimeW(double avergeTimeWQ , double avergeTimeWS);
+
+    public abstract void setAverageTimeInQueue(List<Query> queryList);
+
+    public abstract void setAverageTimeInService(List<Query> queryList);
+
+
+//TODO algoritmo general y métodos abstractos (override)
 
     public abstract void processArrival(Query query);
 
@@ -28,10 +53,6 @@ public abstract class Module {
     public abstract boolean isBusy();
 
     public abstract double getNextExitTime();
-
-    public int getQueueSize(){
-        return queue.size();
-    }
 
     public double getAccumulatedTimeInQueue() {
         return accumulatedTimeInQueue;
@@ -49,8 +70,23 @@ public abstract class Module {
         return avgTimeInQueue;
     }
 
-    public void fillStatistics(Statistics statistics){
-
+    public void fillStatistics(Statistics statistics) {
     }
+
+    public abstract int getNumberOfFreeServers();
+
+    public abstract int getQueueSize();
+
+    public abstract int getServedQueries();
+
+    public abstract double getIdleTime();
+
+    public abstract  double getDdlAvgTime(List <Query> queryList);
+
+    public abstract  double getUpdateAvgTime(List <Query> queryList);
+
+    public abstract  double getJoinAvgTime(List <Query> queryList);
+
+    public abstract  double getSelectAvgTime(List <Query> queryList);
 
 }

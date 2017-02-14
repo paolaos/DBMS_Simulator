@@ -10,6 +10,7 @@ public class Query implements Comparable<Query>{
     private int id;
     private int numberOfBlocks;
     private boolean solved;
+
     public Query(int id, double timeOfEntry , QueryType type, ModuleType currentModule){
         this.id = id;
         this.timeOfEntry = timeOfEntry;
