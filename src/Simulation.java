@@ -136,6 +136,7 @@ public class Simulation {
         while(getClock() < timePerTrial){
             Event e = eventList.poll();
             clock = e.getTime();
+            System.out.println(clientConnectionModule.getCurrentConnections());
             if(e.getQuery().getId() == -1)
                 System.out.println(e.getEventType() + " " + e.getDestinationModule());
             switch (e.getEventType()){
@@ -177,7 +178,7 @@ public class Simulation {
 
     public static void main(String[]args){
         java.lang.System.out.println("Probando Simulacion");
-        Simulation s = new Simulation(false, 0, 15, 7, 2, 1, 150, null, 15000);
+        Simulation s = new Simulation(false, 0, 15, 7, 2, 1, 150, null, 30);
         s.startSimulation();
         //System.out.println(s.getClientConnectionModule().getFinishedQueries().size());
     }
