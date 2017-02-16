@@ -59,12 +59,12 @@ public class ClientConnectionModule extends Module{
     private void processArrivalFirstModule(Query query){
         if(isBusy())
             rejectedConnections++;
+
         else {
             currentConnections++;
             simulation.addEvent(new Event(simulation.getClock() + getNextExitTime(), query,
                     EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
-            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(this.simulation.getClock());
-            allQueries.add(query);
+            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(simulation.getClock());
         }
         generateServiceEvent(null);
     }
@@ -81,9 +81,11 @@ public class ClientConnectionModule extends Module{
     public void generateFirstArrival(){
         Query query = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
                 ModuleType.CLIENT_CONNECTION_MODULE);
+
         simulation.addEvent(new Event(simulation.getClock() , query,
                 EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
 
+        //allQueries.add(query);
     }
 
     @Override
@@ -91,6 +93,7 @@ public class ClientConnectionModule extends Module{
         if(query == null){
             query = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
                     ModuleType.CLIENT_CONNECTION_MODULE);
+            allQueries.add(query);
         }
         double nextArrivalTime = DistributionGenerator.getNextArrivalTime(LAMBDA);
         simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime, query,
@@ -175,19 +178,15 @@ public class ClientConnectionModule extends Module{
     @Override
     public double getDdlAvgTime(List <Query> queryList) {
         double totalTime=0;
-        double arrivalTime=0;
-        double exitTime=0;
         Iterator<Query> iterator = queryList.iterator();
 
         while (iterator.hasNext()){
             Query query = iterator.next();
             if (query.getQueryType()==QueryType.DDL){
-                arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
-                exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+                double arrivalTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
+                double exitTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
                 totalTime+=exitTime-arrivalTime;
-
             }
-
         }
         return totalTime;
     }

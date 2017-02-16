@@ -54,7 +54,7 @@ public class TransactionAndDataAccessModule extends Module {
                 // si la consulta no es DDL => atienda
                 currentProcessedQueries++;
                 // Agregar el tiempo Respectivo que se debe sumar al clock
-                simulation.addEvent(new Event(simulation.getClock() + (getBlockNumber(query.getQueryType())) * 0.1,
+                simulation.addEvent(new Event((simulation.getClock() + (getBlockNumber(query.getQueryType())) * 0.1),
                         query, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE)); //REVISAR
                 query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToServer(simulation.getClock());
                 query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromModule(simulation.getClock() + (getBlockNumber(query.getQueryType()) * 0.1));
@@ -77,32 +77,43 @@ public class TransactionAndDataAccessModule extends Module {
         if (query.getQueryType() == QueryType.DDL) {
             blocked = false;
         }
-
+        currentProcessedQueries--;
         if (queue.size() > 0) {
             if (!blocked) {
                 //agregar tiempo que suma al clock
                 //que se pueda, que hayan y que el siguiente no sea DDL
                 while (currentProcessedQueries < pQueries && queue.size() > 0 && queue.peek().getQueryType() != QueryType.DDL) {
-                    simulation.addEvent(new Event(simulation.getClock(),
-                            queue.poll(), EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                    simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,queue.poll(), EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+
                     currentProcessedQueries++;
                 }
 
-                if (queue.peek().getQueryType() == QueryType.DDL) {
+                if (queue.size() > 0 && queue.peek().getQueryType() == QueryType.DDL) {
                     blocked = true;
+                    pendingQuery=queue.poll();
+                    if (currentProcessedQueries == 0 ){
+                        simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                        currentProcessedQueries++;
+                    }
+
                 }
+            }else{
+                simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,
+                        pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                currentProcessedQueries++;
             }
 
         } else {
-            currentProcessedQueries--;
+
             if (currentProcessedQueries == 0 ){
                 if(blocked) {
-                //Ejecuta consulta pendinte
-                    simulation.addEvent(new Event(simulation.getClock(),
-                        pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
-                pendingQuery = null;
-            }else {
-                idleTime=simulation.getClock();
+                    //Ejecuta consulta pendinte
+                    simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,
+                            pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                    currentProcessedQueries++;
+                    //pendingQuery = null;
+                }else {
+                    idleTime=simulation.getClock();
                 }
             }
         }
@@ -171,7 +182,7 @@ public class TransactionAndDataAccessModule extends Module {
 
     @Override
     public int getNumberOfFreeServers() {
-       return pQueries - currentProcessedQueries;
+        return pQueries - currentProcessedQueries;
     }
 
     @Override
@@ -261,4 +272,38 @@ public class TransactionAndDataAccessModule extends Module {
         }
         return totalTime;
     }
+
+    @Override
+    public void setAverageQueriesL(double avergeQueriesLQ, double avergeQueriesLS) {
+
+    }
+
+    @Override
+    public void setAverageQueriesInQueue(List<Query> queryList) {
+
+    }
+
+    @Override
+    public void setAverageQueriesInService(List<Query> queryList) {
+
+    }
+
+    @Override
+    public void setAverageTimeW(double avergeTimeWQ, double avergeTimeWS) {
+
+    }
+
+    @Override
+    public void setAverageTimeInQueue(List<Query> queryList) {
+
+    }
+
+    @Override
+    public void setAverageTimeInService(List<Query> queryList) {
+
+    }
+
+
+
+
 }
