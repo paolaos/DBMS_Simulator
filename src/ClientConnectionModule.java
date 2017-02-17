@@ -133,7 +133,7 @@ public class ClientConnectionModule extends Module{
         if (currentConnections==0)
             idleTime=simulation.getClock();
 
-        query.setTotalTime(simulation.getClock());
+             query.setTotalTime(simulation.getClock());
     }
 
 

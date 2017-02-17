@@ -41,6 +41,7 @@ public class ExecutionModule extends Module{
         if(queue.size() > 0){
             double exitTime = simulation.getClock() + getTotalTime(query);
             simulation.addEvent(new Event(exitTime, queue.poll(), EventType.EXIT, ModuleType.EXECUTION_MODULE)); //TODO hora estaba mala, faltaba sumar el getTotalTime(query)
+
             query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToServer(simulation.getClock());
             query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromModule(exitTime);
         }else {
