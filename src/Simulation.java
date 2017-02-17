@@ -136,9 +136,9 @@ public class Simulation {
         while(getClock() < timePerTrial){
             Event e = eventList.poll();
             clock = e.getTime();
-            System.out.println(clientConnectionModule.getCurrentConnections());
             if(e.getQuery().getId() == -1)
                 System.out.println(e.getEventType() + " " + e.getDestinationModule());
+
             switch (e.getEventType()){
                 case ARRIVAL:
                     this.manageArrivalEvent(e);
@@ -149,7 +149,7 @@ public class Simulation {
                     break;
 
                 case KILL:
-                    manageKillEvent(e);
+                    // manageKillEvent(e);
                     break;
             }
         }
@@ -178,9 +178,17 @@ public class Simulation {
 
     public static void main(String[]args){
         java.lang.System.out.println("Probando Simulacion");
-        Simulation s = new Simulation(false, 0, 15, 7, 2, 1, 150, null, 30);
+        Simulation s = new Simulation(false, 0, 15, 3, 2, 1, 150, null, 15000);
         s.startSimulation();
-        //System.out.println(s.getClientConnectionModule().getFinishedQueries().size());
+        System.out.println(s.getClientConnectionModule().getRejectedConnections());
+        System.out.println(s.clientConnectionModule.getAllQueries().size());
+        System.out.println("conexiones actuales "+ s.clientConnectionModule.getCurrentConnections());
+        System.out.println("tamaño cola modulo 2 "+s.processManagerModule.getQueueSize() );
+        System.out.println("tamaño cola modulo 3 "+s.queryProcessingModule.getQueueSize());
+        System.out.println("tamaño cola modulo 4 "+s.transactionAndDataAccessModule.getQueueSize());
+        System.out.println("tamaño cola modulo 5 "+s.executionModule.getQueueSize());
+        System.out.println("encoladas " +s.clientConnectionModule.getAllQueries().size());
+
     }
 
 }

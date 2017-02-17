@@ -35,8 +35,10 @@ public class QueryProcessingModule extends Module {
 
             currentProcesses++;
             double exitTime = timeInQueryProcessingModule(query.getQueryType());
+
             simulation.addEvent(new Event(simulation.getClock() + exitTime,
                     query, EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
+
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToServer(simulation.getClock());
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfExitFromModule(simulation.getClock() + exitTime);
         }
@@ -84,22 +86,19 @@ public class QueryProcessingModule extends Module {
 
     private double timeInQueryProcessingModule(QueryType query) {
         Random rnd = new Random();
-        double totalTime;
-        double lexicalValidationTime;
-        double syntacticalValidationTime;
-        double semanticValidationTime;
-        double permitVerificationTime;
-        double queryOptimizationTime;
-        double randomNumber = rnd.nextFloat();
+        double totalTime = 0;
+        double lexicalValidationTime = 0;
+        double queryOptimizationTime = 0;
+        double randomNumber = rnd.nextDouble();
 
         if (randomNumber < 0.7) {
             lexicalValidationTime = 0.1;
         } else {
             lexicalValidationTime = 0.4;
         }
-        syntacticalValidationTime = DistributionGenerator.getNextRandomValueByUniform(0, 0.8);
-        semanticValidationTime = DistributionGenerator.getNextRandomValueByNormal(1, 0.5);
-        permitVerificationTime = DistributionGenerator.getNextRandomValueByExponential(1 / 0.7);
+        double syntacticalValidationTime = DistributionGenerator.getNextRandomValueByUniform(0, 0.8);
+        double semanticValidationTime = DistributionGenerator.getNextRandomValueByNormal(1, 0.5);
+        double permitVerificationTime = DistributionGenerator.getNextRandomValueByExponential(1 / 0.7);
 
         if (query.equals(QueryType.SELECT) || query.equals(QueryType.JOIN)) {
             queryOptimizationTime = 0.1;
