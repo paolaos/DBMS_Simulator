@@ -12,6 +12,7 @@ public class ClientConnectionModule extends Module{
     private int currentConnections;
     private int currentId;
 
+
     public ClientConnectionModule(Simulation simulation, Module nextModule, int kConnections){
         this.simulation = simulation;
         this.nextModule = nextModule;
@@ -19,12 +20,13 @@ public class ClientConnectionModule extends Module{
         allQueries = new LinkedList<>();
         queue = new LinkedBlockingQueue<>();
         timeQueue = new LinkedBlockingQueue<>();
-        currentId = -1;
+        currentId = 1;
         rejectedConnections = 0;
         currentConnections = 0;
         hasBeenInQueue = 0;
         idleTime=0;
         totalIdleTime=0;
+
     }
 
     public double getLAMBDA() {
@@ -39,11 +41,10 @@ public class ClientConnectionModule extends Module{
         return currentConnections;
     }
 
-    public void setRejectedConnections(int rejectedConnections) {
-        this.rejectedConnections = rejectedConnections;
+
+    public void setCurrentConnections(int currentConnections) {
+        this.currentConnections = currentConnections;
     }
-
-
 
     @Override
     public void processArrival(Query query) {
@@ -95,8 +96,11 @@ public class ClientConnectionModule extends Module{
         double nextArrivalTime = DistributionGenerator.getNextArrivalTime(LAMBDA);
         simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime, query,
                 EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
-        simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), query,
-                EventType.KILL, null));
+        Event killEvent =new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), query,
+                EventType.KILL, null);
+        simulation.addEvent(killEvent);
+                   //agregar kill con el id del query
+                simulation.getKillEventsTable().put(query.getId(),killEvent);
     }
 
     @Override
@@ -111,7 +115,12 @@ public class ClientConnectionModule extends Module{
 
     private void processDepartureToNextModule(Query  query){
         query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
-        nextModule.generateServiceEvent(query);
+        if (!query.isKill()) {
+            nextModule.generateServiceEvent(query);
+           }else {
+            currentConnections--;
+        }
+
         servedQueries++;
 
     }
@@ -124,16 +133,22 @@ public class ClientConnectionModule extends Module{
 
     @Override
     public void processKill(Query query) {
-        query.setTotalTime(simulation.getClock());
-    }
+        //para cuando vaya al siguiente modulo no enviarlo.
+        query.setKill(true);
+        }
 
     private void processDepartureOfSystem(Query query){
         currentConnections--;
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         if (currentConnections==0)
             idleTime=simulation.getClock();
+            //TODO restar tiempo de entrada al sistema
+            query.setTotalTime(simulation.getClock());
 
-             query.setTotalTime(simulation.getClock());
+            //se elimina el Kill
+            Event eventToRemove = simulation.getKillEventsTable().get(query.getId());
+            simulation.getEventList().remove(eventToRemove);
+
     }
 
 

@@ -20,7 +20,7 @@ public class Simulation {
     private boolean slowMode;
     private int qDelayTime;
     private Statistics statistics;
-    private Hashtable<Integer, QueryStatistics> statisticsTable;
+    private Hashtable<Integer, Event> killEventsTable;
 
 
     public Simulation(boolean slowMode, int qDelayTime, int kConnections, int nAvailableProcesses,
@@ -44,13 +44,20 @@ public class Simulation {
         this.qDelayTime = qDelayTime;
         this.statistics = statistics;
         clientConnectionModule.generateFirstArrival();
+        killEventsTable= new Hashtable<Integer,Event>();
+    }
+
+    public Hashtable<Integer, Event> getKillEventsTable() {
+        return killEventsTable;
     }
 
     public void addEvent(Event event){
         eventList.add(event);
     }
 
-
+    public PriorityQueue<Event> getEventList() {
+        return eventList;
+    }
 
     private void manageArrivalEvent(Event event){
         switch (event.getDestinationModule()){
@@ -67,10 +74,7 @@ public class Simulation {
                 break;
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
-                int i=0;
-                if(event.getQuery().getQueryType()==QueryType.DDL){
-                    i=2;
-                }
+
 
                 transactionAndDataAccessModule.processArrival(event.getQuery());
 
@@ -100,10 +104,7 @@ public class Simulation {
                 break;
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
-                int i=0;
-                if(event.getQuery().getQueryType()==QueryType.DDL){
-                    i=2;
-                }
+
                     transactionAndDataAccessModule.processDeparture(event.getQuery());
                 break;
 
@@ -160,7 +161,7 @@ public class Simulation {
                     break;
 
                 case KILL:
-                   // manageKillEvent(e);
+                  manageKillEvent(e);
                     break;
             }
         }
@@ -188,17 +189,17 @@ public class Simulation {
     }
 
     public static void main(String[]args){
-        java.lang.System.out.println("Probando Simulacion");
-        Simulation s = new Simulation(false, 0, 15, 3, 2, 1, 150, null, 15000);
+        java.lang.System.out.println("Simulación DBMS");
+        Simulation s = new Simulation(false, 0, 15, 3, 2, 1, 15, null, 15000);
         s.startSimulation();
-        System.out.println(s.getClientConnectionModule().getRejectedConnections());
-        System.out.println(s.clientConnectionModule.getAllQueries().size());
-        System.out.println("conexiones actuales "+ s.clientConnectionModule.getCurrentConnections());
-        System.out.println("tamaño cola modulo 2 "+s.processManagerModule.getQueueSize() );
-        System.out.println("tamaño cola modulo 3 "+s.queryProcessingModule.getQueueSize());
-        System.out.println("tamaño cola modulo 4 "+s.transactionAndDataAccessModule.getQueueSize());
-        System.out.println("tamaño cola modulo 5 "+s.executionModule.getQueueSize());
-        System.out.println("encoladas " +s.clientConnectionModule.getAllQueries().size());
+
+        System.out.println("Conexiones actuales "+ s.clientConnectionModule.getCurrentConnections());
+        System.out.println("Tamaño Cola módulo 2 "+s.processManagerModule.getQueueSize() );
+        System.out.println("Tamaño Cola módulo 3 "+s.queryProcessingModule.getQueueSize());
+        System.out.println("Tamaño Cola módulo 4 "+s.transactionAndDataAccessModule.getQueueSize());
+        System.out.println("Tamaño Cola módulo 5 "+s.executionModule.getQueueSize());
+        System.out.println("Consultas Éxitosas " +s.clientConnectionModule.getAllQueries().size());
+        System.out.println("Número de Conexiones Rechazadas "+s.getClientConnectionModule().getRejectedConnections());
 
     }
 
