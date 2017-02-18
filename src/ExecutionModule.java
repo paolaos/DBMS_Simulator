@@ -254,12 +254,12 @@ public class ExecutionModule extends Module{
 
     @Override
     public void setAverageQueriesInQueue(List<Query> queryList) {
-        averageQueriesInQueue = simulation.getClientConnectionModule().getLAMBDA() * averageTimeInQueue;
+        averageQueriesInQueue = ClientConnectionModule.LAMBDA * averageTimeInQueue;
     }
 
     @Override
     public void setAverageQueriesInService(List<Query> queryList) {
-        averageQueriesInService = simulation.getClientConnectionModule().getLAMBDA() * averageTimeInService;
+        averageQueriesInService = ClientConnectionModule.LAMBDA * averageTimeInService;
     }
 
 }

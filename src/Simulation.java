@@ -180,10 +180,6 @@ public class Simulation {
         return clock;
     }
 
-    public ClientConnectionModule getClientConnectionModule(){
-        return clientConnectionModule;
-    }
-
     public double getTimeout() {
         return timeout;
     }
@@ -199,7 +195,7 @@ public class Simulation {
         System.out.println("Tamaño Cola módulo 4 "+s.transactionAndDataAccessModule.getQueueSize());
         System.out.println("Tamaño Cola módulo 5 "+s.executionModule.getQueueSize());
         System.out.println("Consultas Éxitosas " +s.clientConnectionModule.getAllQueries().size());
-        System.out.println("Número de Conexiones Rechazadas "+s.getClientConnectionModule().getRejectedConnections());
+        System.out.println("Número de Conexiones Rechazadas "+s.clientConnectionModule.getRejectedConnections());
 
     }
 
