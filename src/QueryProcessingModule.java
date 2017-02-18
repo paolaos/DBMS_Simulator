@@ -54,6 +54,7 @@ public class QueryProcessingModule extends Module {
     //Se saca de la cola el siguiente y el query que llega de parámetro se envia al siguiente modulo
     @Override
     public void processDeparture(Query query) {
+        
         if(queue.size()>0){
             double exitTime = timeInQueryProcessingModule(queue.peek().getQueryType());
             Query query1 =queue.poll();
