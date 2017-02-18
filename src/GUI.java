@@ -232,7 +232,7 @@ public class GUI extends JFrame{
         btnNext.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayFinalSimulationResult(0);//TODO parametrizar el numero de simulacion
+                displayFinalSimulationResult(0);
             }
         });
         JScrollPane jsp = new JScrollPane(txtArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
