@@ -79,6 +79,7 @@ public class QueryProcessingModule extends Module {
 
     @Override
     public void processKill(Query query) {
+        
         //Si está en cola, sacarlo
         if(query.getIsInQueue()){
             queue.remove(query);
