@@ -27,6 +27,7 @@ public class QueryProcessingModule extends Module {
     @Override
     public void processArrival(Query query) {
         if (isBusy()) {
+            query.setIsInQueue(true);
             queue.offer(query);
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToQueue(simulation.getClock());
         } else {
@@ -35,10 +36,8 @@ public class QueryProcessingModule extends Module {
 
             currentProcesses++;
             double exitTime = timeInQueryProcessingModule(query.getQueryType());
-
             simulation.addEvent(new Event(simulation.getClock() + exitTime,
                     query, EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
-
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToServer(simulation.getClock());
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfExitFromModule(simulation.getClock() + exitTime);
         }
@@ -57,8 +56,10 @@ public class QueryProcessingModule extends Module {
     public void processDeparture(Query query) {
         if(queue.size()>0){
             double exitTime = timeInQueryProcessingModule(queue.peek().getQueryType());
+            Query query1 =queue.poll();
+            query1.setIsInQueue(false);
             simulation.addEvent(new Event(simulation.getClock()+ exitTime,
-                                queue.poll(), EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
+                                query1, EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToServer(simulation.getClock());
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfExitFromModule(simulation.getClock() + exitTime);
         }else {
@@ -66,12 +67,34 @@ public class QueryProcessingModule extends Module {
             if(currentProcesses==0)
                 idleTime=simulation.getClock();
         }
-        nextModule.generateServiceEvent(query);
+
+        if (!query.isKill()) {
+            nextModule.generateServiceEvent(query);
+        }else {
+            int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
+            simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
+        }
+
     }
 
     @Override
     public void processKill(Query query) {
-        query.setTotalTime(simulation.getClock());
+        //Si está en cola, sacarlo
+        if(query.getIsInQueue()){
+            queue.remove(query);
+            //momento en que sale de la cola
+            query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfExitFromQueue(simulation.getClock());
+            int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
+            simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
+
+        }else {
+            //matar proceso en cambio de modulo
+            query.setKill(true);
+        }
+            //quitar del mapeo
+        Event killEventToRemove = simulation.getKillEventsTable().get(query.getId());
+        simulation.getKillEventsTable().remove(killEventToRemove);
+
     }
 
     @Override
@@ -86,19 +109,22 @@ public class QueryProcessingModule extends Module {
 
     private double timeInQueryProcessingModule(QueryType query) {
         Random rnd = new Random();
-        double totalTime = 0;
-        double lexicalValidationTime = 0;
-        double queryOptimizationTime = 0;
-        double randomNumber = rnd.nextDouble();
+        double totalTime;
+        double lexicalValidationTime;
+        double syntacticalValidationTime;
+        double semanticValidationTime;
+        double permitVerificationTime;
+        double queryOptimizationTime;
+        double randomNumber = rnd.nextFloat();
 
         if (randomNumber < 0.7) {
             lexicalValidationTime = 0.1;
         } else {
             lexicalValidationTime = 0.4;
         }
-        double syntacticalValidationTime = DistributionGenerator.getNextRandomValueByUniform(0, 0.8);
-        double semanticValidationTime = DistributionGenerator.getNextRandomValueByNormal(1, 0.5);
-        double permitVerificationTime = DistributionGenerator.getNextRandomValueByExponential(1 / 0.7);
+        syntacticalValidationTime = DistributionGenerator.getNextRandomValueByUniform(0, 0.8);
+        semanticValidationTime = DistributionGenerator.getNextRandomValueByNormal(1, 0.5);
+        permitVerificationTime = DistributionGenerator.getNextRandomValueByExponential(1 / 0.7);
 
         if (query.equals(QueryType.SELECT) || query.equals(QueryType.JOIN)) {
             queryOptimizationTime = 0.1;
@@ -241,11 +267,11 @@ public class QueryProcessingModule extends Module {
 
     @Override
     public void setAverageQueriesInQueue(List<Query> queryList) {
-        averageQueriesInQueue = ClientConnectionModule.LAMBDA * averageTimeInQueue;
+        averageQueriesInQueue = simulation.getClientConnectionModule().getLAMBDA() * averageTimeInQueue;
     }
 
     @Override
     public void setAverageQueriesInService(List<Query> queryList) {
-        averageQueriesInService = ClientConnectionModule.LAMBDA * averageTimeInService;
+        averageQueriesInService = simulation.getClientConnectionModule().getLAMBDA() * averageTimeInService;
     }
 }

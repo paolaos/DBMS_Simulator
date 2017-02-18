@@ -2,7 +2,6 @@
 public class Query implements Comparable<Query>{
     private double timeOfEntry;
     private double totalTime;
-    private boolean isInQueue;
     private QueryType type;
     private ModuleType currentModule;
     private boolean timeOut;
@@ -10,6 +9,8 @@ public class Query implements Comparable<Query>{
     private int id;
     private int numberOfBlocks;
     private boolean solved;
+    private  boolean isInQueue;
+    private boolean kill;
 
     public Query(int id, double timeOfEntry , QueryType type, ModuleType currentModule){
         this.id = id;
@@ -22,6 +23,7 @@ public class Query implements Comparable<Query>{
         numberOfBlocks=0;
         solved = false;
         queryStatistics = new QueryStatistics();
+        kill=false;
     }
 
 
@@ -30,6 +32,20 @@ public class Query implements Comparable<Query>{
         return solved;
     }
 
+    public   boolean getIsInQueue(){return isInQueue; }
+
+    public void setIsInQueue(boolean isInQueue){
+        isInQueue= isInQueue;
+    }
+
+
+    public boolean isKill() {
+        return kill;
+    }
+
+    public void setKill(boolean kill) {
+        this.kill = kill;
+    }
 
     public void setSolved(boolean solved) {
         this.solved = solved;
@@ -60,13 +76,9 @@ public class Query implements Comparable<Query>{
         this.currentModule = currentModule;
     }
 
-    public boolean isInQueue() {
-        return isInQueue;
-    }
 
-    public void setInQueue(boolean inQueue) {
-        isInQueue = inQueue;
-    }
+
+
 
     public double getTotalTime() {
         return totalTime;

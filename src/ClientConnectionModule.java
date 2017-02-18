@@ -6,11 +6,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientConnectionModule extends Module{
     private List<Query> allQueries;
-    public static final double LAMBDA = 0.58333333;
+    private final double LAMBDA = 0.58333333;
     private int kConnections;
     private int rejectedConnections;
     private int currentConnections;
     private int currentId;
+
 
     public ClientConnectionModule(Simulation simulation, Module nextModule, int kConnections){
         this.simulation = simulation;
@@ -19,12 +20,17 @@ public class ClientConnectionModule extends Module{
         allQueries = new LinkedList<>();
         queue = new LinkedBlockingQueue<>();
         timeQueue = new LinkedBlockingQueue<>();
-        currentId = -1;
+        currentId = 1;
         rejectedConnections = 0;
         currentConnections = 0;
         hasBeenInQueue = 0;
         idleTime=0;
         totalIdleTime=0;
+
+    }
+
+    public double getLAMBDA() {
+        return LAMBDA;
     }
 
     public int getRejectedConnections() {
@@ -35,11 +41,10 @@ public class ClientConnectionModule extends Module{
         return currentConnections;
     }
 
-    public void setRejectedConnections(int rejectedConnections) {
-        this.rejectedConnections = rejectedConnections;
+
+    public void setCurrentConnections(int currentConnections) {
+        this.currentConnections = currentConnections;
     }
-
-
 
     @Override
     public void processArrival(Query query) {
@@ -55,12 +60,12 @@ public class ClientConnectionModule extends Module{
     private void processArrivalFirstModule(Query query){
         if(isBusy())
             rejectedConnections++;
-
         else {
             currentConnections++;
             simulation.addEvent(new Event(simulation.getClock() + getNextExitTime(), query,
                     EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
-            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(simulation.getClock());
+            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(this.simulation.getClock());
+            allQueries.add(query);
         }
         generateServiceEvent(null);
     }
@@ -77,11 +82,9 @@ public class ClientConnectionModule extends Module{
     public void generateFirstArrival(){
         Query query = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
                 ModuleType.CLIENT_CONNECTION_MODULE);
-
         simulation.addEvent(new Event(simulation.getClock() , query,
                 EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
 
-        //allQueries.add(query);
     }
 
     @Override
@@ -89,13 +92,15 @@ public class ClientConnectionModule extends Module{
         if(query == null){
             query = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
                     ModuleType.CLIENT_CONNECTION_MODULE);
-            allQueries.add(query);
         }
         double nextArrivalTime = DistributionGenerator.getNextArrivalTime(LAMBDA);
         simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime, query,
                 EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
-        simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), query,
-                EventType.KILL, null));
+        Event killEvent =new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), query,
+                EventType.KILL, null);
+        simulation.addEvent(killEvent);
+                   //agregar kill con el id del query
+                simulation.getKillEventsTable().put(query.getId(),killEvent);
     }
 
     @Override
@@ -110,7 +115,12 @@ public class ClientConnectionModule extends Module{
 
     private void processDepartureToNextModule(Query  query){
         query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
-        nextModule.generateServiceEvent(query);
+        if (!query.isKill()) {
+            nextModule.generateServiceEvent(query);
+           }else {
+            currentConnections--;
+        }
+
         servedQueries++;
 
     }
@@ -123,16 +133,22 @@ public class ClientConnectionModule extends Module{
 
     @Override
     public void processKill(Query query) {
-        query.setTotalTime(simulation.getClock());
-    }
+        //para cuando vaya al siguiente modulo no enviarlo.
+        query.setKill(true);
+        }
 
     private void processDepartureOfSystem(Query query){
         currentConnections--;
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         if (currentConnections==0)
             idleTime=simulation.getClock();
+            //TODO restar tiempo de entrada al sistema
+            query.setTotalTime(simulation.getClock());
 
-        query.setTotalTime(simulation.getClock());
+            //se elimina el Kill
+            Event eventToRemove = simulation.getKillEventsTable().get(query.getId());
+            simulation.getEventList().remove(eventToRemove);
+
     }
 
 
@@ -174,15 +190,19 @@ public class ClientConnectionModule extends Module{
     @Override
     public double getDdlAvgTime(List <Query> queryList) {
         double totalTime=0;
+        double arrivalTime=0;
+        double exitTime=0;
         Iterator<Query> iterator = queryList.iterator();
 
         while (iterator.hasNext()){
             Query query = iterator.next();
             if (query.getQueryType()==QueryType.DDL){
-                double arrivalTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
-                double exitTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+                arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
+                exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
                 totalTime+=exitTime-arrivalTime;
+
             }
+
         }
         return totalTime;
     }
