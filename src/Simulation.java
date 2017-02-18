@@ -168,10 +168,6 @@ public class Simulation {
         return clock;
     }
 
-    public ClientConnectionModule getClientConnectionModule(){
-        return clientConnectionModule;
-    }
-
     public double getTimeout() {
         return timeout;
     }
@@ -180,7 +176,7 @@ public class Simulation {
         java.lang.System.out.println("Probando Simulacion");
         Simulation s = new Simulation(false, 0, 15, 3, 2, 1, 150, null, 15000);
         s.startSimulation();
-        System.out.println(s.getClientConnectionModule().getRejectedConnections());
+        System.out.println(s.clientConnectionModule.getRejectedConnections());
         System.out.println(s.clientConnectionModule.getAllQueries().size());
         System.out.println("conexiones actuales "+ s.clientConnectionModule.getCurrentConnections());
         System.out.println("tamaño cola modulo 2 "+s.processManagerModule.getQueueSize() );

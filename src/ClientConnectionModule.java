@@ -6,7 +6,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientConnectionModule extends Module{
     private List<Query> allQueries;
-    private final double LAMBDA = 0.58333333;
+    public static final double LAMBDA = 0.58333333;
     private int kConnections;
     private int rejectedConnections;
     private int currentConnections;
@@ -25,10 +25,6 @@ public class ClientConnectionModule extends Module{
         hasBeenInQueue = 0;
         idleTime=0;
         totalIdleTime=0;
-    }
-
-    public double getLAMBDA() {
-        return LAMBDA;
     }
 
     public int getRejectedConnections() {
