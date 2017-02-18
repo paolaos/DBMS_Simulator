@@ -27,6 +27,7 @@ public class QueryProcessingModule extends Module {
     @Override
     public void processArrival(Query query) {
         if (isBusy()) {
+            query.setIsInQueue(true);
             queue.offer(query);
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToQueue(simulation.getClock());
         } else {
@@ -55,8 +56,10 @@ public class QueryProcessingModule extends Module {
     public void processDeparture(Query query) {
         if(queue.size()>0){
             double exitTime = timeInQueryProcessingModule(queue.peek().getQueryType());
+            Query query1 =queue.poll();
+            query1.setIsInQueue(false);
             simulation.addEvent(new Event(simulation.getClock()+ exitTime,
-                                queue.poll(), EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
+                                query1, EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToServer(simulation.getClock());
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfExitFromModule(simulation.getClock() + exitTime);
         }else {
@@ -64,12 +67,34 @@ public class QueryProcessingModule extends Module {
             if(currentProcesses==0)
                 idleTime=simulation.getClock();
         }
-        nextModule.generateServiceEvent(query);
+
+        if (!query.isKill()) {
+            nextModule.generateServiceEvent(query);
+        }else {
+            int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
+            simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
+        }
+
     }
 
     @Override
     public void processKill(Query query) {
-        query.setTotalTime(simulation.getClock());
+        //Si está en cola, sacarlo
+        if(query.getIsInQueue()){
+            queue.remove(query);
+            //momento en que sale de la cola
+            query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfExitFromQueue(simulation.getClock());
+            int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
+            simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
+
+        }else {
+            //matar proceso en cambio de modulo
+            query.setKill(true);
+        }
+            //quitar del mapeo
+        Event killEventToRemove = simulation.getKillEventsTable().get(query.getId());
+        simulation.getKillEventsTable().remove(killEventToRemove);
+
     }
 
     @Override

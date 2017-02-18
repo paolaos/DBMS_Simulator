@@ -50,6 +50,7 @@ public abstract class Module {
 
     public abstract void generateServiceEvent(Query query);
 
+
     public abstract boolean isBusy();
 
     public abstract double getNextExitTime();

@@ -28,6 +28,7 @@ public class TransactionAndDataAccessModule extends Module {
         //si está ocupado o bloqueado
         if (isBusy() || blocked) {
             //encole
+            query.setIsInQueue(true);
             queue.offer(query);
             query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToQueue(simulation.getClock());
         } else {
@@ -83,7 +84,9 @@ public class TransactionAndDataAccessModule extends Module {
                 //agregar tiempo que suma al clock
                 //que se pueda, que hayan y que el siguiente no sea DDL
                 while (currentProcessedQueries < pQueries && queue.size() > 0 && queue.peek().getQueryType() != QueryType.DDL) {
-                    simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,queue.poll(), EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                    Query query1= queue.poll();
+                    query1.setIsInQueue(false);
+                    simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,query1, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
 
                     currentProcessedQueries++;
                 }
@@ -100,6 +103,7 @@ public class TransactionAndDataAccessModule extends Module {
             }else{
                 simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,
                         pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                pendingQuery = null;
                 currentProcessedQueries++;
             }
 
@@ -111,19 +115,48 @@ public class TransactionAndDataAccessModule extends Module {
                     simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,
                         pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
                         currentProcessedQueries++;
-                //pendingQuery = null;
+                pendingQuery = null;
             }else {
                 idleTime=simulation.getClock();
                 }
             }
         }
 
-        nextModule.generateServiceEvent(query);
+        if (!query.isKill()) {
+            nextModule.generateServiceEvent(query);
+
+        }else {
+            int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
+            simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
+        }
     }
 
     @Override
     public void processKill(Query query) {
-        query.setTotalTime(simulation.getClock());
+        if(query.getIsInQueue()){
+            queue.remove(query);
+            //momento en que sale de la cola
+            query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromQueue(simulation.getClock());
+            int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
+            simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
+        }else {
+            //si es el que tiene bloqueado el sistema
+            if(query == pendingQuery){
+                blocked=false;
+                pendingQuery=null;
+                query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromQueue(simulation.getClock());
+                int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
+                simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
+                //entonces está siendo procesado
+            }else {
+                //matar proceso en cambio de módulo
+                query.setKill(true);
+
+            }
+        }
+        Event killEventToRemove= simulation.getKillEventsTable().get(query.getId());
+        simulation.getKillEventsTable().remove(killEventToRemove);
+
     }
 
     @Override

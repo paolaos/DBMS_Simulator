@@ -22,6 +22,7 @@ public class ExecutionModule extends Module{
     @Override
     public void processArrival(Query query) {
         if (isBusy()) {
+            query.setIsInQueue(true);
             queue.offer(query);
             query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToQueue(simulation.getClock());
         } else {
@@ -40,8 +41,9 @@ public class ExecutionModule extends Module{
     public void processDeparture(Query query) {
         if(queue.size() > 0){
             double exitTime = simulation.getClock() + getTotalTime(query);
-            simulation.addEvent(new Event(exitTime, queue.poll(), EventType.EXIT, ModuleType.EXECUTION_MODULE)); //TODO hora estaba mala, faltaba sumar el getTotalTime(query)
-
+            Query query1 = queue.poll();
+            query1.setIsInQueue(false);
+            simulation.addEvent(new Event(exitTime, query1, EventType.EXIT, ModuleType.EXECUTION_MODULE)); //TODO hora estaba mala, faltaba sumar el getTotalTime(query)
             query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToServer(simulation.getClock());
             query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromModule(exitTime);
         }else {
@@ -50,7 +52,14 @@ public class ExecutionModule extends Module{
                 idleTime=simulation.getClock();
         }
         query.setSolved(true);
-        nextModule.generateServiceEvent(query);
+
+        if (!query.isKill()) {
+            nextModule.generateServiceEvent(query);
+
+        }else{
+            int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
+            simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
+        }
     }
 
     @Override
@@ -68,7 +77,21 @@ public class ExecutionModule extends Module{
 
     @Override
     public void processKill(Query query) {
-        query.setTotalTime(simulation.getClock());
+        if(query.getIsInQueue()){
+            queue.remove(query);
+            //momento en que sale de la cola
+            query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromQueue(simulation.getClock());
+            int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
+            simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
+
+        }else {
+            //si es el que tiene bloqueado el sistema
+            query.setKill(true);
+        }
+        //se quita del mapeo porque ya va a morir
+        Event killEventToRemove= simulation.getKillEventsTable().get(query.getId());
+        simulation.getKillEventsTable().remove(killEventToRemove);
+
     }
 
     @Override
@@ -194,7 +217,6 @@ public class ExecutionModule extends Module{
         return totalTime;
     }
 
-
     @Override
     public void setAverageTimeW(double avergeTimeWQ, double avergeTimeWS) {
         averageTimeW = avergeTimeWQ + avergeTimeWS;
@@ -239,9 +261,5 @@ public class ExecutionModule extends Module{
     public void setAverageQueriesInService(List<Query> queryList) {
         averageQueriesInService = simulation.getClientConnectionModule().getLAMBDA() * averageTimeInService;
     }
-
-
-
-
 
 }
