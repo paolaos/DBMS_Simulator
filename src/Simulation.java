@@ -184,6 +184,10 @@ public class Simulation {
         return timeout;
     }
 
+    public ClientConnectionModule getClientConnectionModule(){
+        return clientConnectionModule;
+    }
+
     public static void main(String[]args){
         java.lang.System.out.println("Simulación DBMS");
         Simulation s = new Simulation(false, 0, 15, 3, 2, 1, 15, null, 15000);
