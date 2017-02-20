@@ -50,7 +50,6 @@ public class QueryStatistics {
         private double timeOfEntryToModule=0;
         private double timeOfEntryToQueue=0;
         private double timeOfEntryToServer=0;
-        //TODO no hay exit from server porque es lo mismo que exit from Module, en este caso en específico.
         private double timeOfExitFromQueue=0;
         private double timeOfExitFromModule=0;
 

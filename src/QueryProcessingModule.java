@@ -20,12 +20,12 @@ public class QueryProcessingModule extends Module {
         return nAvailableProcesses;
     }
 
-
     public int getCurrentProcesses() {
         return currentProcesses;
     }
     @Override
     public void processArrival(Query query) {
+        query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToModule(simulation.getClock());
         if (isBusy()) {
             query.setIsInQueue(true);
             queue.offer(query);
@@ -39,7 +39,7 @@ public class QueryProcessingModule extends Module {
             simulation.addEvent(new Event(simulation.getClock() + exitTime,
                     query, EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToServer(simulation.getClock());
-            query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfExitFromModule(simulation.getClock() + exitTime);
+
         }
     }
 
@@ -47,22 +47,21 @@ public class QueryProcessingModule extends Module {
     public void generateServiceEvent(Query query) {
         query.setCurrentModule(ModuleType.QUERY_PROCESSING_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.QUERY_PROCESSING_MODULE));
-        query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToModule(simulation.getClock());
         servedQueries++;
     }
 
     //Se saca de la cola el siguiente y el query que llega de parámetro se envia al siguiente modulo
     @Override
     public void processDeparture(Query query) {
-        
+        query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToModule(simulation.getClock());
         if(queue.size()>0){
             double exitTime = timeInQueryProcessingModule(queue.peek().getQueryType());
             Query query1 =queue.poll();
             query1.setIsInQueue(false);
             simulation.addEvent(new Event(simulation.getClock()+ exitTime,
                                 query1, EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
+            query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfExitFromQueue(simulation.getClock());
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToServer(simulation.getClock());
-            query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfExitFromModule(simulation.getClock() + exitTime);
         }else {
             currentProcesses--;
             if(currentProcesses==0)
@@ -268,11 +267,11 @@ public class QueryProcessingModule extends Module {
 
     @Override
     public void setAverageQueriesInQueue(List<Query> queryList) {
-        averageQueriesInQueue = simulation.getClientConnectionModule().getLAMBDA() * averageTimeInQueue;
+        averageQueriesInQueue = ClientConnectionModule.LAMBDA * averageTimeInQueue;
     }
 
     @Override
     public void setAverageQueriesInService(List<Query> queryList) {
-        averageQueriesInService = simulation.getClientConnectionModule().getLAMBDA() * averageTimeInService;
+        averageQueriesInService = ClientConnectionModule.LAMBDA * averageTimeInService;
     }
 }
