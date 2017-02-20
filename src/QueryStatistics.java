@@ -47,11 +47,12 @@ public class QueryStatistics {
 
 
     public class QueryModuleStatistics {
-        private double timeOfEntryToModule;
-        private double timeOfEntryToQueue;
-        private double timeOfEntryToServer;
+        private double timeOfEntryToModule=0;
+        private double timeOfEntryToQueue=0;
+        private double timeOfEntryToServer=0;
         //TODO no hay exit from server porque es lo mismo que exit from Module, en este caso en específico.
-        private double timeOfExitFromModule;
+        private double timeOfExitFromQueue=0;
+        private double timeOfExitFromModule=0;
 
         public double getTimeOfEntryToModule() {
             return timeOfEntryToModule;
@@ -59,6 +60,14 @@ public class QueryStatistics {
 
         public void setTimeOfEntryToModule(double timeOfEntryToModule) {
             this.timeOfEntryToModule = timeOfEntryToModule;
+        }
+
+        public double getTimeOfExitFromQueue() {
+            return timeOfExitFromQueue;
+        }
+
+        public void setTimeOfExitFromQueue(double timeOfExitFromQueue) {
+            this.timeOfExitFromQueue = timeOfExitFromQueue;
         }
 
         public double getTimeOfEntryToQueue() {
