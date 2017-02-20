@@ -1,27 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="e467ee17-842f-4ca3-8e1a-0a97f1302bd8" name="Default" comment="">
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ClientConnectionModule.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ClientConnectionModule.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/DistributionGenerator.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/DistributionGenerator.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ExecutionModule.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ExecutionModule.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/GUI.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/GUI.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Module.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Module.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ModuleStatistics.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ModuleStatistics.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ProcessManagerModule.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ProcessManagerModule.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Query.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Query.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/QueryProcessingModule.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/QueryProcessingModule.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/QueryStatistics$QueryModuleStatistics.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/QueryStatistics$QueryModuleStatistics.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/QueryStatistics.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/QueryStatistics.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Simulation$1.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Simulation$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Simulation.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Simulation.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/TransactionAndDataAccessModule$1.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/TransactionAndDataAccessModule$1.class" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/TransactionAndDataAccessModule.class" afterPath="$PROJECT_DIR$/out/production/OR_Proyect_2017/TransactionAndDataAccessModule.class" />
+    <list default="true" id="e467ee17-842f-4ca3-8e1a-0a97f1302bd8" name="Default" comment="Implementación de evento Kill&#10;Agregué hashTable para mapear ud id con el evento de su kill&#10;Agregué variable booleana para condicionar el paso a siguiente módulo&#10;&#10;">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ClientConnectionModule.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/DistributionGenerator.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Event.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/EventType.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ExecutionModule.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/GUI.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Module.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ModuleStatistics.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ModuleType.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/ProcessManagerModule.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Query.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/QueryProcessingModule.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/QueryStatistics$QueryModuleStatistics.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/QueryStatistics.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/QueryType.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Simulation$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Simulation.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/Statistics.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/System.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/TransactionAndDataAccessModule$1.class" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/out/production/OR_Proyect_2017/TransactionAndDataAccessModule.class" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/misc.xml" afterPath="$PROJECT_DIR$/.idea/misc.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ClientConnectionModule.java" afterPath="$PROJECT_DIR$/src/ClientConnectionModule.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/DistributionGenerator.java" afterPath="$PROJECT_DIR$/src/DistributionGenerator.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/ExecutionModule.java" afterPath="$PROJECT_DIR$/src/ExecutionModule.java" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/src/Simulation.java" afterPath="$PROJECT_DIR$/src/Simulation.java" />
     </list>
     <ignored path="OR_Proyect_2017.iws" />
     <ignored path=".idea/workspace.xml" />
@@ -43,46 +46,13 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="TransactionAndDataAccessModule.java" pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/TransactionAndDataAccessModule.java">
+      <file leaf-file-name="ExecutionModule.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ExecutionModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="55">
-              <caret line="35" column="33" lean-forward="false" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Query.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Query.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="646">
-              <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
+            <state relative-caret-position="1581">
+              <caret line="97" column="37" lean-forward="false" selection-start-line="97" selection-start-column="37" selection-end-line="97" selection-end-column="37" />
               <folding>
-                <element signature="e#1158#1159#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ProcessManagerModule.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ProcessManagerModule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="238">
-              <caret line="16" column="19" lean-forward="false" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="19" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="ClientConnectionModule.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/ClientConnectionModule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="68">
-              <caret line="4" column="27" lean-forward="false" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="27" />
-              <folding>
-                <element signature="e#5287#5288#0" expanded="true" />
-                <element signature="e#5323#5324#0" expanded="true" />
+                <element signature="e#3915#3916#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -91,94 +61,48 @@
       <file leaf-file-name="Simulation.java" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Simulation.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="19" column="29" lean-forward="false" selection-start-line="19" selection-start-column="29" selection-end-line="19" selection-end-column="29" />
-              <folding>
-                <element signature="e#5528#5529#0" expanded="true" />
-                <element signature="e#5556#5557#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Method.java" pinned="false" current-in-tab="false">
-        <entry file="jar://C:/Program Files/Java/jdk1.8.0_101/src.zip!/java/lang/reflect/Method.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="7429">
-              <caret line="497" column="0" lean-forward="false" selection-start-line="497" selection-start-column="0" selection-end-line="497" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#23357#0" expanded="false" />
-                <element signature="imports" expanded="false" />
-                <element signature="e#5713#5714#0" expanded="false" />
-                <element signature="e#5740#5741#0" expanded="false" />
-                <element signature="e#5793#5794#0" expanded="false" />
-                <element signature="e#5847#5848#0" expanded="false" />
-                <element signature="e#5896#5897#0" expanded="false" />
-                <element signature="e#5930#5931#0" expanded="false" />
-                <element signature="e#6024#6025#0" expanded="false" />
-                <element signature="e#6052#6053#0" expanded="false" />
-                <element signature="e#6222#6223#0" expanded="false" />
-                <element signature="e#6249#6250#0" expanded="false" />
-                <element signature="e#6333#6334#0" expanded="false" />
-                <element signature="e#6365#6366#0" expanded="false" />
-                <element signature="e#7076#7077#0" expanded="false" />
-                <element signature="e#7109#7110#0" expanded="false" />
-                <element signature="e#8522#8523#0" expanded="false" />
-                <element signature="e#8567#8568#0" expanded="false" />
-                <element signature="e#8985#8986#0" expanded="false" />
-                <element signature="e#9040#9041#0" expanded="false" />
-                <element signature="e#9136#9137#0" expanded="false" />
-                <element signature="e#9181#9182#0" expanded="false" />
-                <element signature="e#9473#9474#0" expanded="false" />
-                <element signature="e#9528#9529#0" expanded="false" />
-                <element signature="e#10540#10541#0" expanded="false" />
-                <element signature="e#10626#10627#0" expanded="false" />
-                <element signature="e#14229#14230#0" expanded="false" />
-                <element signature="e#14314#14315#0" expanded="false" />
-                <element signature="e#18632#18633#0" expanded="false" />
-                <element signature="e#18694#18695#0" expanded="false" />
-                <element signature="e#18797#18798#0" expanded="false" />
-                <element signature="e#18837#18838#0" expanded="false" />
-                <element signature="e#18980#18981#0" expanded="false" />
-                <element signature="e#19022#19023#0" expanded="false" />
-                <element signature="e#20678#20679#0" expanded="false" />
-                <element signature="e#20715#20716#0" expanded="false" />
-                <element signature="e#22696#22697#0" expanded="false" />
-                <element signature="e#22749#22750#0" expanded="false" />
-                <element signature="e#23085#23086#0" expanded="false" />
-                <element signature="e#23155#23156#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="Event.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Event.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="816">
-              <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
-              <folding>
-                <element signature="e#1251#1252#0" expanded="true" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="QueryProcessingModule.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/QueryProcessingModule.java">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1377">
-              <caret line="94" column="21" lean-forward="false" selection-start-line="94" selection-start-column="21" selection-end-line="94" selection-end-column="21" />
+            <state relative-caret-position="2329">
+              <caret line="145" column="0" lean-forward="false" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="DistributionGenerator.java" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/DistributionGenerator.java">
+      <file leaf-file-name="ClientConnectionModule.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/ClientConnectionModule.java">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1003">
-              <caret line="60" column="16" lean-forward="false" selection-start-line="60" selection-start-column="16" selection-end-line="60" selection-end-column="27" />
+            <state relative-caret-position="1394">
+              <caret line="94" column="9" lean-forward="false" selection-start-line="94" selection-start-column="9" selection-end-line="94" selection-end-column="9" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Module.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Module.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="816">
+              <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="QueryProcessingModule.java" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/src/QueryProcessingModule.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="199">
+              <caret line="66" column="15" lean-forward="false" selection-start-line="66" selection-start-column="15" selection-end-line="66" selection-end-column="15" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Main.java" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Main.java">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="51">
+              <caret line="3" column="13" lean-forward="false" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
               <folding />
             </state>
           </provider>
@@ -186,24 +110,19 @@
       </file>
     </leaf>
   </component>
-  <component name="FindInProjectRecents">
-    <findStrings>
-      <find>currentQueries</find>
-      <find>ejecuta</find>
-      <find>kill</find>
-      <find>served</find>
-      <find>isB</find>
-      <find>servedQueries</find>
-      <find>allQueries</find>
-      <find>currentProcessedQueries</find>
-    </findStrings>
-    <replaceStrings>
-      <replace>currentProcessedQueries</replace>
-    </replaceStrings>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Class" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="UPDATE_TYPE" value="MERGE" />
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="PUSH_TAGS">
+      <GitPushTagMode />
+    </option>
   </component>
   <component name="GradleLocalSettings">
     <option name="externalProjectsViewState">
@@ -214,18 +133,22 @@
     <option name="CHANGED_PATHS">
       <list>
         <option value="$PROJECT_DIR$/src/Event.java" />
-        <option value="$PROJECT_DIR$/src/QueryStatistics.java" />
         <option value="$PROJECT_DIR$/src/ModuleStatistics.java" />
-        <option value="$PROJECT_DIR$/src/Query.java" />
         <option value="$PROJECT_DIR$/.idea/workspace.xml" />
-        <option value="$PROJECT_DIR$/src/Module.java" />
-        <option value="$PROJECT_DIR$/src/ProcessManagerModule.java" />
-        <option value="$PROJECT_DIR$/src/QueryProcessingModule.java" />
-        <option value="$PROJECT_DIR$/src/ClientConnectionModule.java" />
-        <option value="$PROJECT_DIR$/src/ExecutionModule.java" />
         <option value="$PROJECT_DIR$/src/DistributionGenerator.java" />
+        <option value="$PROJECT_DIR$/src/Module.java" />
+        <option value="$PROJECT_DIR$/src/Query.java" />
+        <option value="$PROJECT_DIR$/src/QueryStatistics.java" />
         <option value="$PROJECT_DIR$/src/Simulation.java" />
+        <option value="$PROJECT_DIR$/src/ProcessManagerModule.java" />
+        <option value="$PROJECT_DIR$/src/ExecutionModule.java" />
         <option value="$PROJECT_DIR$/src/TransactionAndDataAccessModule.java" />
+        <option value="$PROJECT_DIR$/src/ClientConnectionModule.java" />
+        <option value="$PROJECT_DIR$/src/HelloWorl.java" />
+        <option value="$PROJECT_DIR$/src/helloworl.vm" />
+        <option value="$PROJECT_DIR$/src/hello.vm" />
+        <option value="$PROJECT_DIR$/src/HelloWorld.java" />
+        <option value="$PROJECT_DIR$/src/QueryProcessingModule.java" />
       </list>
     </option>
   </component>
@@ -238,7 +161,7 @@
   <component name="ProjectFrameBounds">
     <option name="x" value="-8" />
     <option name="y" value="-8" />
-    <option name="width" value="1382" />
+    <option name="width" value="1378" />
     <option name="height" value="744" />
   </component>
   <component name="ProjectView">
@@ -256,7 +179,9 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
+      <pane id="Scope" />
       <pane id="Scratches" />
+      <pane id="PackagesPane" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -266,6 +191,20 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="OR_Proyect_2017" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+          </PATH>
+          <PATH>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="OR_Proyect_2017" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="OR_Proyect_2017" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="velocity-1.7" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -299,16 +238,18 @@
           </PATH>
         </subPane>
       </pane>
-      <pane id="Scope" />
-      <pane id="PackagesPane" />
     </panes>
   </component>
   <component name="PropertiesComponent">
     <property name="aspect.path.notification.shown" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="js.eslint.eslintPackage" value="" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/velocity-1.7.jar!/" />
+    <property name="project.structure.last.edited" value="Libraries" />
+    <property name="project.structure.proportion" value="0.15" />
+    <property name="project.structure.side.proportion" value="0.2" />
   </component>
-  <component name="RunManager" selected="Application.Simulation">
+  <component name="RunManager" selected="Application.HelloWorld">
     <configuration default="false" name="Simulation" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="Simulation" />
@@ -327,6 +268,21 @@
     <configuration default="false" name="TransactionAndDataAccessModule" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
       <option name="MAIN_CLASS_NAME" value="TransactionAndDataAccessModule" />
+      <option name="VM_PARAMETERS" />
+      <option name="PROGRAM_PARAMETERS" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="ALTERNATIVE_JRE_PATH_ENABLED" value="false" />
+      <option name="ALTERNATIVE_JRE_PATH" />
+      <option name="ENABLE_SWING_INSPECTOR" value="false" />
+      <option name="ENV_VARIABLES" />
+      <option name="PASS_PARENT_ENVS" value="true" />
+      <module name="OR_Proyect_2017" />
+      <envs />
+      <method />
+    </configuration>
+    <configuration default="false" name="HelloWorld" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <extension name="coverage" enabled="false" merge="false" sample_coverage="true" runner="idea" />
+      <option name="MAIN_CLASS_NAME" value="HelloWorld" />
       <option name="VM_PARAMETERS" />
       <option name="PROGRAM_PARAMETERS" />
       <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
@@ -720,14 +676,16 @@
     <configuration default="true" type="osgi.bnd.run" factoryName="Test Launcher (JUnit)">
       <method />
     </configuration>
-    <list size="2">
+    <list size="3">
       <item index="0" class="java.lang.String" itemvalue="Application.Simulation" />
       <item index="1" class="java.lang.String" itemvalue="Application.TransactionAndDataAccessModule" />
+      <item index="2" class="java.lang.String" itemvalue="Application.HelloWorld" />
     </list>
     <recent_temporary>
-      <list size="2">
-        <item index="0" class="java.lang.String" itemvalue="Application.Simulation" />
-        <item index="1" class="java.lang.String" itemvalue="Application.TransactionAndDataAccessModule" />
+      <list size="3">
+        <item index="0" class="java.lang.String" itemvalue="Application.HelloWorld" />
+        <item index="1" class="java.lang.String" itemvalue="Application.Simulation" />
+        <item index="2" class="java.lang.String" itemvalue="Application.TransactionAndDataAccessModule" />
       </list>
     </recent_temporary>
     <configuration default="true" type="AndroidRunConfigurationType" factoryName="Android Application">
@@ -770,7 +728,12 @@
       <workItem from="1487101595305" duration="281000" />
       <workItem from="1487112131970" duration="10005000" />
       <workItem from="1487202604915" duration="7876000" />
-      <workItem from="1487357757376" duration="154000" />
+      <workItem from="1487357757376" duration="13812000" />
+      <workItem from="1487434328831" duration="3378000" />
+      <workItem from="1487452429066" duration="3122000" />
+      <workItem from="1487456440780" duration="171000" />
+      <workItem from="1487609366438" duration="1145000" />
+      <workItem from="1487614377823" duration="103000" />
     </task>
     <task id="LOCAL-00001" summary="Copy paste de los cambios de Brayan (en módulos 3 y 4).">
       <created>1486744709501</created>
@@ -821,14 +784,56 @@
       <option name="project" value="LOCAL" />
       <updated>1487357864535</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Corriendo nuevamente">
+      <created>1487357944317</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1487357944317</updated>
+    </task>
+    <task id="LOCAL-00009" summary="Implementación de evento Kill&#10;Agregué hashTable para mapear ud id con el evento de su kill&#10;Agregué variable booleana para condicionar el paso a siguiente módulo&#10;&#10;">
+      <created>1487436746498</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1487436746498</updated>
+    </task>
+    <task id="LOCAL-00010" summary="Implementación de evento Kill&#10;Agregué hashTable para mapear ud id con el evento de su kill&#10;Agregué variable booleana para condicionar el paso a siguiente módulo&#10;&#10;">
+      <created>1487436774389</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1487436774389</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Implementación de evento Kill&#10;Agregué hashTable para mapear ud id con el evento de su kill&#10;Agregué variable booleana para condicionar el paso a siguiente módulo&#10;&#10;">
+      <created>1487436991655</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1487436991655</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Implementación de evento Kill&#10;Agregué hashTable para mapear ud id con el evento de su kill&#10;Agregué variable booleana para condicionar el paso a siguiente módulo&#10;&#10;">
+      <created>1487452471469</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1487452471469</updated>
+    </task>
+    <task id="LOCAL-00013" summary="Nuevo Commit">
+      <created>1487452973969</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1487452973969</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="58226000" />
+    <option name="totallyTimeSpent" value="79803000" />
   </component>
   <component name="ToolWindowManager">
-    <frame x="-8" y="-8" width="1382" height="744" extended-state="6" />
+    <frame x="-8" y="-8" width="1378" height="744" extended-state="0" />
     <editor active="false" />
     <layout>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -845,7 +850,7 @@
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Capture Tool" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Designer" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3441755" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.20106222" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Database" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -859,7 +864,7 @@
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
     <layout-to-restore>
       <window_info id="Palette" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
@@ -877,7 +882,7 @@
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="UI Designer" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.549346" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34042552" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Messages" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3289689" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Palette&#9;" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
@@ -885,9 +890,9 @@
       <window_info id="Capture Analysis" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.1309329" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2569558" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.24222586" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16263238" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.19213313" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Theme Preview" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
@@ -907,222 +912,25 @@
     <MESSAGE value="Cambios hechos por los 3" />
     <MESSAGE value="Valores estadistios puestos" />
     <MESSAGE value="Corriendo nuevamente" />
-    <option name="LAST_COMMIT_MESSAGE" value="Corriendo nuevamente" />
+    <MESSAGE value="Implementación de evento Kill&#10;Agregué hashTable para mapear ud id con el evento de su kill&#10;Agregué variable booleana para condicionar el paso a siguiente módulo&#10;&#10;" />
+    <MESSAGE value="Nuevo Commit" />
+    <option name="LAST_COMMIT_MESSAGE" value="Nuevo Commit" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" type="java-line">
           <url>file://$PROJECT_DIR$/src/Simulation.java</url>
-          <line>74</line>
+          <line>163</line>
           <properties />
-          <option name="timeStamp" value="30" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Simulation.java</url>
-          <line>106</line>
-          <properties />
-          <option name="timeStamp" value="31" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Simulation.java</url>
-          <line>71</line>
-          <properties />
-          <option name="timeStamp" value="32" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" type="java-line">
-          <url>file://$PROJECT_DIR$/src/Simulation.java</url>
-          <line>104</line>
-          <properties />
-          <option name="timeStamp" value="33" />
+          <option name="timeStamp" value="35" />
         </line-breakpoint>
       </breakpoints>
-      <option name="time" value="34" />
+      <option name="time" value="36" />
     </breakpoint-manager>
     <watches-manager />
   </component>
-  <component name="antWorkspaceConfiguration">
-    <option name="IS_AUTOSCROLL_TO_SOURCE" value="false" />
-    <option name="FILTER_TARGETS" value="false" />
-  </component>
   <component name="editorHistoryManager">
-    <entry file="jar://C:/Program Files/Java/jdk1.8.0_101/src.zip!/java/lang/reflect/Method.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="8449">
-          <caret line="497" column="0" lean-forward="false" selection-start-line="497" selection-start-column="0" selection-end-line="497" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#23357#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="e#5713#5714#0" expanded="false" />
-            <element signature="e#5740#5741#0" expanded="false" />
-            <element signature="e#5793#5794#0" expanded="false" />
-            <element signature="e#5847#5848#0" expanded="false" />
-            <element signature="e#5896#5897#0" expanded="false" />
-            <element signature="e#5930#5931#0" expanded="false" />
-            <element signature="e#6024#6025#0" expanded="false" />
-            <element signature="e#6052#6053#0" expanded="false" />
-            <element signature="e#6222#6223#0" expanded="false" />
-            <element signature="e#6249#6250#0" expanded="false" />
-            <element signature="e#6333#6334#0" expanded="false" />
-            <element signature="e#6365#6366#0" expanded="false" />
-            <element signature="e#7076#7077#0" expanded="false" />
-            <element signature="e#7109#7110#0" expanded="false" />
-            <element signature="e#8522#8523#0" expanded="false" />
-            <element signature="e#8567#8568#0" expanded="false" />
-            <element signature="e#8985#8986#0" expanded="false" />
-            <element signature="e#9040#9041#0" expanded="false" />
-            <element signature="e#9136#9137#0" expanded="false" />
-            <element signature="e#9181#9182#0" expanded="false" />
-            <element signature="e#9473#9474#0" expanded="false" />
-            <element signature="e#9528#9529#0" expanded="false" />
-            <element signature="e#10540#10541#0" expanded="false" />
-            <element signature="e#10626#10627#0" expanded="false" />
-            <element signature="e#14229#14230#0" expanded="false" />
-            <element signature="e#14314#14315#0" expanded="false" />
-            <element signature="e#18632#18633#0" expanded="false" />
-            <element signature="e#18694#18695#0" expanded="false" />
-            <element signature="e#18797#18798#0" expanded="false" />
-            <element signature="e#18837#18838#0" expanded="false" />
-            <element signature="e#18980#18981#0" expanded="false" />
-            <element signature="e#19022#19023#0" expanded="false" />
-            <element signature="e#20678#20679#0" expanded="false" />
-            <element signature="e#20715#20716#0" expanded="false" />
-            <element signature="e#22696#22697#0" expanded="false" />
-            <element signature="e#22749#22750#0" expanded="false" />
-            <element signature="e#23085#23086#0" expanded="false" />
-            <element signature="e#23155#23156#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Event.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="952">
-          <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
-          <folding>
-            <element signature="e#1251#1252#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ExecutionModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1037">
-          <caret line="61" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#2621#2622#0" expanded="false" />
-            <element signature="e#2674#2675#0" expanded="false" />
-            <element signature="e#2732#2733#0" expanded="false" />
-            <element signature="e#2789#2790#0" expanded="false" />
-            <element signature="e#2842#2843#0" expanded="false" />
-            <element signature="e#2866#2867#0" expanded="false" />
-            <element signature="e#2929#2930#0" expanded="false" />
-            <element signature="e#2986#2987#0" expanded="false" />
-            <element signature="e#3265#3266#0" expanded="false" />
-            <element signature="e#3309#3310#0" expanded="false" />
-            <element signature="e#3668#3669#0" expanded="false" />
-            <element signature="e#3720#3721#0" expanded="false" />
-            <element signature="e#3767#3768#0" expanded="false" />
-            <element signature="e#3802#3803#0" expanded="false" />
-            <element signature="e#3853#3854#0" expanded="false" />
-            <element signature="e#3889#3890#0" expanded="false" />
-            <element signature="e#3938#3939#0" expanded="false" />
-            <element signature="e#3974#3975#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/QueryProcessingModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1598">
-          <caret line="94" column="21" lean-forward="true" selection-start-line="94" selection-start-column="21" selection-end-line="94" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DistributionGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1003">
-          <caret line="60" column="16" lean-forward="true" selection-start-line="60" selection-start-column="16" selection-end-line="60" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Module.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="935">
-          <caret line="56" column="25" lean-forward="false" selection-start-line="56" selection-start-column="25" selection-end-line="56" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/TransactionAndDataAccessModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="45" lean-forward="false" selection-start-line="23" selection-start-column="45" selection-end-line="23" selection-end-column="45" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ClientConnectionModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="493">
-          <caret line="29" column="31" lean-forward="false" selection-start-line="29" selection-start-column="31" selection-end-line="29" selection-end-column="31" />
-          <folding>
-            <element signature="e#5287#5288#0" expanded="true" />
-            <element signature="e#5323#5324#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Simulation.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding>
-            <element signature="e#5528#5529#0" expanded="true" />
-            <element signature="e#5556#5557#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ProcessManagerModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2601">
-          <caret line="169" column="0" lean-forward="false" selection-start-line="169" selection-start-column="0" selection-end-line="169" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ExecutionModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="3621">
-          <caret line="233" column="14" lean-forward="false" selection-start-line="233" selection-start-column="14" selection-end-line="233" selection-end-column="14" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#2621#2622#0" expanded="false" />
-            <element signature="e#2674#2675#0" expanded="false" />
-            <element signature="e#2732#2733#0" expanded="false" />
-            <element signature="e#2789#2790#0" expanded="false" />
-            <element signature="e#2842#2843#0" expanded="false" />
-            <element signature="e#2866#2867#0" expanded="false" />
-            <element signature="e#2929#2930#0" expanded="false" />
-            <element signature="e#2986#2987#0" expanded="false" />
-            <element signature="e#3265#3266#0" expanded="false" />
-            <element signature="e#3309#3310#0" expanded="false" />
-            <element signature="e#3668#3669#0" expanded="false" />
-            <element signature="e#3720#3721#0" expanded="false" />
-            <element signature="e#3767#3768#0" expanded="false" />
-            <element signature="e#3802#3803#0" expanded="false" />
-            <element signature="e#3853#3854#0" expanded="false" />
-            <element signature="e#3889#3890#0" expanded="false" />
-            <element signature="e#3938#3939#0" expanded="false" />
-            <element signature="e#3974#3975#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Main.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
@@ -1158,6 +966,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
           <caret line="3" column="12" lean-forward="false" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1166,7 +975,8 @@
         <state relative-caret-position="85">
           <caret line="5" column="12" lean-forward="false" selection-start-line="5" selection-start-column="12" selection-end-line="5" selection-end-column="12" />
           <folding>
-            <element signature="e#1158#1159#0" expanded="true" />
+            <element signature="e#1049#1050#0" expanded="false" />
+            <element signature="e#1076#1077#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1183,10 +993,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="493">
           <caret line="29" column="31" lean-forward="false" selection-start-line="29" selection-start-column="31" selection-end-line="29" selection-end-column="31" />
-          <folding>
-            <element signature="e#5287#5288#0" expanded="true" />
-            <element signature="e#5323#5324#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1194,10 +1001,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="2890">
           <caret line="180" column="74" lean-forward="false" selection-start-line="180" selection-start-column="74" selection-end-line="180" selection-end-column="74" />
-          <folding>
-            <element signature="e#5528#5529#0" expanded="true" />
-            <element signature="e#5556#5557#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1214,25 +1018,7 @@
         <state relative-caret-position="3961">
           <caret line="233" column="14" lean-forward="false" selection-start-line="233" selection-start-column="14" selection-end-line="233" selection-end-column="14" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#2621#2622#0" expanded="false" />
-            <element signature="e#2674#2675#0" expanded="false" />
-            <element signature="e#2732#2733#0" expanded="false" />
-            <element signature="e#2789#2790#0" expanded="false" />
-            <element signature="e#2842#2843#0" expanded="false" />
-            <element signature="e#2866#2867#0" expanded="false" />
-            <element signature="e#2929#2930#0" expanded="false" />
-            <element signature="e#2986#2987#0" expanded="false" />
-            <element signature="e#3265#3266#0" expanded="false" />
-            <element signature="e#3309#3310#0" expanded="false" />
-            <element signature="e#3668#3669#0" expanded="false" />
-            <element signature="e#3720#3721#0" expanded="false" />
-            <element signature="e#3767#3768#0" expanded="false" />
-            <element signature="e#3802#3803#0" expanded="false" />
-            <element signature="e#3853#3854#0" expanded="false" />
-            <element signature="e#3889#3890#0" expanded="false" />
-            <element signature="e#3938#3939#0" expanded="false" />
-            <element signature="e#3974#3975#0" expanded="false" />
+            <element signature="e#3915#3916#0" expanded="true" />
           </folding>
         </state>
       </provider>
@@ -1264,6 +1050,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="51">
           <caret line="3" column="12" lean-forward="false" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1272,7 +1059,8 @@
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
           <folding>
-            <element signature="e#1158#1159#0" expanded="true" />
+            <element signature="e#1049#1050#0" expanded="false" />
+            <element signature="e#1076#1077#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -1281,6 +1069,10 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="629">
           <caret line="43" column="59" lean-forward="true" selection-start-line="43" selection-start-column="59" selection-end-line="43" selection-end-column="59" />
+          <folding>
+            <element signature="e#2404#2405#0" expanded="false" />
+            <element signature="e#2454#2455#0" expanded="false" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -1296,10 +1088,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="561">
           <caret line="39" column="0" lean-forward="false" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
-          <folding>
-            <element signature="e#5287#5288#0" expanded="true" />
-            <element signature="e#5323#5324#0" expanded="true" />
-          </folding>
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1316,33 +1105,8 @@
         <state relative-caret-position="646">
           <caret line="38" column="52" lean-forward="false" selection-start-line="38" selection-start-column="52" selection-end-line="38" selection-end-column="52" />
           <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#2621#2622#0" expanded="false" />
-            <element signature="e#2674#2675#0" expanded="false" />
-            <element signature="e#2732#2733#0" expanded="false" />
-            <element signature="e#2789#2790#0" expanded="false" />
-            <element signature="e#2842#2843#0" expanded="false" />
-            <element signature="e#2866#2867#0" expanded="false" />
-            <element signature="e#2929#2930#0" expanded="false" />
-            <element signature="e#2986#2987#0" expanded="false" />
-            <element signature="e#3265#3266#0" expanded="false" />
-            <element signature="e#3309#3310#0" expanded="false" />
-            <element signature="e#3668#3669#0" expanded="false" />
-            <element signature="e#3720#3721#0" expanded="false" />
-            <element signature="e#3767#3768#0" expanded="false" />
-            <element signature="e#3802#3803#0" expanded="false" />
-            <element signature="e#3853#3854#0" expanded="false" />
-            <element signature="e#3889#3890#0" expanded="false" />
-            <element signature="e#3938#3939#0" expanded="false" />
-            <element signature="e#3974#3975#0" expanded="false" />
+            <element signature="e#3915#3916#0" expanded="true" />
           </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/QueryStatistics.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="765">
-          <caret line="51" column="0" lean-forward="true" selection-start-line="51" selection-start-column="0" selection-end-line="51" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -1350,20 +1114,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="12">
           <caret line="25" column="45" lean-forward="true" selection-start-line="25" selection-start-column="45" selection-end-line="25" selection-end-column="45" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Statistics.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="13" lean-forward="false" selection-start-line="0" selection-start-column="13" selection-end-line="0" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ModuleStatistics.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="0" lean-forward="false" selection-start-line="15" selection-start-column="0" selection-end-line="15" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -1375,157 +1126,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/EventType.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="12" lean-forward="false" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Main.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="51">
-          <caret line="3" column="13" lean-forward="false" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ExecutionModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1003">
-          <caret line="61" column="0" lean-forward="false" selection-start-line="61" selection-start-column="0" selection-end-line="61" selection-end-column="0" />
-          <folding>
-            <element signature="imports" expanded="false" />
-            <element signature="e#2621#2622#0" expanded="false" />
-            <element signature="e#2674#2675#0" expanded="false" />
-            <element signature="e#2732#2733#0" expanded="false" />
-            <element signature="e#2789#2790#0" expanded="false" />
-            <element signature="e#2842#2843#0" expanded="false" />
-            <element signature="e#2866#2867#0" expanded="false" />
-            <element signature="e#2929#2930#0" expanded="false" />
-            <element signature="e#2986#2987#0" expanded="false" />
-            <element signature="e#3265#3266#0" expanded="false" />
-            <element signature="e#3309#3310#0" expanded="false" />
-            <element signature="e#3668#3669#0" expanded="false" />
-            <element signature="e#3720#3721#0" expanded="false" />
-            <element signature="e#3767#3768#0" expanded="false" />
-            <element signature="e#3802#3803#0" expanded="false" />
-            <element signature="e#3853#3854#0" expanded="false" />
-            <element signature="e#3889#3890#0" expanded="false" />
-            <element signature="e#3938#3939#0" expanded="false" />
-            <element signature="e#3974#3975#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Module.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="935">
-          <caret line="56" column="25" lean-forward="false" selection-start-line="56" selection-start-column="25" selection-end-line="56" selection-end-column="25" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://C:/Program Files/Java/jdk1.8.0_101/src.zip!/java/lang/reflect/Method.java">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="7429">
           <caret line="497" column="0" lean-forward="false" selection-start-line="497" selection-start-column="0" selection-end-line="497" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#23357#0" expanded="false" />
-            <element signature="imports" expanded="false" />
-            <element signature="e#5713#5714#0" expanded="false" />
-            <element signature="e#5740#5741#0" expanded="false" />
-            <element signature="e#5793#5794#0" expanded="false" />
-            <element signature="e#5847#5848#0" expanded="false" />
-            <element signature="e#5896#5897#0" expanded="false" />
-            <element signature="e#5930#5931#0" expanded="false" />
-            <element signature="e#6024#6025#0" expanded="false" />
-            <element signature="e#6052#6053#0" expanded="false" />
-            <element signature="e#6222#6223#0" expanded="false" />
-            <element signature="e#6249#6250#0" expanded="false" />
-            <element signature="e#6333#6334#0" expanded="false" />
-            <element signature="e#6365#6366#0" expanded="false" />
-            <element signature="e#7076#7077#0" expanded="false" />
-            <element signature="e#7109#7110#0" expanded="false" />
-            <element signature="e#8522#8523#0" expanded="false" />
-            <element signature="e#8567#8568#0" expanded="false" />
-            <element signature="e#8985#8986#0" expanded="false" />
-            <element signature="e#9040#9041#0" expanded="false" />
-            <element signature="e#9136#9137#0" expanded="false" />
-            <element signature="e#9181#9182#0" expanded="false" />
-            <element signature="e#9473#9474#0" expanded="false" />
-            <element signature="e#9528#9529#0" expanded="false" />
-            <element signature="e#10540#10541#0" expanded="false" />
-            <element signature="e#10626#10627#0" expanded="false" />
-            <element signature="e#14229#14230#0" expanded="false" />
-            <element signature="e#14314#14315#0" expanded="false" />
-            <element signature="e#18632#18633#0" expanded="false" />
-            <element signature="e#18694#18695#0" expanded="false" />
-            <element signature="e#18797#18798#0" expanded="false" />
-            <element signature="e#18837#18838#0" expanded="false" />
-            <element signature="e#18980#18981#0" expanded="false" />
-            <element signature="e#19022#19023#0" expanded="false" />
-            <element signature="e#20678#20679#0" expanded="false" />
-            <element signature="e#20715#20716#0" expanded="false" />
-            <element signature="e#22696#22697#0" expanded="false" />
-            <element signature="e#22749#22750#0" expanded="false" />
-            <element signature="e#23085#23086#0" expanded="false" />
-            <element signature="e#23155#23156#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DistributionGenerator.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1003">
-          <caret line="60" column="16" lean-forward="false" selection-start-line="60" selection-start-column="16" selection-end-line="60" selection-end-column="27" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ProcessManagerModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="238">
-          <caret line="16" column="19" lean-forward="false" selection-start-line="16" selection-start-column="16" selection-end-line="16" selection-end-column="19" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/QueryProcessingModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1377">
-          <caret line="94" column="21" lean-forward="false" selection-start-line="94" selection-start-column="21" selection-end-line="94" selection-end-column="21" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/ClientConnectionModule.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="68">
-          <caret line="4" column="27" lean-forward="false" selection-start-line="4" selection-start-column="20" selection-end-line="4" selection-end-column="27" />
-          <folding>
-            <element signature="e#5287#5288#0" expanded="true" />
-            <element signature="e#5323#5324#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Event.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="816">
-          <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
-          <folding>
-            <element signature="e#1251#1252#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Query.java">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="646">
-          <caret line="46" column="0" lean-forward="false" selection-start-line="46" selection-start-column="0" selection-end-line="46" selection-end-column="0" />
-          <folding>
-            <element signature="e#1158#1159#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -1536,21 +1140,176 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Simulation.java">
+    <entry file="file://$PROJECT_DIR$/src/ModuleStatistics.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="19" column="29" lean-forward="false" selection-start-line="19" selection-start-column="29" selection-end-line="19" selection-end-column="29" />
+        <state relative-caret-position="306">
+          <caret line="18" column="1" lean-forward="true" selection-start-line="18" selection-start-column="1" selection-end-line="18" selection-end-column="1" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ModuleType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="12" lean-forward="false" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/QueryType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="12" lean-forward="false" selection-start-line="3" selection-start-column="12" selection-end-line="3" selection-end-column="12" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Statistics.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="13" lean-forward="false" selection-start-line="0" selection-start-column="13" selection-end-line="0" selection-end-column="13" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/System.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="85">
+          <caret line="5" column="13" lean-forward="false" selection-start-line="5" selection-start-column="13" selection-end-line="5" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DistributionGenerator.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="549">
+          <caret line="58" column="34" lean-forward="true" selection-start-line="58" selection-start-column="34" selection-end-line="58" selection-end-column="34" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/EventType.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="102">
+          <caret line="6" column="0" lean-forward="false" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Event.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="816">
+          <caret line="56" column="0" lean-forward="false" selection-start-line="56" selection-start-column="0" selection-end-line="56" selection-end-column="0" />
           <folding>
-            <element signature="e#5528#5529#0" expanded="true" />
-            <element signature="e#5556#5557#0" expanded="true" />
+            <element signature="e#1251#1252#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/QueryStatistics.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="782">
+          <caret line="54" column="45" lean-forward="false" selection-start-line="54" selection-start-column="45" selection-end-line="54" selection-end-column="45" />
+          <folding>
+            <element signature="e#2404#2405#0" expanded="false" />
+            <element signature="e#2454#2455#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Query.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="901">
+          <caret line="73" column="0" lean-forward="false" selection-start-line="73" selection-start-column="0" selection-end-line="73" selection-end-column="0" />
+          <folding>
+            <element signature="e#1049#1050#0" expanded="false" />
+            <element signature="e#1076#1077#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ReproduceAudio.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="136">
+          <caret line="15" column="13" lean-forward="false" selection-start-line="15" selection-start-column="13" selection-end-line="15" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ProcessManagerModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1411">
+          <caret line="87" column="24" lean-forward="false" selection-start-line="87" selection-start-column="24" selection-end-line="87" selection-end-column="24" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/TransactionAndDataAccessModule.java">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="55">
-          <caret line="35" column="33" lean-forward="false" selection-start-line="35" selection-start-column="33" selection-end-line="35" selection-end-column="33" />
+        <state relative-caret-position="3060">
+          <caret line="186" column="16" lean-forward="false" selection-start-line="186" selection-start-column="16" selection-end-line="186" selection-end-column="16" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ExecutionModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1581">
+          <caret line="97" column="37" lean-forward="false" selection-start-line="97" selection-start-column="37" selection-end-line="97" selection-end-column="37" />
+          <folding>
+            <element signature="e#3915#3916#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/ClientConnectionModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1394">
+          <caret line="94" column="9" lean-forward="false" selection-start-line="94" selection-start-column="9" selection-end-line="94" selection-end-column="9" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Module.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="816">
+          <caret line="49" column="0" lean-forward="false" selection-start-line="49" selection-start-column="0" selection-end-line="49" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Simulation.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2329">
+          <caret line="145" column="0" lean-forward="false" selection-start-line="145" selection-start-column="0" selection-end-line="145" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/HelloWorl.java" />
+    <entry file="file://$PROJECT_DIR$/src/Main.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="51">
+          <caret line="3" column="13" lean-forward="false" selection-start-line="3" selection-start-column="13" selection-end-line="3" selection-end-column="13" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="jar://$PROJECT_DIR$/velocity-1.7.jar!/org/apache/velocity/runtime/RuntimeInstance.class">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="2176">
+          <caret line="182" column="0" lean-forward="false" selection-start-line="182" selection-start-column="0" selection-end-line="182" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/helloworl.vm" />
+    <entry file="file://$PROJECT_DIR$/src/hello" />
+    <entry file="file://$PROJECT_DIR$/src/helloworld.vm" />
+    <entry file="file://$PROJECT_DIR$/src/HelloWorld.java" />
+    <entry file="file://$PROJECT_DIR$/src/hello.vm" />
+    <entry file="file://$PROJECT_DIR$/src/QueryProcessingModule.java">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="199">
+          <caret line="66" column="15" lean-forward="false" selection-start-line="66" selection-start-column="15" selection-end-line="66" selection-end-column="15" />
           <folding />
         </state>
       </provider>
