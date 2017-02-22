@@ -3,12 +3,10 @@ import java.util.Queue;
 
 public abstract class Module {
     protected Queue<Query> queue;
-    protected Queue<Double> timeQueue;
     protected double accumulatedTimeInQueue;
     protected double accumulatedTimeInService;
     protected int totalProcessedQueries;
     protected double avgTimeInQueue;
-    protected int hasBeenInQueue;
     protected ModuleType type;
     protected int servers;
     protected Module nextModule;
@@ -20,27 +18,32 @@ public abstract class Module {
     protected  double totalIdleTime;
 
     // Statistics
-    protected  double averageQueriesL;
-    protected  double averageQueriesInQueue;
-    protected  double averageQueriesInService;
-    protected  double averageTimeW;
-    protected  double averageTimeInQueue;
-    protected  double averageTimeInService;
+    protected double averageQueriesL;
+    protected double averageQueriesInQueue;
+    protected double averageQueriesInService;
+    protected double averageTimeW;
+    protected double averageTimeInQueue;
+    protected double averageTimeInService;
+    protected double averageServiceTimeMu;
 
-    public abstract void setAverageQueriesL(double avergeQueriesLQ, double avergeQueriesLS ) ;
+    public abstract void computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS);
 
-    public abstract void setAverageQueriesInQueue(List<Query> queryList) ;
+    public abstract void computeAverageQueriesInQueue(List<Query> queryList) ;
 
-    public abstract void setAverageQueriesInService(List<Query> queryList);
+    public abstract void computeAverageQueriesInService(List<Query> queryList);
 
-    public abstract void setAverageTimeW(double avergeTimeWQ , double avergeTimeWS);
+    public abstract void computeAverageTimeW(double averageTimeWQ , double averageTimeWS);
 
-    public abstract void setAverageTimeInQueue(List<Query> queryList);
+    public abstract void computeAverageTimeInQueue(List<Query> queryList);
 
-    public abstract void setAverageTimeInService(List<Query> queryList);
+    public abstract void computeAverageTimeInService(List<Query> queryList);
 
 
 //TODO algoritmo general y métodos abstractos (override)
+
+    public void computeAverageServiceTimeMu(){
+        averageServiceTimeMu = 1/ averageTimeInService;
+    }
 
     public abstract void processArrival(Query query);
 
@@ -49,7 +52,6 @@ public abstract class Module {
     public abstract void processKill(Query query);
 
     public abstract void generateServiceEvent(Query query);
-
 
     public abstract boolean isBusy();
 

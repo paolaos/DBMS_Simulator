@@ -307,36 +307,62 @@ public class TransactionAndDataAccessModule extends Module {
     }
 
     @Override
-    public void setAverageQueriesL(double avergeQueriesLQ, double avergeQueriesLS) {
+    public void computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
 
     }
 
     @Override
-    public void setAverageQueriesInQueue(List<Query> queryList) {
+    public void computeAverageQueriesInQueue(List<Query> queryList) {
 
     }
 
     @Override
-    public void setAverageQueriesInService(List<Query> queryList) {
+    public void computeAverageQueriesInService(List<Query> queryList) {
 
     }
 
     @Override
-    public void setAverageTimeW(double avergeTimeWQ, double avergeTimeWS) {
+    public void computeAverageTimeW(double averageTimeWQ, double averageTimeWS) {
 
     }
 
     @Override
-    public void setAverageTimeInQueue(List<Query> queryList) {
+    public void computeAverageTimeInQueue(List<Query> queryList) {
+        Iterator<Query> iterator = queryList.iterator();
+        int counter=0;
+        double totalTime=0;
 
+        while (iterator.hasNext()){
+            Query query = iterator.next();
+            double entryTimeToQueue=query.getQueryStatistics().getTransactionAndDataAccessStatistics().getTimeOfEntryToQueue();
+            double exitTimeFromQueue=query.getQueryStatistics().getTransactionAndDataAccessStatistics().getTimeOfExitFromQueue();
+            double totalTimeInQueue = exitTimeFromQueue - entryTimeToQueue;
+            if(totalTimeInQueue > 0){
+                counter++;
+                totalTime+=totalTimeInQueue;
+            }
+        }
+        averageTimeInService=totalTime/counter;
     }
+
+
 
     @Override
-    public void setAverageTimeInService(List<Query> queryList) {
+    public void computeAverageTimeInService(List<Query> queryList) {
+        Iterator<Query> iterator = queryList.iterator();
+        int counter=0;
+        double totalTime=0;
 
+        while (iterator.hasNext()){
+            Query query = iterator.next();
+            double entryTimeToServer=query.getQueryStatistics().getTransactionAndDataAccessStatistics().getTimeOfEntryToServer();
+            double exitTimeFromServer=query.getQueryStatistics().getTransactionAndDataAccessStatistics().getTimeOfExitFromModule();
+            double totalTimeInServer = exitTimeFromServer - entryTimeToServer;
+            if(totalTimeInServer > 0){
+                counter++;
+                totalTime+=totalTimeInServer;
+            }
+        }
+        averageTimeInService=totalTime/counter;
     }
-
-
-
-
 }
