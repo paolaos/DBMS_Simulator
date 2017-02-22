@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ProcessManagerModule extends Module{
+
     public ProcessManagerModule(Simulation simulation, Module nextModule){
         this.simulation = simulation;
         this.nextModule = nextModule;
@@ -14,6 +15,7 @@ public class ProcessManagerModule extends Module{
 
     @Override // procesamientode arribo
     public void processArrival(Query query) {
+        query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToModule(simulation.getClock());
         if(this.isBusy()){
             query.setIsInQueue(true);
             queue.offer(query);
@@ -22,9 +24,9 @@ public class ProcessManagerModule extends Module{
             busy = true;
             double normalValue = DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1));
             simulation.addEvent(new Event(simulation.getClock() + normalValue,
-                        query, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
-            query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock()); //TODO revisar esto
-            query.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromModule(simulation.getClock() + normalValue);
+                    query, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
+            query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock());
+
             totalIdleTime+= simulation.getClock()-idleTime;
         }
 
@@ -33,6 +35,7 @@ public class ProcessManagerModule extends Module{
     @Override //procesamiento de salida
     //por Brayan
     public void processDeparture(Query query) {
+        query.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromModule(simulation.getClock());
         if(queue.size() > 0){
             busy = true;
             // 0.316227766 sqrt of 0.1
@@ -40,22 +43,20 @@ public class ProcessManagerModule extends Module{
             Query quer =queue.poll();
             quer.setIsInQueue(false);
             simulation.addEvent(new Event(simulation.getClock() + normalValue,
-                  quer, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
-            query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock()); //TODO revisar esto
-            query.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromModule(simulation.getClock() + normalValue);
+                    quer, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
+
+            quer.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromQueue(simulation.getClock());
+            quer.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock());
         }else {
             busy = false;
             idleTime=simulation.getClock();
         }
-
         if (!query.isKill()) {
             nextModule.generateServiceEvent(query);
-
         }else {
             int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
             simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
         }
-
     }
 
     @Override
@@ -84,17 +85,13 @@ public class ProcessManagerModule extends Module{
     public void generateServiceEvent(Query query) {
         query.setCurrentModule(ModuleType.PROCESS_MANAGER_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.PROCESS_MANAGER_MODULE));
-        query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToModule(simulation.getClock());
         servedQueries++;
     }
-
-
 
     @Override
     public double getNextExitTime() {
         return 0;
     }
-
 
     @Override
     public int getNumberOfFreeServers() {
@@ -110,7 +107,6 @@ public class ProcessManagerModule extends Module{
     public int getServedQueries() {
         return servedQueries;
     }
-
 
     @Override
     public double getIdleTime() {

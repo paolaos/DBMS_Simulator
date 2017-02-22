@@ -5,6 +5,7 @@ import org.apache.velocity.app.VelocityEngine;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.*;
 
 /**
  * Created by Ian on 18/2/2017.
@@ -29,9 +30,15 @@ public class Writer {
         StringWriter sw = new StringWriter();
 
         t.merge(vc, sw);
+        String code = sw.toString();
+        String link = "";
+        for(int i = 1; i <= numberOfSimulations; i++){
+            link += "\t\t<a href=\"simulation " + i + ".html\">Simulation" + i + "</a><br>\n";
+        }
+        code = code.replaceAll("</body>", link + "\n</body>");
         try{
             FileWriter fw = new FileWriter("statistics/index.html");
-            fw.write(sw.toString());
+            fw.write(code);
             fw.flush();
             fw.close();
         }catch(IOException e){

@@ -4,7 +4,6 @@ public class Query implements Comparable<Query>{
     private double totalTime;
     private QueryType type;
     private ModuleType currentModule;
-    private boolean timeOut;
     private QueryStatistics queryStatistics;
     private int id;
     private int numberOfBlocks;
@@ -19,7 +18,6 @@ public class Query implements Comparable<Query>{
         totalTime = 0;
         isInQueue = false;
         this.currentModule = currentModule;
-        timeOut = false;
         numberOfBlocks=0;
         solved = false;
         queryStatistics = new QueryStatistics();
@@ -77,8 +75,9 @@ public class Query implements Comparable<Query>{
     }
 
 
-
-
+    public double getTimeOfEntry() {
+        return timeOfEntry;
+    }
 
     public double getTotalTime() {
         return totalTime;

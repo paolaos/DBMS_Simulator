@@ -21,6 +21,7 @@ public class ExecutionModule extends Module{
 
     @Override
     public void processArrival(Query query) {
+        query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToModule(simulation.getClock());
         if (isBusy()) {
             query.setIsInQueue(true);
             queue.offer(query);
@@ -32,27 +33,27 @@ public class ExecutionModule extends Module{
             double exitTime = simulation.getClock() + getTotalTime(query);
             simulation.addEvent(new Event(exitTime, query, EventType.EXIT, ModuleType.EXECUTION_MODULE));
             query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToServer(simulation.getClock());
-            query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromModule(exitTime);
         }
     }
 
 
     @Override
     public void processDeparture(Query query) {
+        query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromModule(simulation.getClock());
         if(queue.size() > 0){
             double exitTime = simulation.getClock() + getTotalTime(query);
-            Query query1 = queue.poll();
-            query1.setIsInQueue(false);
-            simulation.addEvent(new Event(exitTime, query1, EventType.EXIT, ModuleType.EXECUTION_MODULE)); //TODO hora estaba mala, faltaba sumar el getTotalTime(query)
-            query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToServer(simulation.getClock());
-            query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromModule(exitTime);
+            Query quer = queue.poll();
+            quer.setIsInQueue(false);
+            simulation.addEvent(new Event(exitTime, quer, EventType.EXIT, ModuleType.EXECUTION_MODULE));
+            quer.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromQueue(simulation.getClock());
+            quer.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToServer(simulation.getClock());
         }else {
             currentSentences--;
             if (currentSentences==0)
                 idleTime=simulation.getClock();
+
         }
         query.setSolved(true);
-
         if (!query.isKill()) {
             nextModule.generateServiceEvent(query);
 
@@ -66,7 +67,6 @@ public class ExecutionModule extends Module{
     public void generateServiceEvent(Query query) {
         query.setCurrentModule(ModuleType.EXECUTION_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.EXECUTION_MODULE));
-        query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToModule(simulation.getClock());
         servedQueries++;
     }
 
@@ -83,7 +83,6 @@ public class ExecutionModule extends Module{
             query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromQueue(simulation.getClock());
             int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
             simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
-
         }else {
             //si es el que tiene bloqueado el sistema
             query.setKill(true);
@@ -91,7 +90,6 @@ public class ExecutionModule extends Module{
         //se quita del mapeo porque ya va a morir
         Event killEventToRemove= simulation.getKillEventsTable().get(query.getId());
         simulation.getKillEventsTable().remove(killEventToRemove);
-
     }
 
     @Override

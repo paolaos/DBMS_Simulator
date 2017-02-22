@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html>
+<style>
+    table {
+        border-collapse: collapse;
+        width: 100%;
+    }
+
+    th, td {
+        text-align: left;
+        padding: 8px;
+    }
+
+    tr:nth-child(even) {
+        background-color: #ebefed
+    }
+
+    th {
+        background-color: #c6d1d7;
+        color: #000000;
+    }
+</style>
+<head>
+    <title>Simulation $simulationNumber</title>
+</head>
+<body>
+<h1>
+    Simulation $simulationNumber
+</h1>
+
+<h3>Execution Parameters</h3>
+<p><b>Number of simulations:</b> $numberOfSimulations simulations</p>
+
+<p><b>Maximum time to run the simulation:</b> $maxTimePerSimulation s</p>
+
+<p><b>Number of concurrent connections:</b> $kConnections connections</p>
+
+<p><b>Number of available processes for query processing:</b> $nAvailableProcesses processes</p>
+
+<p><b>Number of available processes for query transactions:</b> $pAvailableProcesses processes</p>
+
+<p><b>Number of available processes for query executions:</b> $mAvailableProcesses processes</p>
+
+<p><b>Connection timeout:</b> $timeout s</p>
+<br>
+
+<h3>Simulation Statistics: </h3>
+
+<p><b>Average queue time in system:</b> $averageTimeInQueue s</p>
+
+<p><b>Average service time in system:</b> $averageTimeInService s</p>
+
+<p><b>Average time in system:</b> $averageTimeInSystem s </p>
+
+<p><b>Average queries in queue:</b> $averageQueriesInQueue queries</p>
+
+<p><b>Average queries in service:</b> $averageQueriesInService queries</p>
+
+<p><b>Average queries in system:</b> $averageQueriesInSystem queries</p>
+
+<p><b>Total idle time:</b> $totalIdleTime s</p>
+
+<p><b>Average query Lifetime:</b> $avgQueryLifetime s</p>
+
+<p><b>Rejected connections:</b> $rejectedConnections connections</p>
+
+<br>
+
+
+<table style="width: 100%">
+    <caption style="font-size:200%"><b> Statistics per module</b>
+
+    </caption>
+    <tr>
+        <th>Data</th>
+        <th>Client Connection Module</th>
+        <th>Process Manager Module</th>
+        <th>Query Processing Module</th>
+        <th>Transaction and Data Access Module</th>
+        <th>Execution Module</th>
+    </tr>
+    <tr>
+        <td>Stability:</td>
+        <td>$clientConnectionStability</td>
+        <td>$processManagerStability</td>
+        <td>$queryProcessingStability</td>
+        <td>$transactionAndDataStability</td>
+        <td>$executionStability</td>
+    </tr>
+    <tr>
+        <td>Arrivals per second:</td>
+        <td>$clientConnectionLambda</td>
+        <td>$processManagerLambda</td>
+        <td>$queryProcessingLambda</td>
+        <td>$transactionAndDataLambda</td>
+        <td>$executionLambda</td>
+    </tr>
+    <tr>
+        <td>Served queries per second:</td>
+        <td>$clientConnectionMu</td>
+        <td>$processManagerMu</td>
+        <td>$queryProcessingMu</td>
+        <td>$transactionAndDataMu</td>
+        <td>$executionMu</td>
+    </tr>
+    <tr>
+        <td>Occupied time:</td>
+        <td>$clientConnectionRho</td>
+        <td>$processManagerRho</td>
+        <td>$queryProcessingRho</td>
+        <td>$transactionAndDataRho</td>
+        <td>$executionRho</td>
+    </tr>
+    <tr>
+        <td>Average queries in system:</td>
+        <td>$clientConnectionL</td>
+        <td>$processManagerL</td>
+        <td>$queryProcessingL</td>
+        <td>$transactionAndDataL</td>
+        <td>$executionL</td>
+    </tr>
+    <tr>
+        <td>Average queries in queue:</td>
+        <td>$clientConnectionLq</td>
+        <td>$processManagerLq</td>
+        <td>$queryProcessingLq</td>
+        <td>$transactionAndDataLq</td>
+        <td>$executionLq</td>
+    </tr>
+    <tr>
+        <td>Average queries in service:</td>
+        <td>$clientConnectionLs</td>
+        <td>$processManagerLs</td>
+        <td>$queryProcessingLs</td>
+        <td>$transactionAndDataLs</td>
+        <td>$executionLs</td>
+    </tr>
+    <tr>
+        <td>Average time in system:</td>
+        <td>$clientConnectionW</td>
+        <td>$processManagerW</td>
+        <td>$queryProcessingW</td>
+        <td>$transactionAndDataW</td>
+        <td>$executionW</td>
+    </tr>
+    <tr>
+        <td>Average time in queue:</td>
+        <td>$clientConnectionWq</td>
+        <td>$processManagerWq</td>
+        <td>$queryProcessingWq</td>
+        <td>$transactionAndDataWq</td>
+        <td>$executionWq</td>
+    </tr>
+    <tr>
+        <td>Average time in service:</td>
+        <td>$clientConnectionWs</td>
+        <td>$processManagerWs</td>
+        <td>$queryProcessingWs</td>
+        <td>$transactionAndDataWs</td>
+        <td>$executionWs</td>
+    </tr>
+    <tr>
+        <td>Average queue size:</td>
+        <td>$clientConnectionQueueSize</td>
+        <td>$processManagerQueueSize</td>
+        <td>$queryProcessingQueueSize</td>
+        <td>$transactionAndDataQueueSize</td>
+        <td>$executionQueueSize</td>
+    </tr>
+</table>
+
+
+</body>
+</html>

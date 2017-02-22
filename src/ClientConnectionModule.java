@@ -44,13 +44,14 @@ public class ClientConnectionModule extends Module{
 
     @Override
     public void processArrival(Query query) {
-       if(query.isSolved())
-           processArrivalLastModule(query);
+        if(query.isSolved()) {
+            processArrivalLastModule(query);
 
-       else
-           processArrivalFirstModule(query);
-            if(currentConnections==0)
-                totalIdleTime+= simulation.getClock()-idleTime;
+        }else {
+            processArrivalFirstModule(query);
+            if (currentConnections == 0)
+                totalIdleTime += simulation.getClock() - idleTime;
+        }
     }
 
     private void processArrivalFirstModule(Query query){
@@ -60,7 +61,8 @@ public class ClientConnectionModule extends Module{
             currentConnections++;
             simulation.addEvent(new Event(simulation.getClock() + getNextExitTime(), query,
                     EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
-            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(this.simulation.getClock());
+            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(simulation.getClock());
+
             allQueries.add(query);
         }
         generateServiceEvent(null);
@@ -95,8 +97,8 @@ public class ClientConnectionModule extends Module{
         Event killEvent =new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), query,
                 EventType.KILL, null);
         simulation.addEvent(killEvent);
-                   //agregar kill con el id del query
-                simulation.getKillEventsTable().put(query.getId(),killEvent);
+        //agregar kill con el id del query
+        simulation.getKillEventsTable().put(query.getId(),killEvent);
     }
 
     @Override
@@ -113,7 +115,7 @@ public class ClientConnectionModule extends Module{
         query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         if (!query.isKill()) {
             nextModule.generateServiceEvent(query);
-           }else {
+        }else {
             currentConnections--;
         }
 
@@ -131,19 +133,18 @@ public class ClientConnectionModule extends Module{
     public void processKill(Query query) {
         //para cuando vaya al siguiente modulo no enviarlo.
         query.setKill(true);
-        }
+    }
 
     private void processDepartureOfSystem(Query query){
         currentConnections--;
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         if (currentConnections==0)
             idleTime=simulation.getClock();
-            //TODO restar tiempo de entrada al sistema
-            query.setTotalTime(simulation.getClock());
-
-            //se elimina el Kill
-            Event eventToRemove = simulation.getKillEventsTable().get(query.getId());
-            simulation.getEventList().remove(eventToRemove);
+        //TODO restar tiempo de entrada al sistema
+        query.setTotalTime(simulation.getClock() - query.getTimeOfEntry());
+        //se elimina el Kill
+        Event eventToRemove = simulation.getKillEventsTable().get(query.getId());
+        simulation.getEventList().remove(eventToRemove);
 
     }
 
@@ -186,153 +187,80 @@ public class ClientConnectionModule extends Module{
     @Override
     public double getDdlAvgTime(List <Query> queryList) {
         double totalTime=0;
-        double arrivalTime=0;
-        double exitTime=0;
+        int ddlCounter=0;
         Iterator<Query> iterator = queryList.iterator();
 
         while (iterator.hasNext()){
             Query query = iterator.next();
             if (query.getQueryType()==QueryType.DDL){
-                arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
-                exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+                double arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
+                double exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
                 totalTime+=exitTime-arrivalTime;
+                ddlCounter++;
 
             }
 
         }
-        return totalTime;
+        return totalTime/ddlCounter;
     }
 
     @Override
     public double getUpdateAvgTime(List <Query> queryList) {
         double totalTime=0;
-        double arrivalTime=0;
-        double exitTime=0;
+        int updateCounter=0;
         Iterator<Query> iterator = queryList.iterator();
 
         while (iterator.hasNext()){
             Query query = iterator.next();
             if (query.getQueryType()==QueryType.UPDATE){
-                    arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
-                    exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
-                    totalTime+=exitTime-arrivalTime;
+                double arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
+                double exitTime=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+                totalTime+=exitTime-arrivalTime;
+                updateCounter++;
             }
-
         }
-        return totalTime;
+        return totalTime/updateCounter;
     }
 
     @Override
     public double getJoinAvgTime(List <Query> queryList) {
         double totalTime=0;
-        double arrivalTime=0;
-        double exitTime=0;
+        int joinCounter=0;
         Iterator<Query> iterator = queryList.iterator();
 
         while (iterator.hasNext()){
             Query query = iterator.next();
             if (query.getQueryType()==QueryType.JOIN){
-                arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
-                exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+
+                double arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
+                double exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
                 totalTime+=exitTime-arrivalTime;
+                joinCounter++;
             }
         }
-        return totalTime;
+        return totalTime/joinCounter;
     }
 
     @Override
     public double getSelectAvgTime(List <Query> queryList) {
         double totalTime=0;
-        double arrivalTime=0;
-        double exitTime=0;
+        int selectCounter=0;
         Iterator<Query> iterator = queryList.iterator();
 
         while (iterator.hasNext()){
             Query query = iterator.next();
             if (query.getQueryType()==QueryType.SELECT){
-                arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
-                exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+                double arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
+                double exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
                 totalTime+=exitTime-arrivalTime;
+                selectCounter++;
             }
         }
-        return totalTime;
+        return totalTime/selectCounter;
     }
 
 
-    public double getDdlAvgTimeExitModule(List <Query> queryList) {
-        double totalTime=0;
-        double arrivalTime=0;
-        double exitTime=0;
-        Iterator<Query> iterator = queryList.iterator();
-
-        while (iterator.hasNext()){
-            Query query = iterator.next();
-            if (query.getQueryType()==QueryType.DDL){
-                arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().getTimeOfEntryToModule();
-                exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().getTimeOfExitFromModule();
-                totalTime+=exitTime-arrivalTime;
-
-            }
-
-        }
-        return totalTime;
-    }
-
-
-    public double getUpdateAvgTimeExitModule(List <Query> queryList) {
-        double totalTime=0;
-        double arrivalTime=0;
-        double exitTime=0;
-        Iterator<Query> iterator = queryList.iterator();
-
-        while (iterator.hasNext()){
-            Query query = iterator.next();
-            if (query.getQueryType()==QueryType.UPDATE){
-                arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().getTimeOfEntryToModule();
-                exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().getTimeOfExitFromModule();
-                totalTime+=exitTime-arrivalTime;
-            }
-
-        }
-        return totalTime;
-    }
-
-
-    public double getJoinAvgTimeExitModule(List <Query> queryList) {
-        double totalTime=0;
-        double arrivalTime=0;
-        double exitTime=0;
-        Iterator<Query> iterator = queryList.iterator();
-
-        while (iterator.hasNext()){
-            Query query = iterator.next();
-            if (query.getQueryType()==QueryType.JOIN){
-                arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().getTimeOfEntryToModule();
-                exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().getTimeOfExitFromModule();
-                totalTime+=exitTime-arrivalTime;
-            }
-        }
-        return totalTime;
-    }
-
-
-    public double getSelectAvgTimeExitModule(List <Query> queryList) {
-        double totalTime=0;
-        double arrivalTime=0;
-        double exitTime=0;
-        Iterator<Query> iterator = queryList.iterator();
-
-        while (iterator.hasNext()){
-            Query query = iterator.next();
-            if (query.getQueryType()==QueryType.SELECT){
-                arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().getTimeOfEntryToModule();
-                exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().getTimeOfExitFromModule();
-                totalTime+=exitTime-arrivalTime;
-            }
-        }
-        return totalTime;
-    }
-
+    //solo primer modulo
     public double getAvgConnectionLife(List<Query> queryList){
         double avgConnectionLife = 0;
         int size = queryList.size();
@@ -349,12 +277,15 @@ public class ClientConnectionModule extends Module{
         averageQueriesL =avergeQueriesLQ+avergeQueriesLS;
     }
 
-    //TODO preguntar a profe sobre este caso
+    //TODO usando valor placeholder
     @Override
     public void setAverageQueriesInQueue(List<Query> queryList) {
         Iterator<Query> iterator = queryList.iterator();
-        Query query;
+        Query query=iterator.next();
 
+        while (iterator.hasNext()){
+
+        }
     }
 
     @Override
@@ -363,8 +294,8 @@ public class ClientConnectionModule extends Module{
     }
 
     @Override
-    public void setAverageTimeW(double avergeTimeWQ, double avergeTimeWS) {
-
+    public void setAverageTimeW(double averageTimeWQ, double averageTimeWS) {
+        averageTimeW = averageTimeWQ + averageTimeWS;
     }
 
     @Override
@@ -377,4 +308,3 @@ public class ClientConnectionModule extends Module{
 
     }
 }
-
