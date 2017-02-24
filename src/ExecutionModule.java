@@ -13,6 +13,7 @@ public class ExecutionModule extends Module{
         queue = new LinkedBlockingQueue<>();
         this.mSentences = mSentences;
         currentSentences = 0;
+        servers=mSentences;
     }
 
 
@@ -121,7 +122,7 @@ public class ExecutionModule extends Module{
         return time;
     }
 
-    public int getCurrentProcesses(){
+    public  int getCurrentProcesses(){
         return currentSentences;
     }
 

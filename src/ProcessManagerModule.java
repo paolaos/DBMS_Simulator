@@ -2,13 +2,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class ProcessManagerModule extends Module{
 
-    public ProcessManagerModule(Simulation simulation, Module nextModule){
+public class ProcessManagerModule extends Module{
+    private int currentSystemCalls;
+    private  int availableSystemCalls;
+    public ProcessManagerModule(Simulation simulation, Module nextModule , int availableSystemCalls){
         this.simulation = simulation;
         this.nextModule = nextModule;
-        queue = new LinkedBlockingQueue<>();
+        this.queue = new LinkedBlockingQueue<>();
         busy = false;
+        totalProcessedQueries=0;
+        currentSystemCalls=0;
+       this.availableSystemCalls=availableSystemCalls;
+       servers=availableSystemCalls;
+
     }
 
     @Override // procesamientode arribo
@@ -19,10 +26,10 @@ public class ProcessManagerModule extends Module{
             queue.offer(query);
             query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToQueue(simulation.getClock());
         }else{
-            busy = true;
+            currentSystemCalls++;
             double normalValue = DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1));
             simulation.addEvent(new Event(simulation.getClock() + normalValue,
-                    query, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
+                        query, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
             query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock());
 
             totalIdleTime+= simulation.getClock()-idleTime;
@@ -36,19 +43,21 @@ public class ProcessManagerModule extends Module{
         totalProcessedQueries++;
         query.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromModule(simulation.getClock());
         if(queue.size() > 0){
-            busy = true;
+
             // 0.316227766 sqrt of 0.1
             double normalValue = DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1));
             Query quer =queue.poll();
             quer.setIsInQueue(false);
             simulation.addEvent(new Event(simulation.getClock() + normalValue,
-                    quer, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
+                  quer, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
 
             quer.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromQueue(simulation.getClock());
             quer.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock());
         }else {
-            busy = false;
+            currentSystemCalls--;
+            if(currentSystemCalls==0)
             idleTime=simulation.getClock();
+
         }
         if (!query.isKill()) {
             nextModule.generateServiceEvent(query);
@@ -78,7 +87,7 @@ public class ProcessManagerModule extends Module{
     }
 
     public boolean isBusy() {
-        return busy;
+        return availableSystemCalls == currentSystemCalls;
     }
 
     @Override

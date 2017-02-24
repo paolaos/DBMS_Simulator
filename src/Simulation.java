@@ -20,13 +20,15 @@ public class Simulation {
     private boolean slowMode;
     private int qDelayTime;
     private int kConnections;
+    private int availableSystemCalls;
     private int nAvailableProcesses;
     private int pQueries;
     private int mSentences;
+    private int killNumber;
     private Hashtable<Integer, Event> killEventsTable;
 
 
-    public Simulation(boolean slowMode, int qDelayTime, int kConnections, int nAvailableProcesses,
+    public Simulation(boolean slowMode, int qDelayTime, int kConnections, int availableSystemCalls, int nAvailableProcesses,
                       int pQueries, int mSentences, double timeout, double timePerTrial){
 
         // Variable initialization
@@ -39,18 +41,20 @@ public class Simulation {
         executionModule = new ExecutionModule(this, mSentences);
         transactionAndDataAccessModule = new TransactionAndDataAccessModule(this, executionModule, pQueries);
         queryProcessingModule = new QueryProcessingModule(this, transactionAndDataAccessModule, nAvailableProcesses);
-        processManagerModule = new ProcessManagerModule(this, queryProcessingModule);
+        processManagerModule = new ProcessManagerModule(this, queryProcessingModule,availableSystemCalls);
         clientConnectionModule = new ClientConnectionModule(this, processManagerModule, kConnections);
         executionModule.setNextModule(clientConnectionModule);
         totalTimeSimulation = 0;
         this.slowMode = slowMode;
         this.qDelayTime = qDelayTime;
         this.kConnections = kConnections;
+        this.availableSystemCalls=availableSystemCalls;
         this.nAvailableProcesses = nAvailableProcesses;
         this.pQueries = pQueries;
         this.mSentences = mSentences;
         clientConnectionModule.generateFirstArrival();
         killEventsTable= new Hashtable<Integer,Event>();
+        killNumber=0;
     }
 
     public Hashtable<Integer, Event> getKillEventsTable() {
@@ -111,7 +115,7 @@ public class Simulation {
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
 
-                transactionAndDataAccessModule.processDeparture(event.getQuery());
+                    transactionAndDataAccessModule.processDeparture(event.getQuery());
                 break;
 
             case EXECUTION_MODULE:
@@ -147,7 +151,6 @@ public class Simulation {
         }
 
     }
-
     public String getData(Event event){
 
         String parameters = "Available connections(k): "+ clientConnectionModule.servers +
@@ -212,7 +215,7 @@ public class Simulation {
                     break;
 
                 case KILL:
-                    manageKillEvent(e);
+                  manageKillEvent(e);
                     break;
             }
         }
@@ -257,7 +260,7 @@ public class Simulation {
 
     public static void main(String[]args){
         java.lang.System.out.println("Simulación DBMS");
-        Simulation s = new Simulation(false, 0, 15, 3, 2, 1, 15, 15000);
+        Simulation s = new Simulation(false, 0, 15,1, 3, 2, 1, 15, 15000);
         s.startSimulation();
 
         System.out.println("Conexiones actuales "+ s.clientConnectionModule.getCurrentConnections());

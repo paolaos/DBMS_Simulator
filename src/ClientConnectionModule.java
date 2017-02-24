@@ -13,6 +13,7 @@ public class ClientConnectionModule extends Module{
     private int currentConnections;
     private int currentId;
     private double averageQueryLifetime;
+    private int totalProcessedQueriesFromLastModule;
 
     public ClientConnectionModule(Simulation simulation, Module nextModule, int kConnections){
         this.simulation = simulation;
@@ -26,6 +27,9 @@ public class ClientConnectionModule extends Module{
         idleTime=0;
         totalIdleTime=0;
         averageQueryLifetime = 0;
+        totalProcessedQueriesFromLastModule=0;
+        totalProcessedQueries=0;
+        servers=kConnections;
     }
 
     public int getRejectedConnections() {
@@ -43,18 +47,18 @@ public class ClientConnectionModule extends Module{
 
     @Override
     public void processArrival(Query query) {
-        if(query.isSolved()) {
-            processArrivalLastModule(query);
+       if(query.isSolved()) {
+           processArrivalLastModule(query);
 
-        }else {
-            processArrivalFirstModule(query);
-            if (currentConnections == 0)
-                totalIdleTime += simulation.getClock() - idleTime;
-        }
+       }else {
+           processArrivalFirstModule(query);
+           if (currentConnections == 0)
+               totalIdleTime += simulation.getClock() - idleTime;
+       }
     }
 
     private void processArrivalFirstModule(Query query){
-        if(isBusy())
+         if(isBusy())
             rejectedConnections++;
         else {
             currentConnections++;
@@ -96,8 +100,8 @@ public class ClientConnectionModule extends Module{
         Event killEvent =new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), query,
                 EventType.KILL, null);
         simulation.addEvent(killEvent);
-        //agregar kill con el id del query
-        simulation.getKillEventsTable().put(query.getId(),killEvent);
+                   //agregar kill con el id del query
+                simulation.getKillEventsTable().put(query.getId(),killEvent);
     }
 
     @Override
@@ -115,7 +119,8 @@ public class ClientConnectionModule extends Module{
         totalProcessedQueries++;
         if (!query.isKill()) {
             nextModule.generateServiceEvent(query);
-        }else {
+
+           }else {
             currentConnections--;
         }
 
@@ -138,14 +143,14 @@ public class ClientConnectionModule extends Module{
     private void processDepartureOfSystem(Query query){
         currentConnections--;
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
-        totalProcessedQueries++;
+        totalProcessedQueriesFromLastModule++;
         if (currentConnections==0)
             idleTime=simulation.getClock();
-        //TODO restar tiempo de entrada al sistema
-        query.setTotalTime(simulation.getClock() - query.getTimeOfEntry());
-        //se elimina el Kill
-        Event eventToRemove = simulation.getKillEventsTable().get(query.getId());
-        simulation.getEventList().remove(eventToRemove);
+            //TODO restar tiempo de entrada al sistema
+            query.setTotalTime(simulation.getClock() - query.getTimeOfEntry());
+            //se elimina el Kill
+            Event eventToRemove = simulation.getKillEventsTable().get(query.getId());
+            simulation.getEventList().remove(eventToRemove);
 
     }
 
@@ -217,7 +222,7 @@ public class ClientConnectionModule extends Module{
                 double arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
                 double exitTime=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
                 totalTime+=exitTime-arrivalTime;
-                updateCounter++;
+                 updateCounter++;
             }
         }
         this.updateAvgTime = totalTime/updateCounter;
@@ -226,7 +231,7 @@ public class ClientConnectionModule extends Module{
     @Override
     public void computeJoinAvgTime(List <Query> queryList) {
         double totalTime=0;
-        int joinCounter=0;
+       int joinCounter=0;
         Iterator<Query> iterator = queryList.iterator();
 
         while (iterator.hasNext()){
@@ -261,7 +266,7 @@ public class ClientConnectionModule extends Module{
     }
 
 
-    //solo primer modulo
+   //solo primer modulo
     public void computeAverageQueryLifetime(List<Query> queryList){
         double avgConnectionLife = 0;
         int size = queryList.size();
@@ -286,8 +291,7 @@ public class ClientConnectionModule extends Module{
     @Override
     public void computeAverageQueriesInQueue(List<Query> queryList) {
         Iterator<Query> iterator = queryList.iterator();
-        Query query=iterator.next();
-
+        Query query = iterator.next();
         while (iterator.hasNext()){
 
         }
@@ -323,6 +327,7 @@ public class ClientConnectionModule extends Module{
     }
 
 
+
     @Override
     public void computeAverageTimeInService(List<Query> queryList) {
         Iterator<Query> iterator = queryList.iterator();
@@ -342,3 +347,4 @@ public class ClientConnectionModule extends Module{
         averageTimeInService=totalTime/counter;
     }
 }
+

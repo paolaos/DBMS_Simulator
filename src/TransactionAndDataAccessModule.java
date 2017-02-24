@@ -18,6 +18,7 @@ public class TransactionAndDataAccessModule extends Module {
         currentProcessedQueries = 0;
         pendingQuery = null;
         blocked = false; //booleano para caso DDL
+        servers =pQueries;
     }
 
     @Override
@@ -104,23 +105,24 @@ public class TransactionAndDataAccessModule extends Module {
             }else{
                 simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,
                         pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
-                pendingQuery = null;
+
                 currentProcessedQueries++;
                 pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromQueue(simulation.getClock());
                 pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToServer(simulation.getClock());
+                pendingQuery = null;
             }
         } else {
             if (currentProcessedQueries == 0 ){
                 if(blocked) {
-                    //Ejecuta consulta pendinte
+                //Ejecuta consulta pendinte
                     simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,
-                            pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
-                    currentProcessedQueries++;
-                    pendingQuery = null;
+                        pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                        currentProcessedQueries++;
                     pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromQueue(simulation.getClock());
                     pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToServer(simulation.getClock());
+                    pendingQuery = null;
                 }else {
-                    idleTime=simulation.getClock();
+                idleTime=simulation.getClock();
                 }
             }
         }
@@ -214,13 +216,13 @@ public class TransactionAndDataAccessModule extends Module {
         return 0;
     }
 
-    public int getCurrentProcesses(){
+    public  int getCurrentProcesses(){
         return currentProcessedQueries;
     }
 
     @Override
     public int getNumberOfFreeServers() {
-        return pQueries - currentProcessedQueries;
+       return pQueries - currentProcessedQueries;
     }
 
     @Override

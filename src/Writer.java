@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.lang.*;
 
 /**
  * Created by Ian on 18/2/2017.
@@ -62,3 +63,5 @@ public class Writer {
         Writer.writeIndex(5, 2.345, 3, 5, 6, 1, 5, 3.444);
     }
 }
+
+
