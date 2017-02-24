@@ -111,15 +111,15 @@ public class TransactionAndDataAccessModule extends Module {
         } else {
             if (currentProcessedQueries == 0 ){
                 if(blocked) {
-                //Ejecuta consulta pendinte
+                    //Ejecuta consulta pendinte
                     simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,
-                        pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
-                        currentProcessedQueries++;
-                pendingQuery = null;
+                            pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                    currentProcessedQueries++;
+                    pendingQuery = null;
                     pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromQueue(simulation.getClock());
                     pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToServer(simulation.getClock());
-            }else {
-                idleTime=simulation.getClock();
+                }else {
+                    idleTime=simulation.getClock();
                 }
             }
         }
@@ -234,7 +234,7 @@ public class TransactionAndDataAccessModule extends Module {
     }
 
     @Override
-    public double getDdlAvgTime(List<Query> queryList) {
+    public void computeDdlAvgTime(List<Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -248,11 +248,11 @@ public class TransactionAndDataAccessModule extends Module {
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        this.ddlAvgTime = totalTime;
     }
 
     @Override
-    public double getUpdateAvgTime(List <Query> queryList) {
+    public void computeUpdateAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -267,11 +267,11 @@ public class TransactionAndDataAccessModule extends Module {
             }
 
         }
-        return totalTime;
+        this.updateAvgTime = totalTime;
     }
 
     @Override
-    public double getJoinAvgTime(List <Query> queryList) {
+    public void computeJoinAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -285,11 +285,11 @@ public class TransactionAndDataAccessModule extends Module {
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        this.joinAvgTime = totalTime;
     }
 
     @Override
-    public double getSelectAvgTime(List <Query> queryList) {
+    public void computeSelectAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -303,40 +303,66 @@ public class TransactionAndDataAccessModule extends Module {
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        this.selectAvgTime = totalTime;
     }
 
     @Override
-    public void setAverageQueriesL(double avergeQueriesLQ, double avergeQueriesLS) {
-
-    }
-
-    @Override
-    public void setAverageQueriesInQueue(List<Query> queryList) {
+    public void computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
 
     }
 
     @Override
-    public void setAverageQueriesInService(List<Query> queryList) {
+    public void computeAverageQueriesInQueue(List<Query> queryList) {
 
     }
 
     @Override
-    public void setAverageTimeW(double avergeTimeWQ, double avergeTimeWS) {
+    public void computeAverageQueriesInService(List<Query> queryList) {
 
     }
 
     @Override
-    public void setAverageTimeInQueue(List<Query> queryList) {
+    public void computeAverageTimeW(double averageTimeWQ, double averageTimeWS) {
 
     }
 
     @Override
-    public void setAverageTimeInService(List<Query> queryList) {
+    public void computeAverageTimeInQueue(List<Query> queryList) {
+        Iterator<Query> iterator = queryList.iterator();
+        int counter=0;
+        double totalTime=0;
 
+        while (iterator.hasNext()){
+            Query query = iterator.next();
+            double entryTimeToQueue=query.getQueryStatistics().getTransactionAndDataAccessStatistics().getTimeOfEntryToQueue();
+            double exitTimeFromQueue=query.getQueryStatistics().getTransactionAndDataAccessStatistics().getTimeOfExitFromQueue();
+            double totalTimeInQueue = exitTimeFromQueue - entryTimeToQueue;
+            if(totalTimeInQueue > 0){
+                counter++;
+                totalTime+=totalTimeInQueue;
+            }
+        }
+        averageTimeInService=totalTime/counter;
     }
 
 
 
+    @Override
+    public void computeAverageTimeInService(List<Query> queryList) {
+        Iterator<Query> iterator = queryList.iterator();
+        int counter=0;
+        double totalTime=0;
 
+        while (iterator.hasNext()){
+            Query query = iterator.next();
+            double entryTimeToServer=query.getQueryStatistics().getTransactionAndDataAccessStatistics().getTimeOfEntryToServer();
+            double exitTimeFromServer=query.getQueryStatistics().getTransactionAndDataAccessStatistics().getTimeOfExitFromModule();
+            double totalTimeInServer = exitTimeFromServer - entryTimeToServer;
+            if(totalTimeInServer > 0){
+                counter++;
+                totalTime+=totalTimeInServer;
+            }
+        }
+        averageTimeInService=totalTime/counter;
+    }
 }

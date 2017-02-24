@@ -19,12 +19,15 @@ public class Simulation {
     private double totalTimeSimulation;
     private boolean slowMode;
     private int qDelayTime;
-    private Statistics statistics;
+    private int kConnections;
+    private int nAvailableProcesses;
+    private int pQueries;
+    private int mSentences;
     private Hashtable<Integer, Event> killEventsTable;
 
 
     public Simulation(boolean slowMode, int qDelayTime, int kConnections, int nAvailableProcesses,
-                      int pQueries, int mSentences, double timeout, Statistics statistics, double timePerTrial){
+                      int pQueries, int mSentences, double timeout, double timePerTrial){
 
         // Variable initialization
         this.timeout = timeout;
@@ -42,7 +45,10 @@ public class Simulation {
         totalTimeSimulation = 0;
         this.slowMode = slowMode;
         this.qDelayTime = qDelayTime;
-        this.statistics = statistics;
+        this.kConnections = kConnections;
+        this.nAvailableProcesses = nAvailableProcesses;
+        this.pQueries = pQueries;
+        this.mSentences = mSentences;
         clientConnectionModule.generateFirstArrival();
         killEventsTable= new Hashtable<Integer,Event>();
     }
@@ -105,7 +111,7 @@ public class Simulation {
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
 
-                    transactionAndDataAccessModule.processDeparture(event.getQuery());
+                transactionAndDataAccessModule.processDeparture(event.getQuery());
                 break;
 
             case EXECUTION_MODULE:
@@ -161,11 +167,14 @@ public class Simulation {
                     break;
 
                 case KILL:
-                  manageKillEvent(e);
+                    manageKillEvent(e);
                     break;
             }
         }
     }
+
+
+
 
     public void runSimulation(){}
 
@@ -185,9 +194,25 @@ public class Simulation {
         return clientConnectionModule;
     }
 
+    public ProcessManagerModule getProcessManagerModule() {
+        return processManagerModule;
+    }
+
+    public QueryProcessingModule getQueryProcessingModule() {
+        return queryProcessingModule;
+    }
+
+    public TransactionAndDataAccessModule getTransactionAndDataAccessModule() {
+        return transactionAndDataAccessModule;
+    }
+
+    public ExecutionModule getExecutionModule() {
+        return executionModule;
+    }
+
     public static void main(String[]args){
         java.lang.System.out.println("Simulación DBMS");
-        Simulation s = new Simulation(false, 0, 15, 3, 2, 1, 15, null, 15000);
+        Simulation s = new Simulation(false, 0, 15, 3, 2, 1, 15, 15000);
         s.startSimulation();
 
         System.out.println("Conexiones actuales "+ s.clientConnectionModule.getCurrentConnections());
@@ -200,4 +225,39 @@ public class Simulation {
 
     }
 
+    public int getNumberOfTrials() {
+        return numberOfTrials;
+    }
+
+    public double getTimePerTrial() {
+        return timePerTrial;
+    }
+
+    public double getTotalTimeSimulation() {
+        return totalTimeSimulation;
+    }
+
+    public boolean isSlowMode() {
+        return slowMode;
+    }
+
+    public int getqDelayTime() {
+        return qDelayTime;
+    }
+
+    public int getkConnections() {
+        return kConnections;
+    }
+
+    public int getnAvailableProcesses() {
+        return nAvailableProcesses;
+    }
+
+    public int getpQueries() {
+        return pQueries;
+    }
+
+    public int getmSentences() {
+        return mSentences;
+    }
 }

@@ -41,11 +41,11 @@ public class System {
 
     public void startSimulations(){
         for(int i = 0; i < numberOfSimulations; i++){
-            Statistics currentStatistics = new Statistics();
+            //Statistics currentStatistics = new Statistics();
             //Simulation currentSimulation = new Simulation(slowMode, qDelayTime, currentStatistics);
             //currentSimulation.runSimulation();
             //currentSimulation.fillStatistics(currentStatistics);
-            allStatistics.add(currentStatistics);
+            //allStatistics.add(currentStatistics);
         }
     }
 

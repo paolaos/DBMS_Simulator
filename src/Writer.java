@@ -1,7 +1,8 @@
-import org.apache.velocity.Template;
-import org.apache.velocity.VelocityContext;
-import org.apache.velocity.app.VelocityEngine;
+//import org.apache.velocity.Template;
+//import org.apache.velocity.VelocityContext;
+//import org.apache.velocity.app.VelocityEngine;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
@@ -14,7 +15,7 @@ public class Writer {
     public static void writeIndex(int numberOfSimulations, double maxTimePerSimulation, int kConnections,
                                   int nAvailableProcesses, int pAvailableProcesses, int mAvailableProcesses, double timeout){
 
-        VelocityEngine ve = new VelocityEngine();
+        /*VelocityEngine ve = new VelocityEngine();
         ve.init();
 
         Template t = ve.getTemplate("templates/IndexTemplate.html");
@@ -33,7 +34,16 @@ public class Writer {
         String code = sw.toString();
         String link = "";
         for(int i = 1; i <= numberOfSimulations; i++){
-            link += "\t\t<a href=\"simulation " + i + ".html\">Simulation" + i + "</a><br>\n";
+            String path = "statistics/simulation" + i + ".html";
+            link += "\t\t<a href=" + path + ">Simulation" + i + "</a><br>\n";
+            File file = new File(path);
+            if(!file.exists()){
+                try{
+                    file.createNewFile();
+                }catch(Exception e){
+                    e.printStackTrace();
+                }
+            }
         }
         code = code.replaceAll("</body>", link + "\n</body>");
         try{
@@ -43,7 +53,7 @@ public class Writer {
             fw.close();
         }catch(IOException e){
             e.printStackTrace();
-        }
+        }*/
     }
 
     public static void main(String... args){

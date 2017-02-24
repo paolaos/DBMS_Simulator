@@ -5,13 +5,14 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientConnectionModule extends Module{
-    private List<Query> allQueries;
     public static final double LAMBDA = 0.58333333;
+    private List<Query> allQueries;
+    private ModuleStatistics lastModuleStatistics;
     private int kConnections;
     private int rejectedConnections;
     private int currentConnections;
     private int currentId;
-
+    private double averageQueryLifetime;
 
     public ClientConnectionModule(Simulation simulation, Module nextModule, int kConnections){
         this.simulation = simulation;
@@ -19,14 +20,12 @@ public class ClientConnectionModule extends Module{
         this.kConnections = kConnections;
         allQueries = new LinkedList<>();
         queue = new LinkedBlockingQueue<>();
-        timeQueue = new LinkedBlockingQueue<>();
         currentId = 1;
         rejectedConnections = 0;
         currentConnections = 0;
-        hasBeenInQueue = 0;
         idleTime=0;
         totalIdleTime=0;
-
+        averageQueryLifetime = 0;
     }
 
     public int getRejectedConnections() {
@@ -44,18 +43,18 @@ public class ClientConnectionModule extends Module{
 
     @Override
     public void processArrival(Query query) {
-       if(query.isSolved()) {
-           processArrivalLastModule(query);
+        if(query.isSolved()) {
+            processArrivalLastModule(query);
 
-       }else {
-           processArrivalFirstModule(query);
-           if (currentConnections == 0)
-               totalIdleTime += simulation.getClock() - idleTime;
-       }
+        }else {
+            processArrivalFirstModule(query);
+            if (currentConnections == 0)
+                totalIdleTime += simulation.getClock() - idleTime;
+        }
     }
 
     private void processArrivalFirstModule(Query query){
-         if(isBusy())
+        if(isBusy())
             rejectedConnections++;
         else {
             currentConnections++;
@@ -97,8 +96,8 @@ public class ClientConnectionModule extends Module{
         Event killEvent =new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), query,
                 EventType.KILL, null);
         simulation.addEvent(killEvent);
-                   //agregar kill con el id del query
-                simulation.getKillEventsTable().put(query.getId(),killEvent);
+        //agregar kill con el id del query
+        simulation.getKillEventsTable().put(query.getId(),killEvent);
     }
 
     @Override
@@ -115,7 +114,7 @@ public class ClientConnectionModule extends Module{
         query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         if (!query.isKill()) {
             nextModule.generateServiceEvent(query);
-           }else {
+        }else {
             currentConnections--;
         }
 
@@ -140,11 +139,11 @@ public class ClientConnectionModule extends Module{
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         if (currentConnections==0)
             idleTime=simulation.getClock();
-            //TODO restar tiempo de entrada al sistema
-            query.setTotalTime(simulation.getClock() - query.getTimeOfEntry());
-            //se elimina el Kill
-            Event eventToRemove = simulation.getKillEventsTable().get(query.getId());
-            simulation.getEventList().remove(eventToRemove);
+        //TODO restar tiempo de entrada al sistema
+        query.setTotalTime(simulation.getClock() - query.getTimeOfEntry());
+        //se elimina el Kill
+        Event eventToRemove = simulation.getKillEventsTable().get(query.getId());
+        simulation.getEventList().remove(eventToRemove);
 
     }
 
@@ -185,7 +184,7 @@ public class ClientConnectionModule extends Module{
     }
 
     @Override
-    public double getDdlAvgTime(List <Query> queryList) {
+    public void computeDdlAvgTime(List <Query> queryList) {
         double totalTime=0;
         int ddlCounter=0;
         Iterator<Query> iterator = queryList.iterator();
@@ -201,11 +200,11 @@ public class ClientConnectionModule extends Module{
             }
 
         }
-        return totalTime/ddlCounter;
+        this.ddlAvgTime = totalTime/ddlCounter;
     }
 
     @Override
-    public double getUpdateAvgTime(List <Query> queryList) {
+    public void computeUpdateAvgTime(List <Query> queryList) {
         double totalTime=0;
         int updateCounter=0;
         Iterator<Query> iterator = queryList.iterator();
@@ -216,16 +215,16 @@ public class ClientConnectionModule extends Module{
                 double arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
                 double exitTime=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
                 totalTime+=exitTime-arrivalTime;
-                 updateCounter++;
+                updateCounter++;
             }
         }
-        return totalTime/updateCounter;
+        this.updateAvgTime = totalTime/updateCounter;
     }
 
     @Override
-    public double getJoinAvgTime(List <Query> queryList) {
+    public void computeJoinAvgTime(List <Query> queryList) {
         double totalTime=0;
-       int joinCounter=0;
+        int joinCounter=0;
         Iterator<Query> iterator = queryList.iterator();
 
         while (iterator.hasNext()){
@@ -238,11 +237,11 @@ public class ClientConnectionModule extends Module{
                 joinCounter++;
             }
         }
-        return totalTime/joinCounter;
+        this.joinAvgTime = totalTime/joinCounter;
     }
 
     @Override
-    public double getSelectAvgTime(List <Query> queryList) {
+    public void computeSelectAvgTime(List <Query> queryList) {
         double totalTime=0;
         int selectCounter=0;
         Iterator<Query> iterator = queryList.iterator();
@@ -256,30 +255,34 @@ public class ClientConnectionModule extends Module{
                 selectCounter++;
             }
         }
-        return totalTime/selectCounter;
+        this.selectAvgTime = totalTime/selectCounter;
     }
 
 
-   //solo primer modulo
-    public double getAvgConnectionLife(List<Query> queryList){
+    //solo primer modulo
+    public void computeAverageQueryLifetime(List<Query> queryList){
         double avgConnectionLife = 0;
         int size = queryList.size();
         for(int i = 0; i < size; i++){
             avgConnectionLife += queryList.get(i).getTotalTime();
         }
 
-        return avgConnectionLife / size;
+        averageQueryLifetime = avgConnectionLife / size;
+    }
+
+    public double getAverageQueryLifetime(){
+        return averageQueryLifetime;
     }
 
 
     @Override
-    public void setAverageQueriesL(double avergeQueriesLQ, double avergeQueriesLS) {
-        averageQueriesL =avergeQueriesLQ+avergeQueriesLS;
+    public void computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
+        averageQueriesL = averageQueriesLQ + averageQueriesLS;
     }
 
     //TODO usando valor placeholder
     @Override
-    public void setAverageQueriesInQueue(List<Query> queryList) {
+    public void computeAverageQueriesInQueue(List<Query> queryList) {
         Iterator<Query> iterator = queryList.iterator();
         Query query=iterator.next();
 
@@ -289,22 +292,52 @@ public class ClientConnectionModule extends Module{
     }
 
     @Override
-    public void setAverageQueriesInService(List<Query> queryList) {
+    public void computeAverageQueriesInService(List<Query> queryList) {
 
     }
 
     @Override
-    public void setAverageTimeW(double averageTimeWQ, double averageTimeWS) {
+    public void computeAverageTimeW(double averageTimeWQ, double averageTimeWS) {
         averageTimeW = averageTimeWQ + averageTimeWS;
     }
 
     @Override
-    public void setAverageTimeInQueue(List<Query> queryList) {
+    public void computeAverageTimeInQueue(List<Query> queryList) {
+        Iterator<Query> iterator = queryList.iterator();
+        int counter=0;
+        double totalTime=0;
 
+        while (iterator.hasNext()){
+            Query query = iterator.next();
+            double entryTimeToQueue=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToQueue();
+            double exitTimeFromQueue=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromQueue();
+            double totalTimeInQueue = exitTimeFromQueue - entryTimeToQueue;
+            if(totalTimeInQueue > 0){
+                counter++;
+                totalTime+=totalTimeInQueue;
+            }
+        }
+        averageTimeInService=totalTime/counter;
     }
 
-    @Override
-    public void setAverageTimeInService(List<Query> queryList) {
 
+
+    @Override
+    public void computeAverageTimeInService(List<Query> queryList) {
+        Iterator<Query> iterator = queryList.iterator();
+        int counter=0;
+        double totalTime=0;
+
+        while (iterator.hasNext()){
+            Query query = iterator.next();
+            double entryTimeToServer=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToServer();
+            double exitTimeFromServer=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+            double totalTimeInServer = exitTimeFromServer - entryTimeToServer;
+            if(totalTimeInServer > 0){
+                counter++;
+                totalTime+=totalTimeInServer;
+            }
+        }
+        averageTimeInService=totalTime/counter;
     }
 }
