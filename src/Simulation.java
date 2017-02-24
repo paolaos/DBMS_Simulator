@@ -167,9 +167,6 @@ public class Simulation {
         }
     }
 
-
-
-
     public void runSimulation(){}
 
     public void fillStatistics(Statistics statistics){

@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ProcessManagerModule extends Module{
+
     public ProcessManagerModule(Simulation simulation, Module nextModule){
         this.simulation = simulation;
         this.nextModule = nextModule;
