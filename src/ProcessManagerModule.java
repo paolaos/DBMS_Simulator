@@ -24,7 +24,7 @@ public class ProcessManagerModule extends Module{
             busy = true;
             double normalValue = DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1));
             simulation.addEvent(new Event(simulation.getClock() + normalValue,
-                    query, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
+                        query, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
             query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock());
 
             totalIdleTime+= simulation.getClock()-idleTime;
@@ -43,7 +43,7 @@ public class ProcessManagerModule extends Module{
             Query quer =queue.poll();
             quer.setIsInQueue(false);
             simulation.addEvent(new Event(simulation.getClock() + normalValue,
-                    quer, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
+                  quer, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
 
             quer.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromQueue(simulation.getClock());
             quer.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock());
@@ -53,6 +53,7 @@ public class ProcessManagerModule extends Module{
         }
         if (!query.isKill()) {
             nextModule.generateServiceEvent(query);
+
         }else {
             int actualConnections=simulation.getClientConnectionModule().getCurrentConnections()-1;
             simulation.getClientConnectionModule().setCurrentConnections(actualConnections);

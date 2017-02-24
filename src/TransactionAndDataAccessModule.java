@@ -111,15 +111,15 @@ public class TransactionAndDataAccessModule extends Module {
         } else {
             if (currentProcessedQueries == 0 ){
                 if(blocked) {
-                    //Ejecuta consulta pendinte
+                //Ejecuta consulta pendinte
                     simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,
-                            pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
-                    currentProcessedQueries++;
-                    pendingQuery = null;
+                        pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
+                        currentProcessedQueries++;
+                pendingQuery = null;
                     pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromQueue(simulation.getClock());
                     pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToServer(simulation.getClock());
-                }else {
-                    idleTime=simulation.getClock();
+            }else {
+                idleTime=simulation.getClock();
                 }
             }
         }

@@ -59,7 +59,7 @@ public class QueryProcessingModule extends Module {
             Query query1 =queue.poll();
             query1.setIsInQueue(false);
             simulation.addEvent(new Event(simulation.getClock()+ exitTime,
-                    query1, EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
+                                query1, EventType.EXIT, ModuleType.QUERY_PROCESSING_MODULE));
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfExitFromQueue(simulation.getClock());
             query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToServer(simulation.getClock());
         }else {
@@ -91,7 +91,7 @@ public class QueryProcessingModule extends Module {
             //matar proceso en cambio de modulo
             query.setKill(true);
         }
-        //quitar del mapeo
+            //quitar del mapeo
         Event killEventToRemove = simulation.getKillEventsTable().get(query.getId());
         simulation.getKillEventsTable().remove(killEventToRemove);
 
@@ -99,7 +99,7 @@ public class QueryProcessingModule extends Module {
 
     @Override
     public boolean isBusy() {
-        return nAvailableProcesses == currentProcesses;
+       return nAvailableProcesses == currentProcesses;
     }
 
     @Override
@@ -143,7 +143,7 @@ public class QueryProcessingModule extends Module {
 
     @Override
     public int getQueueSize() {
-        return queue.size();
+       return queue.size();
     }
 
     @Override

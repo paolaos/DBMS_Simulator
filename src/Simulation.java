@@ -74,6 +74,8 @@ public class Simulation {
                 break;
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
+
+
                 transactionAndDataAccessModule.processArrival(event.getQuery());
 
                 break;
@@ -103,7 +105,7 @@ public class Simulation {
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
 
-                transactionAndDataAccessModule.processDeparture(event.getQuery());
+                    transactionAndDataAccessModule.processDeparture(event.getQuery());
                 break;
 
             case EXECUTION_MODULE:
@@ -129,6 +131,7 @@ public class Simulation {
                 break;
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
+
                 transactionAndDataAccessModule.processKill(event.getQuery());
                 break;
 
@@ -158,7 +161,7 @@ public class Simulation {
                     break;
 
                 case KILL:
-                    manageKillEvent(e);
+                  manageKillEvent(e);
                     break;
             }
         }

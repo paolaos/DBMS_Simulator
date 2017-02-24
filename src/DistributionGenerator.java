@@ -58,7 +58,7 @@ public class DistributionGenerator {
     public static double getNextRandomValueByExponential(double lambda) {
         Random rnd = new Random();
         double r = rnd.nextDouble();
-        return - Math.log(r)/ (lambda);
+        return -Math.log(r)/ (lambda);
     }
 
     public static double getNextRandomValueByNormal(double average, double standardDeviation) {
