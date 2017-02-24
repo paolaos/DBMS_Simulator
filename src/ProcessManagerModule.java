@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ProcessManagerModule extends Module{
+
     public ProcessManagerModule(Simulation simulation, Module nextModule){
         this.simulation = simulation;
         this.nextModule = nextModule;
@@ -32,6 +33,7 @@ public class ProcessManagerModule extends Module{
     @Override //procesamiento de salida
     //por Brayan
     public void processDeparture(Query query) {
+        totalProcessedQueries++;
         query.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromModule(simulation.getClock());
         if(queue.size() > 0){
             busy = true;

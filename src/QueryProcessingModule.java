@@ -21,6 +21,7 @@ public class QueryProcessingModule extends Module {
     public int getCurrentProcesses() {
         return currentProcesses;
     }
+
     @Override
     public void processArrival(Query query) {
         query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToModule(simulation.getClock());
@@ -51,6 +52,7 @@ public class QueryProcessingModule extends Module {
     //Se saca de la cola el siguiente y el query que llega de parámetro se envia al siguiente modulo
     @Override
     public void processDeparture(Query query) {
+        totalProcessedQueries++;
         query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToModule(simulation.getClock());
         if(queue.size()>0){
             double exitTime = timeInQueryProcessingModule(queue.peek().getQueryType());

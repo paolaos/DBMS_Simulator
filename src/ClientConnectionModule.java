@@ -112,6 +112,7 @@ public class ClientConnectionModule extends Module{
 
     private void processDepartureToNextModule(Query  query){
         query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
+        totalProcessedQueries++;
         if (!query.isKill()) {
             nextModule.generateServiceEvent(query);
         }else {
@@ -137,6 +138,7 @@ public class ClientConnectionModule extends Module{
     private void processDepartureOfSystem(Query query){
         currentConnections--;
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
+        totalProcessedQueries++;
         if (currentConnections==0)
             idleTime=simulation.getClock();
         //TODO restar tiempo de entrada al sistema
@@ -319,7 +321,6 @@ public class ClientConnectionModule extends Module{
         }
         averageTimeInService=totalTime/counter;
     }
-
 
 
     @Override

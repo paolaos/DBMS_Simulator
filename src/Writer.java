@@ -1,21 +1,20 @@
-//import org.apache.velocity.Template;
-//import org.apache.velocity.VelocityContext;
-//import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.Template;
+import org.apache.velocity.VelocityContext;
+import org.apache.velocity.app.VelocityEngine;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
-import java.lang.*;
 
 /**
  * Created by Ian on 18/2/2017.
  */
 public class Writer {
-    public static void writeIndex(int numberOfSimulations, double maxTimePerSimulation, int kConnections,
+    public static void writeIndex(int numberOfSimulations, double maxTimePerSimulation, int kConnections, int systemCalls,
                                   int nAvailableProcesses, int pAvailableProcesses, int mAvailableProcesses, double timeout){
 
-        /*VelocityEngine ve = new VelocityEngine();
+        VelocityEngine ve = new VelocityEngine();
         ve.init();
 
         Template t = ve.getTemplate("templates/IndexTemplate.html");
@@ -24,6 +23,7 @@ public class Writer {
         vc.put("numberOfSimulations", "" + numberOfSimulations);
         vc.put("maxTimePerSimulation", "" + maxTimePerSimulation);
         vc.put("kConnections", "" + kConnections);
+        vc.put("systemCalls", "" + systemCalls);
         vc.put("nAvailableProcesses", "" + nAvailableProcesses);
         vc.put("pAvailableProcesses", "" + pAvailableProcesses);
         vc.put("mAvailableProcesses", "" + mAvailableProcesses);
@@ -53,10 +53,12 @@ public class Writer {
             fw.close();
         }catch(IOException e){
             e.printStackTrace();
-        }*/
+        }
     }
 
+
+
     public static void main(String... args){
-        Writer.writeIndex(5, 2.345, 3, 6, 1, 5, 3.444);
+        Writer.writeIndex(5, 2.345, 3, 5, 6, 1, 5, 3.444);
     }
 }

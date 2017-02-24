@@ -37,6 +37,7 @@ public class ExecutionModule extends Module{
 
     @Override
     public void processDeparture(Query query) {
+        totalProcessedQueries++;
         query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromModule(simulation.getClock());
         if(queue.size() > 0){
             double exitTime = simulation.getClock() + getTotalTime(query);
@@ -118,6 +119,10 @@ public class ExecutionModule extends Module{
             time = UPDATE_RESTRUCTURATION_TIME;
         }
         return time;
+    }
+
+    public int getCurrentProcesses(){
+        return currentSentences;
     }
 
     @Override

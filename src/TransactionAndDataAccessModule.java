@@ -73,6 +73,7 @@ public class TransactionAndDataAccessModule extends Module {
     @Override
     //Si el que sale es DDL y el que sigue no es DDL, entonces desbloquear,
     public void processDeparture(Query query) {
+        totalProcessedQueries++;
         query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromModule(simulation.getClock());
         if (query.getQueryType() == QueryType.DDL) {
             blocked = false;
@@ -211,6 +212,10 @@ public class TransactionAndDataAccessModule extends Module {
 
     private double getTransactionTime(Query query){
         return 0;
+    }
+
+    public int getCurrentProcesses(){
+        return currentProcessedQueries;
     }
 
     @Override

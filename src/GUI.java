@@ -15,6 +15,7 @@ public class GUI extends JFrame{
     private final String MAX_TIME_PER_SIMULATION = "Maximum time to run the simulation";
     private final String SLOW_MODE = "Slow Mode";
     private final String K_CONNECTIONS = "Number of connections to be handled (k)";
+    private final String SYSTEM_CALLS = "Number of threads for system calls";
     private final String N_AVAILABLE_PROCESSES = "Number of available processes for query processing (n)";
     private final String P_AVAILABLE_PROCESSES = "Number of available processes for query transactions (p)";
     private final String M_AVAILABLE_PROCESSES = "Number of available processes for query executions (m)";
@@ -42,6 +43,10 @@ public class GUI extends JFrame{
     private JPanel panelKConnections;
     private JLabel lblKConnections;
     private JTextField txtKConnections;
+
+    private JPanel panelSystemCalls;
+    private JLabel lblSystemCalls;
+    private JTextField txtSystemCalls;
 
     private JPanel panelNAvailableProcesses;
     private JLabel lblNAvailableProcesses;
@@ -130,6 +135,16 @@ public class GUI extends JFrame{
         panelKConnections.add(lblKConnections, BorderLayout.WEST);
         panelKConnections.add(txtKConnections, BorderLayout.EAST);
 
+        lblSystemCalls = new JLabel(SYSTEM_CALLS);
+        lblSystemCalls.setFont(new Font("Normal", Font.BOLD, 18));
+        txtSystemCalls = new JTextField();
+        txtSystemCalls.setColumns(20);
+        txtSystemCalls.setFont(new Font("Normal", Font.BOLD, 18));
+        panelSystemCalls = new JPanel();
+        panelSystemCalls.setLayout(new BorderLayout());
+        panelSystemCalls.add(lblSystemCalls, BorderLayout.WEST);
+        panelSystemCalls.add(txtSystemCalls, BorderLayout.EAST);
+
         lblNAvailableProcesses = new JLabel(N_AVAILABLE_PROCESSES);
         lblNAvailableProcesses.setFont(new Font("Normal", Font.BOLD, 18));
         txtNAvailableProcesses = new JTextField();
@@ -196,6 +211,7 @@ public class GUI extends JFrame{
         mainPanel.add(panelSlowMode);
         mainPanel.add(panelDelay);
         mainPanel.add(panelKConnections);
+        mainPanel.add(panelSystemCalls);
         mainPanel.add(panelNAvailableProcesses);
         mainPanel.add(panelPAvailableProcesses);
         mainPanel.add(panelMAvailableProcesses);
@@ -208,7 +224,7 @@ public class GUI extends JFrame{
 
         super.add(mainPanel);
         super.setSize(900, 900);
-        super.setResizable(false);
+        //super.setResizable(false);
         super.setVisible(true);
     }
 
@@ -232,7 +248,12 @@ public class GUI extends JFrame{
         btnNext.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayFinalSimulationResult(0);
+                for(int i = 0; i < 110; i++){
+                    txtArea.setText(txtArea.getText() + "\n" + i);
+                    txtArea.update(txtArea.getGraphics());
+                    txtArea.setCaretPosition(txtArea.getText().length() - 1);
+                }
+                //displayFinalSimulationResult(0);
             }
         });
         JScrollPane jsp = new JScrollPane(txtArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
