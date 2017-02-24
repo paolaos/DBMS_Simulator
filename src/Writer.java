@@ -14,7 +14,6 @@ import java.lang.*;
 public class Writer {
     public static void writeIndex(int numberOfSimulations, double maxTimePerSimulation, int kConnections, int systemCalls,
                                   int nAvailableProcesses, int pAvailableProcesses, int mAvailableProcesses, double timeout){
-
         VelocityEngine ve = new VelocityEngine();
         ve.init();
 
@@ -56,8 +55,6 @@ public class Writer {
             e.printStackTrace();
         }
     }
-
-
 
     public static void main(String... args){
         Writer.writeIndex(5, 2.345, 3, 5, 6, 1, 5, 3.444);

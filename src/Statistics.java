@@ -14,7 +14,7 @@ public class Statistics {
     private double timePerTrial;
     private double totalTimeSimulation;
     private boolean slowMode;
-    private int qDelayTime;
+    private double qDelayTime;
     private int kConnections;
     private int nAvailableProcesses;
     private int pQueries;
@@ -90,7 +90,7 @@ public class Statistics {
         return slowMode;
     }
 
-    public int getqDelayTime() {
+    public double getqDelayTime() {
         return qDelayTime;
     }
 }

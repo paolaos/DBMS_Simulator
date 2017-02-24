@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.lang.*;
 import java.lang.System;
 import java.util.*;
@@ -6,6 +7,7 @@ import java.util.*;
  * Created by Paola Ortega S on 2/3/2017.
  */
 public class Simulation {
+    private int simulationNumber;
     private double timeout;
     private double clock;
     private int numberOfTrials;
@@ -18,7 +20,7 @@ public class Simulation {
     private ExecutionModule executionModule;
     private double totalTimeSimulation;
     private boolean slowMode;
-    private int qDelayTime;
+    private double qDelayTime;
     private int kConnections;
     private int availableSystemCalls;
     private int nAvailableProcesses;
@@ -28,10 +30,11 @@ public class Simulation {
     private Hashtable<Integer, Event> killEventsTable;
 
 
-    public Simulation(boolean slowMode, int qDelayTime, int kConnections, int availableSystemCalls, int nAvailableProcesses,
+    public Simulation(int simulationNumber, double qDelayTime, int kConnections, int availableSystemCalls, int nAvailableProcesses,
                       int pQueries, int mSentences, double timeout, double timePerTrial){
 
         // Variable initialization
+        this.simulationNumber = simulationNumber;
         this.timeout = timeout;
         clock = 0;
         numberOfTrials = 0;
@@ -152,16 +155,16 @@ public class Simulation {
 
     }
     public String getData(Event event){
-
+        String simulation = "Simulation number " + simulationNumber + "\n";
         String parameters = "Available connections(k): "+ clientConnectionModule.servers +
                 "\nAvailable Systems Calls: " + processManagerModule.servers +
                 "\nAvailable Processes for query processing(n): "+ queryProcessingModule.servers+
                 "\nAvailable processes for query transactions(p): "+ transactionAndDataAccessModule.servers+
                 "\nAvailable processes for query executions(m): "+executionModule.servers;
 
-        String clock="\n"+ getClock()+"";
+        String clock="\nClock time: " + getClock();
 
-        String eventInExecution= "\n Exececuting "+ event.getEventType()+ " in "+ event.getDestinationModule() +" module";
+        String eventInExecution= "\nExecuting "+ event.getEventType()+ " in "+ event.getDestinationModule() +" module\n";
 
         String clientConnectionData = "Client Connection Module: \n" +
                 "Occupied servers: " + clientConnectionModule.getCurrentConnections() + "\n" +
@@ -194,29 +197,37 @@ public class Simulation {
                 "Processed queries: " + executionModule.getServedQueries() + "\n";
 
         String rejectedQueries = "Rejected Queries:" + this.clientConnectionModule.getRejectedConnections() + "\n\n";
-        return parameters + clock + eventInExecution + clientConnectionData + executionData +
+        return simulation + parameters + clock + eventInExecution + clientConnectionData + executionData +
                 processManagerData + queryProcessingData + transactionAndDataAccessData + rejectedQueries;
     }
 
-    public void startSimulation(){
+    public void startSimulation(JTextArea txtData){
         while(getClock() < timePerTrial){
-            Event e = eventList.poll();
-            clock = e.getTime();
-            if(e.getQuery().getId() == -1)
-                System.out.println(e.getEventType() + " " + e.getDestinationModule());
+            Event event = eventList.poll();
+            clock = event.getTime();
+            if(event.getQuery().getId() == -1)
+                System.out.println(event.getEventType() + " " + event.getDestinationModule());
 
-            switch (e.getEventType()){
+            switch (event.getEventType()){
                 case ARRIVAL:
-                    this.manageArrivalEvent(e);
+                    this.manageArrivalEvent(event);
                     break;
 
                 case EXIT:
-                    manageExitEvent(e);
+                    manageExitEvent(event);
                     break;
 
                 case KILL:
-                  manageKillEvent(e);
+                  manageKillEvent(event);
                     break;
+            }
+            txtData.setText(this.getData(event));
+            txtData.update(txtData.getGraphics());
+            txtData.setCaretPosition(txtData.getText().length());
+            try{
+                Thread.sleep((long)qDelayTime * 1000);
+            }catch(Exception e){
+                e.printStackTrace();
             }
         }
     }
@@ -260,8 +271,8 @@ public class Simulation {
 
     public static void main(String[]args){
         java.lang.System.out.println("Simulación DBMS");
-        Simulation s = new Simulation(false, 0, 15,1, 3, 2, 1, 15, 15000);
-        s.startSimulation();
+        Simulation s = new Simulation(0, 0, 15,1, 3, 2, 1, 15, 15000);
+        //s.startSimulation();
 
         System.out.println("Conexiones actuales "+ s.clientConnectionModule.getCurrentConnections());
         System.out.println("Tamaño Cola módulo 2 "+s.processManagerModule.getQueueSize() );
@@ -289,7 +300,7 @@ public class Simulation {
         return slowMode;
     }
 
-    public int getqDelayTime() {
+    public double getqDelayTime() {
         return qDelayTime;
     }
 

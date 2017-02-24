@@ -5,6 +5,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.*;
 
 /**
  * Created by Paola Ortega S on 2/8/2017.
@@ -70,7 +71,7 @@ public class GUI extends JFrame{
     private JPanel panelStart;
     private JButton btnStart;
 
-    private JTextArea dataDisplay;
+    private JTextArea txtDataDisplay;
 
     public GUI() {
         super.setTitle(TITLE);
@@ -199,7 +200,36 @@ public class GUI extends JFrame{
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayLiveStatistics();
+                if(areParametersValid()){
+                    //Empieza
+                    if(chkFortuna.isSelected())
+                        ReproduceAudio.successSong();
+
+                    int numberOfSimulations = Integer.parseInt(txtNumberOfSimulations.getText());
+                    double maxTimePerSimulation= Double.parseDouble(txtMaxTimePerSimulation.getText());
+                    double delay =0;
+                    if(chkSlowMode.isSelected())
+                        delay=Double.parseDouble(txtDelay.getText());
+
+                    int kConnections=Integer.parseInt(txtKConnections.getText());
+                    int availableSystemCalls= Integer.parseInt(txtSystemCalls.getText());
+                    int nAvailableProcesses = Integer.parseInt(txtNAvailableProcesses.getText());
+                    int pAvailableProcesses = Integer.parseInt(txtPAvailableProcesses.getText());
+                    int mAvailableProcesses = Integer.parseInt(txtMAvailableProcesses.getText());
+                    double timeout = Double.parseDouble(txtTimeout.getText());
+                    System system = new System(numberOfSimulations, delay, kConnections, availableSystemCalls,
+                            nAvailableProcesses, pAvailableProcesses, mAvailableProcesses, timeout, maxTimePerSimulation);
+                    displayLiveStatistics();
+                    system.startSimulations(txtDataDisplay);
+                }else{
+                    JDialog nonValidParametersDialog = new JDialog();
+                    JLabel message = new JLabel("One or more parameters are either missing or are not valid");
+                    message.setFont(new Font("Normal", Font.BOLD, 20));
+                    nonValidParametersDialog.add(message);
+                    nonValidParametersDialog.pack();
+                    nonValidParametersDialog.setVisible(true);
+                }
+
             }
         });
 
@@ -238,9 +268,9 @@ public class GUI extends JFrame{
     }
 
     private void displayLiveStatistics(){
-        JTextArea txtArea = new JTextArea();
-        txtArea.setFont(new Font("Normal", Font.BOLD, 20));
-        txtArea.setEditable(false);
+        txtDataDisplay = new JTextArea();
+        txtDataDisplay.setFont(new Font("Normal", Font.BOLD, 20));
+        txtDataDisplay.setEditable(false);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         JButton btnNext = new JButton("Next");
@@ -249,14 +279,15 @@ public class GUI extends JFrame{
             @Override
             public void actionPerformed(ActionEvent e) {
                 for(int i = 0; i < 110; i++){
-                    txtArea.setText(txtArea.getText() + "\n" + i);
-                    txtArea.update(txtArea.getGraphics());
-                    txtArea.setCaretPosition(txtArea.getText().length() - 1);
+                    txtDataDisplay.setText(txtDataDisplay.getText() + "\n" + i);
+                    txtDataDisplay.update(txtDataDisplay.getGraphics());
+                    txtDataDisplay.setCaretPosition(txtDataDisplay.getText().length() - 1);
                 }
                 //displayFinalSimulationResult(0);
             }
         });
-        JScrollPane jsp = new JScrollPane(txtArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        JScrollPane jsp = new JScrollPane(txtDataDisplay, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         panel.add(jsp);
         panel.add(btnNext);
         changeLayout(panel);
@@ -342,7 +373,63 @@ public class GUI extends JFrame{
         changeLayout(mainPanel);
     }
 
+    private boolean areParametersValid( ){
+        boolean validParameters=true;
+
+        if(!digitValidation(txtNumberOfSimulations.getText(), false))
+            validParameters = false;
+
+        if(!digitValidation(txtMaxTimePerSimulation.getText(),false))
+            validParameters=false;
+
+        if(chkSlowMode.isSelected() && !digitValidation(txtDelay.getText(), true))
+            validParameters = false;
+
+        if(!digitValidation(txtKConnections.getText(),false))
+            validParameters=false;
+
+        if(!digitValidation(txtSystemCalls.getText(),false))
+            validParameters=false;
+
+        if(!digitValidation(txtNAvailableProcesses.getText(),false))
+            validParameters=false;
+
+        if(!digitValidation(txtPAvailableProcesses.getText(),false))
+            validParameters=false;
+
+        if(!digitValidation(txtMAvailableProcesses.getText(),false))
+            validParameters=false;
+
+        if(!digitValidation(txtTimeout.getText(),true))
+            validParameters=false;
+
+        if(!digitValidation(txtMaxTimePerSimulation.getText(), true))
+            validParameters = false;
+
+        return validParameters;
+    }
+
+    private boolean digitValidation(String number, boolean isDouble){
+        boolean isDigit = true;
+        if(number.equals(""))
+            isDigit = false;
+
+        for(int i = 0; i < number.length() && isDigit; i++){
+            char currentCharacter = number.charAt(i);
+            if(!Character.isDigit(currentCharacter)){
+                if(!isDouble){
+                    isDigit = false;
+                }else{
+                    if(currentCharacter != '.')
+                        isDigit = false;
+                }
+            }
+        }
+        return isDigit;
+    }
+
     public static void main(String... args){
         GUI gui = new GUI();
+
     }
 }
