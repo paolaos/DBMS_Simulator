@@ -5,15 +5,45 @@ import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public class ClientConnectionModule extends Module{
+    /**
+     * Average number of arrivals to the system per time second.
+     */
     public static final double LAMBDA = 0.58333333;
+
+    /**
+     * A list of all the queries that have entered successfully to the system.
+     */
     private List<Query> allQueries;
-    private ModuleStatistics lastModuleStatistics;
+
+    /**
+     * User defined parameter of the amount of concurrent connections the system can handle.
+     */
     private int kConnections;
+
+    /**
+     * Counter that measures the amount of connections rejected by the system.
+     */
     private int rejectedConnections;
+
+    /**
+     * The amount of connections managed by the system in a specific moment.
+     */
     private int currentConnections;
+
+    /**
+     * Each query is tagged with an ID (name defined by the number of query that manages to connect into the system).
+     * Essentially, this variable traces the current query number.
+     */
     private int currentId;
+
+    /**
+     * Mainly for statistical purposes. Represents the mean of how much time passes until the query gets solved.
+     */
     private double averageQueryLifetime;
+
+
     private int totalProcessedQueriesFromLastModule;
+
 
     public ClientConnectionModule(Simulation simulation, Module nextModule, int kConnections){
         this.simulation = simulation;
@@ -101,7 +131,7 @@ public class ClientConnectionModule extends Module{
                 EventType.KILL, null);
         simulation.addEvent(killEvent);
                    //agregar kill con el id del query
-                simulation.getKillEventsTable().put(query.getId(),killEvent);
+        simulation.getKillEventsTable().put(query.getId(),killEvent);
     }
 
     @Override
@@ -123,8 +153,6 @@ public class ClientConnectionModule extends Module{
            }else {
             currentConnections--;
         }
-
-        servedQueries++;
 
     }
 
@@ -154,8 +182,6 @@ public class ClientConnectionModule extends Module{
 
     }
 
-
-    @Override
     public double getNextExitTime(){
         return DistributionGenerator.getNextRandomValueByUniform(0.01,0.05);
     }
@@ -178,11 +204,6 @@ public class ClientConnectionModule extends Module{
     @Override
     public int getQueueSize() {
         return 0;
-    }
-
-    @Override
-    public int getServedQueries() {
-        return servedQueries;
     }
 
     @Override

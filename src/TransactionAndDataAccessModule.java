@@ -68,7 +68,6 @@ public class TransactionAndDataAccessModule extends Module {
         query.setCurrentModule(ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
 
-        servedQueries++;
     }
 
     @Override
@@ -167,11 +166,6 @@ public class TransactionAndDataAccessModule extends Module {
         return pQueries == currentProcessedQueries;
     }
 
-    @Override
-    public double getNextExitTime() {
-        return 0;
-    }
-
     private int getBlockNumber(QueryType query) {
         int numberOfBlocks = 0;
         switch (query) {
@@ -228,11 +222,6 @@ public class TransactionAndDataAccessModule extends Module {
     @Override
     public int getQueueSize() {
         return queue.size();
-    }
-
-    @Override
-    public int getServedQueries() {
-        return servedQueries;
     }
 
     @Override

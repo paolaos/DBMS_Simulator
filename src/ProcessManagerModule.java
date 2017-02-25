@@ -94,12 +94,6 @@ public class ProcessManagerModule extends Module{
     public void generateServiceEvent(Query query) {
         query.setCurrentModule(ModuleType.PROCESS_MANAGER_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.PROCESS_MANAGER_MODULE));
-        servedQueries++;
-    }
-
-    @Override
-    public double getNextExitTime() {
-        return 0;
     }
 
     @Override
@@ -110,11 +104,6 @@ public class ProcessManagerModule extends Module{
     @Override
     public int getQueueSize() {
         return queue.size();
-    }
-
-    @Override
-    public int getServedQueries() {
-        return servedQueries;
     }
 
     @Override
