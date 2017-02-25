@@ -1,3 +1,4 @@
+import javax.swing.*;
 import java.util.ArrayList;
 
 /**
@@ -5,47 +6,44 @@ import java.util.ArrayList;
  */
 public class System {
     private ArrayList<Statistics> allStatistics;
+
     private int numberOfSimulations;
-    private boolean slowMode;
-    private int qDelayTime;
+    private double qDelayTime;
     private int kConnections;
+    private int systemCalls;
     private int nAvailableProcesses;
     private int pQueries;
     private int mSentences;
+    private double timeout;
+    private double timePerTrial;
 
-    public System(int numberOfSimulations, boolean slowMode, int qDelayTime, int kConnections, int nAvailableProcesses,
-                  int pQueries, int mSentences){
-        if(!slowMode)
-            throw new ArrayIndexOutOfBoundsException("This constructor only supports slow mode");
+
+    public System(int numberOfSimulations, double qDelayTime, int kConnections, int systemCalls, int nAvailableProcesses,
+                  int pQueries, int mSentences,double timeout, double timePerTrial){
         this.numberOfSimulations = numberOfSimulations;
-        this.slowMode = slowMode;
         this.qDelayTime = qDelayTime;
         this.kConnections = kConnections;
+        this.systemCalls = systemCalls;
         this.nAvailableProcesses = nAvailableProcesses;
         this.pQueries = pQueries;
         this.mSentences = mSentences;
+        this.timeout = timeout;
+        this.timePerTrial = timePerTrial;
         allStatistics = new ArrayList<>(numberOfSimulations);
     }
 
-    /*public System(int numberOfSimulations, int kConnections, int nAvailableProcesses,
-                  int pQueries, int mSentences){
-        this.numberOfSimulations = numberOfSimulations;
-        this.slowMode = slowMode;
-        if(!slowMode)
-            this.qDelayTime = 0;
-        else
-            this.qDelayTime = 5;
-        allStatistics = new ArrayList<>(numberOfSimulations);
-
-    }*/
-
-    public void startSimulations(){
+    public void startSimulations(JTextArea txtData){
         for(int i = 0; i < numberOfSimulations; i++){
-            Statistics currentStatistics = new Statistics();
-            //Simulation currentSimulation = new Simulation(slowMode, qDelayTime, currentStatistics);
-            //currentSimulation.runSimulation();
-            //currentSimulation.fillStatistics(currentStatistics);
-            allStatistics.add(currentStatistics);
+            Simulation simulation = new Simulation(i + 1, qDelayTime, kConnections, systemCalls,
+                    nAvailableProcesses, pQueries, mSentences, timeout, timePerTrial);
+            simulation.startSimulation(txtData);
+            //llamar metodo que haga las probas.
+            simulation.fillStatistics();
+
+            //crear estadisticas
+            Statistics statistics = new Statistics(simulation);
+
+
         }
     }
 

@@ -18,6 +18,7 @@ public class TransactionAndDataAccessModule extends Module {
         currentProcessedQueries = 0;
         pendingQuery = null;
         blocked = false; //booleano para caso DDL
+        servers =pQueries;
     }
 
     @Override
@@ -73,6 +74,7 @@ public class TransactionAndDataAccessModule extends Module {
     @Override
     //Si el que sale es DDL y el que sigue no es DDL, entonces desbloquear,
     public void processDeparture(Query query) {
+        totalProcessedQueries++;
         query.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromModule(simulation.getClock());
         if (query.getQueryType() == QueryType.DDL) {
             blocked = false;
@@ -103,10 +105,11 @@ public class TransactionAndDataAccessModule extends Module {
             }else{
                 simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,
                         pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
-                pendingQuery = null;
+
                 currentProcessedQueries++;
                 pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromQueue(simulation.getClock());
                 pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToServer(simulation.getClock());
+                pendingQuery = null;
             }
         } else {
             if (currentProcessedQueries == 0 ){
@@ -115,10 +118,10 @@ public class TransactionAndDataAccessModule extends Module {
                     simulation.addEvent(new Event(simulation.getClock()+ (getBlockNumber(query.getQueryType())) * 0.1,
                         pendingQuery, EventType.EXIT, ModuleType.TRANSACTION_AND_DATA_ACCESS_MODULE));
                         currentProcessedQueries++;
-                pendingQuery = null;
                     pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfExitFromQueue(simulation.getClock());
                     pendingQuery.getQueryStatistics().getTransactionAndDataAccessStatistics().setTimeOfEntryToServer(simulation.getClock());
-            }else {
+                    pendingQuery = null;
+                }else {
                 idleTime=simulation.getClock();
                 }
             }
@@ -213,9 +216,13 @@ public class TransactionAndDataAccessModule extends Module {
         return 0;
     }
 
+    public  int getCurrentProcesses(){
+        return currentProcessedQueries;
+    }
+
     @Override
     public int getNumberOfFreeServers() {
-        return pQueries - currentProcessedQueries;
+       return pQueries - currentProcessedQueries;
     }
 
     @Override
@@ -234,7 +241,7 @@ public class TransactionAndDataAccessModule extends Module {
     }
 
     @Override
-    public double getDdlAvgTime(List<Query> queryList) {
+    public void computeDdlAvgTime(List<Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -248,11 +255,11 @@ public class TransactionAndDataAccessModule extends Module {
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        this.ddlAvgTime = totalTime;
     }
 
     @Override
-    public double getUpdateAvgTime(List <Query> queryList) {
+    public void computeUpdateAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -267,11 +274,11 @@ public class TransactionAndDataAccessModule extends Module {
             }
 
         }
-        return totalTime;
+        this.updateAvgTime = totalTime;
     }
 
     @Override
-    public double getJoinAvgTime(List <Query> queryList) {
+    public void computeJoinAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -285,11 +292,11 @@ public class TransactionAndDataAccessModule extends Module {
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        this.joinAvgTime = totalTime;
     }
 
     @Override
-    public double getSelectAvgTime(List <Query> queryList) {
+    public void computeSelectAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -303,7 +310,7 @@ public class TransactionAndDataAccessModule extends Module {
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        this.selectAvgTime = totalTime;
     }
 
     @Override

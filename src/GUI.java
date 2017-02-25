@@ -5,6 +5,7 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.lang.*;
 
 /**
  * Created by Paola Ortega S on 2/8/2017.
@@ -15,6 +16,7 @@ public class GUI extends JFrame{
     private final String MAX_TIME_PER_SIMULATION = "Maximum time to run the simulation";
     private final String SLOW_MODE = "Slow Mode";
     private final String K_CONNECTIONS = "Number of connections to be handled (k)";
+    private final String SYSTEM_CALLS = "Number of threads for system calls";
     private final String N_AVAILABLE_PROCESSES = "Number of available processes for query processing (n)";
     private final String P_AVAILABLE_PROCESSES = "Number of available processes for query transactions (p)";
     private final String M_AVAILABLE_PROCESSES = "Number of available processes for query executions (m)";
@@ -43,6 +45,10 @@ public class GUI extends JFrame{
     private JLabel lblKConnections;
     private JTextField txtKConnections;
 
+    private JPanel panelSystemCalls;
+    private JLabel lblSystemCalls;
+    private JTextField txtSystemCalls;
+
     private JPanel panelNAvailableProcesses;
     private JLabel lblNAvailableProcesses;
     private JTextField txtNAvailableProcesses;
@@ -65,7 +71,7 @@ public class GUI extends JFrame{
     private JPanel panelStart;
     private JButton btnStart;
 
-    private JTextArea dataDisplay;
+    private JTextArea txtDataDisplay;
 
     public GUI() {
         super.setTitle(TITLE);
@@ -130,6 +136,16 @@ public class GUI extends JFrame{
         panelKConnections.add(lblKConnections, BorderLayout.WEST);
         panelKConnections.add(txtKConnections, BorderLayout.EAST);
 
+        lblSystemCalls = new JLabel(SYSTEM_CALLS);
+        lblSystemCalls.setFont(new Font("Normal", Font.BOLD, 18));
+        txtSystemCalls = new JTextField();
+        txtSystemCalls.setColumns(20);
+        txtSystemCalls.setFont(new Font("Normal", Font.BOLD, 18));
+        panelSystemCalls = new JPanel();
+        panelSystemCalls.setLayout(new BorderLayout());
+        panelSystemCalls.add(lblSystemCalls, BorderLayout.WEST);
+        panelSystemCalls.add(txtSystemCalls, BorderLayout.EAST);
+
         lblNAvailableProcesses = new JLabel(N_AVAILABLE_PROCESSES);
         lblNAvailableProcesses.setFont(new Font("Normal", Font.BOLD, 18));
         txtNAvailableProcesses = new JTextField();
@@ -184,7 +200,36 @@ public class GUI extends JFrame{
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayLiveStatistics();
+                if(areParametersValid()){
+                    //Empieza
+                    if(chkFortuna.isSelected())
+                        ReproduceAudio.successSong();
+
+                    int numberOfSimulations = Integer.parseInt(txtNumberOfSimulations.getText());
+                    double maxTimePerSimulation= Double.parseDouble(txtMaxTimePerSimulation.getText());
+                    double delay =0;
+                    if(chkSlowMode.isSelected())
+                        delay=Double.parseDouble(txtDelay.getText());
+
+                    int kConnections=Integer.parseInt(txtKConnections.getText());
+                    int availableSystemCalls= Integer.parseInt(txtSystemCalls.getText());
+                    int nAvailableProcesses = Integer.parseInt(txtNAvailableProcesses.getText());
+                    int pAvailableProcesses = Integer.parseInt(txtPAvailableProcesses.getText());
+                    int mAvailableProcesses = Integer.parseInt(txtMAvailableProcesses.getText());
+                    double timeout = Double.parseDouble(txtTimeout.getText());
+                    System system = new System(numberOfSimulations, delay, kConnections, availableSystemCalls,
+                            nAvailableProcesses, pAvailableProcesses, mAvailableProcesses, timeout, maxTimePerSimulation);
+                    displayLiveStatistics();
+                    system.startSimulations(txtDataDisplay);
+                }else{
+                    JDialog nonValidParametersDialog = new JDialog();
+                    JLabel message = new JLabel("One or more parameters are either missing or are not valid");
+                    message.setFont(new Font("Normal", Font.BOLD, 20));
+                    nonValidParametersDialog.add(message);
+                    nonValidParametersDialog.pack();
+                    nonValidParametersDialog.setVisible(true);
+                }
+
             }
         });
 
@@ -196,6 +241,7 @@ public class GUI extends JFrame{
         mainPanel.add(panelSlowMode);
         mainPanel.add(panelDelay);
         mainPanel.add(panelKConnections);
+        mainPanel.add(panelSystemCalls);
         mainPanel.add(panelNAvailableProcesses);
         mainPanel.add(panelPAvailableProcesses);
         mainPanel.add(panelMAvailableProcesses);
@@ -208,7 +254,7 @@ public class GUI extends JFrame{
 
         super.add(mainPanel);
         super.setSize(900, 900);
-        super.setResizable(false);
+        //super.setResizable(false);
         super.setVisible(true);
     }
 
@@ -222,9 +268,9 @@ public class GUI extends JFrame{
     }
 
     private void displayLiveStatistics(){
-        JTextArea txtArea = new JTextArea();
-        txtArea.setFont(new Font("Normal", Font.BOLD, 20));
-        txtArea.setEditable(false);
+        txtDataDisplay = new JTextArea();
+        txtDataDisplay.setFont(new Font("Normal", Font.BOLD, 15));
+        txtDataDisplay.setEditable(false);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
         JButton btnNext = new JButton("Next");
@@ -235,7 +281,8 @@ public class GUI extends JFrame{
                 displayFinalSimulationResult(0);
             }
         });
-        JScrollPane jsp = new JScrollPane(txtArea, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+
+        JScrollPane jsp = new JScrollPane(txtDataDisplay, JScrollPane.VERTICAL_SCROLLBAR_ALWAYS, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
         panel.add(jsp);
         panel.add(btnNext);
         changeLayout(panel);
@@ -321,7 +368,63 @@ public class GUI extends JFrame{
         changeLayout(mainPanel);
     }
 
+    private boolean areParametersValid( ){
+        boolean validParameters=true;
+
+        if(!digitValidation(txtNumberOfSimulations.getText(), false))
+            validParameters = false;
+
+        if(!digitValidation(txtMaxTimePerSimulation.getText(),false))
+            validParameters=false;
+
+        if(chkSlowMode.isSelected() && !digitValidation(txtDelay.getText(), true))
+            validParameters = false;
+
+        if(!digitValidation(txtKConnections.getText(),false))
+            validParameters=false;
+
+        if(!digitValidation(txtSystemCalls.getText(),false))
+            validParameters=false;
+
+        if(!digitValidation(txtNAvailableProcesses.getText(),false))
+            validParameters=false;
+
+        if(!digitValidation(txtPAvailableProcesses.getText(),false))
+            validParameters=false;
+
+        if(!digitValidation(txtMAvailableProcesses.getText(),false))
+            validParameters=false;
+
+        if(!digitValidation(txtTimeout.getText(),true))
+            validParameters=false;
+
+        if(!digitValidation(txtMaxTimePerSimulation.getText(), true))
+            validParameters = false;
+
+        return validParameters;
+    }
+
+    private boolean digitValidation(String number, boolean isDouble){
+        boolean isDigit = true;
+        if(number.equals(""))
+            isDigit = false;
+
+        for(int i = 0; i < number.length() && isDigit; i++){
+            char currentCharacter = number.charAt(i);
+            if(!Character.isDigit(currentCharacter)){
+                if(!isDouble){
+                    isDigit = false;
+                }else{
+                    if(currentCharacter != '.')
+                        isDigit = false;
+                }
+            }
+        }
+        return isDigit;
+    }
+
     public static void main(String... args){
         GUI gui = new GUI();
+
     }
 }

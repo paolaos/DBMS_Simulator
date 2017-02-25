@@ -2,13 +2,20 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class ProcessManagerModule extends Module{
 
-    public ProcessManagerModule(Simulation simulation, Module nextModule){
+public class ProcessManagerModule extends Module{
+    private int currentSystemCalls;
+    private  int availableSystemCalls;
+    public ProcessManagerModule(Simulation simulation, Module nextModule , int availableSystemCalls){
         this.simulation = simulation;
         this.nextModule = nextModule;
-        queue = new LinkedBlockingQueue<>();
+        this.queue = new LinkedBlockingQueue<>();
         busy = false;
+        totalProcessedQueries=0;
+        currentSystemCalls=0;
+       this.availableSystemCalls=availableSystemCalls;
+       servers=availableSystemCalls;
+
     }
 
     @Override // procesamientode arribo
@@ -19,7 +26,7 @@ public class ProcessManagerModule extends Module{
             queue.offer(query);
             query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToQueue(simulation.getClock());
         }else{
-            busy = true;
+            currentSystemCalls++;
             double normalValue = DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1));
             simulation.addEvent(new Event(simulation.getClock() + normalValue,
                         query, EventType.EXIT, ModuleType.PROCESS_MANAGER_MODULE));
@@ -33,9 +40,10 @@ public class ProcessManagerModule extends Module{
     @Override //procesamiento de salida
     //por Brayan
     public void processDeparture(Query query) {
+        totalProcessedQueries++;
         query.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromModule(simulation.getClock());
         if(queue.size() > 0){
-            busy = true;
+
             // 0.316227766 sqrt of 0.1
             double normalValue = DistributionGenerator.getNextRandomValueByNormal(1.5, Math.sqrt(0.1));
             Query quer =queue.poll();
@@ -46,8 +54,10 @@ public class ProcessManagerModule extends Module{
             quer.getQueryStatistics().getProcessManagerStatistics().setTimeOfExitFromQueue(simulation.getClock());
             quer.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToServer(simulation.getClock());
         }else {
-            busy = false;
+            currentSystemCalls--;
+            if(currentSystemCalls==0)
             idleTime=simulation.getClock();
+
         }
         if (!query.isKill()) {
             nextModule.generateServiceEvent(query);
@@ -77,7 +87,7 @@ public class ProcessManagerModule extends Module{
     }
 
     public boolean isBusy() {
-        return busy;
+        return availableSystemCalls == currentSystemCalls;
     }
 
     @Override
@@ -94,7 +104,7 @@ public class ProcessManagerModule extends Module{
 
     @Override
     public int getNumberOfFreeServers() {
-        return isBusy()? 0 : 1;
+        return  availableSystemCalls - currentSystemCalls;
     }
 
     @Override
@@ -114,7 +124,7 @@ public class ProcessManagerModule extends Module{
 
 
     @Override
-    public double getDdlAvgTime(List <Query> queryList) {
+    public void computeDdlAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -128,11 +138,11 @@ public class ProcessManagerModule extends Module{
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        this.ddlAvgTime = totalTime;
     }
 
     @Override
-    public double getUpdateAvgTime(List <Query> queryList) {
+    public void computeUpdateAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -147,11 +157,11 @@ public class ProcessManagerModule extends Module{
             }
 
         }
-        return totalTime;
+        this.updateAvgTime = totalTime;
     }
 
     @Override
-    public double getJoinAvgTime(List <Query> queryList) {
+    public void computeJoinAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -165,11 +175,11 @@ public class ProcessManagerModule extends Module{
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        this.joinAvgTime = totalTime;
     }
 
     @Override
-    public double getSelectAvgTime(List <Query> queryList) {
+    public void computeSelectAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -183,7 +193,7 @@ public class ProcessManagerModule extends Module{
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        this.selectAvgTime = totalTime;
     }
 
 

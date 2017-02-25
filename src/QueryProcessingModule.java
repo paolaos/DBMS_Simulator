@@ -12,6 +12,7 @@ public class QueryProcessingModule extends Module {
         queue = new LinkedBlockingQueue<>();
         this.nAvailableProcesses = nAvailableProcesses;
         currentProcesses = 0;
+        servers=nAvailableProcesses;
     }
 
     public int getnAvailableProcesses() {
@@ -51,6 +52,7 @@ public class QueryProcessingModule extends Module {
     //Se saca de la cola el siguiente y el query que llega de parámetro se envia al siguiente modulo
     @Override
     public void processDeparture(Query query) {
+        totalProcessedQueries++;
         query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToModule(simulation.getClock());
         if(queue.size()>0){
             double exitTime = timeInQueryProcessingModule(queue.peek().getQueryType());
@@ -155,7 +157,7 @@ public class QueryProcessingModule extends Module {
     }
 
     @Override
-    public double getDdlAvgTime(List<Query> queryList) {
+    public void computeDdlAvgTime(List<Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -169,11 +171,11 @@ public class QueryProcessingModule extends Module {
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        this.ddlAvgTime = totalTime;
     }
 
     @Override
-    public double getUpdateAvgTime(List <Query> queryList) {
+    public void computeUpdateAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -188,11 +190,11 @@ public class QueryProcessingModule extends Module {
             }
 
         }
-        return totalTime;
+        this.updateAvgTime = totalTime;
     }
 
     @Override
-    public double getJoinAvgTime(List <Query> queryList) {
+    public void computeJoinAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -206,11 +208,11 @@ public class QueryProcessingModule extends Module {
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        this.joinAvgTime = totalTime;
     }
 
     @Override
-    public double getSelectAvgTime(List <Query> queryList) {
+    public void computeSelectAvgTime(List <Query> queryList) {
         double totalTime=0;
         double arrivalTime=0;
         double exitTime=0;
@@ -224,7 +226,7 @@ public class QueryProcessingModule extends Module {
                 totalTime+=exitTime-arrivalTime;
             }
         }
-        return totalTime;
+        selectAvgTime = totalTime;
     }
 
 
