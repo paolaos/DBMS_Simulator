@@ -1,6 +1,10 @@
 import java.util.Iterator;
 import java.util.List;
 
+
+/**
+ * Store All the statistic information from some simulation.
+ */
 public class Statistics {
     private ModuleStatistics clientConnectionStatistics;
     private ModuleStatistics processManagerStatistics;
@@ -20,6 +24,10 @@ public class Statistics {
     private int pQueries;
     private int mSentences;
 
+    /**
+     * Constructor of class statistics
+     * @param simulation  Simulation to save statistical information.
+     */
     public Statistics(Simulation simulation){
         this.clientConnectionStatistics = simulation.getClientConnectionModule().moduleStatistics;
         this.processManagerStatistics = simulation.getProcessManagerModule().moduleStatistics;
@@ -39,6 +47,10 @@ public class Statistics {
         this.mSentences = simulation.getmSentences();
     }
 
+    /**
+     * Method that compute all general statistics from all executions.
+     * @param statistics Contains all executions.
+     */
     public Statistics(List<Statistics> statistics){
         Iterator<Statistics> iterator = statistics.iterator();
         while (iterator.hasNext()){

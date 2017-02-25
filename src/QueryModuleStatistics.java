@@ -1,8 +1,34 @@
+/**
+ * Store All the time information from some query in some module.
+ */
+public class QueryModuleStatistics {
+
+    /**
+     * Stores the time a query enters the module.
+     */
+    private double timeOfEntryToModule=0;
+
+    /**
+     * Stores the time a query enters the queue.
+     */
+    private double timeOfEntryToQueue=0;
+
+    /**
+     * Stores the time a query enters the server.
+     */
+    private double timeOfEntryToServer=0;
+
+    /**
+     * Stores the time a query exit the queue
+     */
+    private double timeOfExitFromQueue=0;
+
 public class QueryModuleStatistics {
     private double timeOfEntryToModule=0;
     private double timeOfEntryToQueue=0;
     private double timeOfEntryToServer=0;
     private double timeOfExitFromQueue=0;
+
     private double timeOfExitFromModule=0;
 
     public double getTimeOfEntryToModule() {

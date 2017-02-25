@@ -1,6 +1,11 @@
 /**
  * Created by Paola Ortega S on 2/8/2017.
  */
+
+
+/**
+ * Class that store all statistics from some module.
+ */
 public class ModuleStatistics {
     private int servedQueries;
     private int averageQueueSize;
@@ -11,6 +16,11 @@ public class ModuleStatistics {
     private double averageJoinTime;
     private double averageSelectTime;
     private double averageOccupiedTimeRho;
+
+    /**
+     *  Store the statistics information of the module.
+     * @param module Module from which statistics will be saved
+     */
 
     public ModuleStatistics(Module module){
         this.servedQueries = module.getServedQueries();

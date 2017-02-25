@@ -69,6 +69,7 @@ public class ExecutionModule extends Module{
     public void generateServiceEvent(Query query) {
         query.setCurrentModule(ModuleType.EXECUTION_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.EXECUTION_MODULE));
+        servedQueries++;
     }
 
     @Override
@@ -93,6 +94,10 @@ public class ExecutionModule extends Module{
         simulation.getKillEventsTable().remove(killEventToRemove);
     }
 
+    @Override
+    public double getNextExitTime() {
+        return 0;
+    }
 
     public double getBlockExecutingTime(int numberOfBlocks) {
         return Math.pow(numberOfBlocks, 2) / 1000;
@@ -131,6 +136,11 @@ public class ExecutionModule extends Module{
     @Override
     public int getQueueSize() {
         return queue.size();
+    }
+
+    @Override
+    public int getServedQueries() {
+        return servedQueries;
     }
 
     @Override
