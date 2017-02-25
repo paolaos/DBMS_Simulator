@@ -233,10 +233,72 @@ public abstract class Module {
         averageOccupiedTimeRho = averageArrivalTimeLambda / averageServiceTimeMu;
     }
 
-    public double computePropabilityThatNBeMajorThanS(double lambda , double mu) {
-        double probability =0;
-        return  probability;
+    public  double  computeFactorial(int factorialOf){
+        if(factorialOf ==1|| factorialOf == 0)
+            return 1;
 
+        else
+            return factorialOf*computeFactorial(factorialOf-1);
+    }
+
+    public  double computePi0( double rho ){
+        double pi0=0;
+        int servers=this.servers;
+        if(servers ==1){
+            pi0 = 1-rho;
+
+        }else {
+            double valOfSumatory=0;
+            for (int i =0; i <= servers-1 ; i++){
+                valOfSumatory+=  Math.pow((servers * rho), i)/ computeFactorial(i);
+            }
+            pi0 = 1/(valOfSumatory + (Math.pow((servers*rho),servers )/(computeFactorial(servers)*(1-rho))));
+        }
+
+        return  pi0;
+    }
+
+    public double computePropabilityThatNBeMajorThanS(double rho  , double pi0 ) {
+        int servers=this.servers;
+        return  ((Math.pow((rho* servers),servers)*pi0))/(computeFactorial(servers)*(1-rho));
+    }
+
+
+    public  double computeLq( double lambda , double mu , boolean hasQueue ){
+        double lq =0;
+        if(hasQueue) {
+            int servers = this.servers;
+            if (servers == 1) {
+                lq = (Math.pow(lambda, 2)) / (mu * (mu - lambda));
+
+            } else {
+                double rho = lambda / (servers * mu);
+                double pi0 = computePi0(rho);
+                lq = (computePropabilityThatNBeMajorThanS(rho, pi0) * rho) / (1 - rho);
+            }
+
+        }
+        return lq;
+    }
+
+    double computeLs(double lambda , double mu){
+        return  lambda/mu;
+    }
+
+    public double  computeWq(double lambda , double mu , boolean hasQueue){
+        double wq=0;
+        if(hasQueue){
+            int servers = this.servers;
+            if(servers ==1 ){
+                wq =lambda / (mu*(mu - lambda));
+
+            }else {
+                double rho = lambda/(mu * servers);
+                double pi0= computePi0(rho);
+                wq = computePropabilityThatNBeMajorThanS(rho,pi0)/((servers*mu)- lambda);
+            }
+        }
+        return  wq;
     }
 
     public  void fillStatistics(int numberOfServers, double lambda , double mu ){
@@ -288,4 +350,5 @@ public abstract class Module {
     public double getAvgTimeInQueue() {
         return avgTimeInQueue;
     }
+
 }
