@@ -29,7 +29,6 @@ public class Simulation {
     private int killNumber;
     private Hashtable<Integer, Event> killEventsTable;
 
-
     public Simulation(int simulationNumber, double qDelayTime, int kConnections, int availableSystemCalls, int nAvailableProcesses,
                       int pQueries, int mSentences, double timeout, double timePerTrial){
 
@@ -129,6 +128,11 @@ public class Simulation {
 
 
     private void manageKillEvent(Event event){
+        //si no está resuelta
+        if ( !event.getQuery().isSolved())
+        killNumber++;
+
+
         switch (event.getQuery().getCurrentModule()){
 
             case CLIENT_CONNECTION_MODULE:
@@ -236,7 +240,8 @@ public class Simulation {
 
     public void runSimulation(){}
 
-    public void fillStatistics(Statistics statistics){
+    public void fillStatistics(){
+
 
     }
 

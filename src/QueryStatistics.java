@@ -1,6 +1,10 @@
 /**
  * Created by Paola Ortega S on 2/8/2017.
  */
+
+/**
+ * Store All the time information from some query in all modules.
+ */
 public class QueryStatistics {
     private QueryModuleStatistics clientConnectionStatisticsWithoutResolvedQuery;
     private QueryModuleStatistics processManagerStatistics;
@@ -9,6 +13,9 @@ public class QueryStatistics {
     private QueryModuleStatistics executionStatistics;
     private QueryModuleStatistics clientConnectionStatisticsWithResolvedQuery;
 
+    /**
+     * Constructor of class QueryStatistics
+     */
     public QueryStatistics(){
         clientConnectionStatisticsWithoutResolvedQuery = new QueryModuleStatistics();
         processManagerStatistics = new QueryModuleStatistics();

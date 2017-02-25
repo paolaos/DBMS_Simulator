@@ -6,6 +6,7 @@ import java.util.ArrayList;
  */
 public class System {
     private ArrayList<Statistics> allStatistics;
+
     private int numberOfSimulations;
     private double qDelayTime;
     private int kConnections;
@@ -34,8 +35,13 @@ public class System {
         for(int i = 0; i < numberOfSimulations; i++){
             Simulation simulation = new Simulation(i + 1, qDelayTime, kConnections, systemCalls,
                     nAvailableProcesses, pQueries, mSentences, timeout, timePerTrial);
-
             simulation.startSimulation(txtData);
+            //llamar metodo que haga las probas.
+            simulation.fillStatistics();
+
+            //crear estadisticas
+            Statistics statistics = new Statistics(simulation);
+
         }
     }
 

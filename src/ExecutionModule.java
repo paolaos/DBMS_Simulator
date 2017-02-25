@@ -54,8 +54,10 @@ public class ExecutionModule extends Module{
                 idleTime=simulation.getClock();
 
         }
-        query.setSolved(true);
+
+
         if (!query.isKill()) {
+            query.setSolved(true);
             nextModule.generateServiceEvent(query);
 
         }else{
