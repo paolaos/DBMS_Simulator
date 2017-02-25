@@ -104,7 +104,7 @@ public class ProcessManagerModule extends Module{
 
     @Override
     public int getNumberOfFreeServers() {
-        return isBusy()? 0 : 1;
+        return  availableSystemCalls - currentSystemCalls;
     }
 
     @Override

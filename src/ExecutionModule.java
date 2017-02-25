@@ -28,6 +28,7 @@ public class ExecutionModule extends Module{
         } else {
             if (currentSentences ==0)
                 totalIdleTime += simulation.getClock() -idleTime;
+
             currentSentences++;
             double exitTime = simulation.getClock() + getTotalTime(query);
             simulation.addEvent(new Event(exitTime, query, EventType.EXIT, ModuleType.EXECUTION_MODULE));

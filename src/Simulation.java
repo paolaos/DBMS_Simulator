@@ -170,35 +170,34 @@ public class Simulation {
                 "Occupied servers: " + clientConnectionModule.getCurrentConnections() + "\n" +
                 "Free Servers: " + clientConnectionModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + clientConnectionModule.getQueueSize() + "\n" +
-                "Processed queries: " + clientConnectionModule.getServedQueries() + "\n";
+                "Processed queries: " + clientConnectionModule.getServedQueries() + "\n\n";
 
         String processManagerData = "Process Manager Module: \n" +
                 "Occupied servers: " + processManagerModule + "\n" +
                 "Free Servers: " + processManagerModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + processManagerModule.getQueueSize() + "\n" +
-                "Processed queries: " + processManagerModule.getServedQueries() + "\n";
+                "Processed queries: " + processManagerModule.getServedQueries() + "\n\n";
 
         String queryProcessingData = "Query Processing Module: \n" +
                 "Occupied servers: " + queryProcessingModule.getCurrentProcesses() + "\n" +
                 "Free Servers: " + queryProcessingModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + queryProcessingModule.getQueueSize() + "\n" +
-                "Processed queries: " + queryProcessingModule.getServedQueries() + "\n";
+                "Processed queries: " + queryProcessingModule.getServedQueries() + "\n\n";
 
         String transactionAndDataAccessData = "Transaction and Data Access Module: \n" +
                 "Occupied servers: " + transactionAndDataAccessModule.getCurrentProcesses() + "\n" +
                 "Free Servers: " + clientConnectionModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + transactionAndDataAccessModule.getQueueSize() + "\n" +
-                "Processed queries: " + transactionAndDataAccessModule.getServedQueries() + "\n";
+                "Processed queries: " + transactionAndDataAccessModule.getServedQueries() + "\n\n";
 
         String executionData = "Execution Module: \n" +
                 "Occupied servers: " + executionModule.getCurrentProcesses() + "\n" +
-                "Free Servers: " + clientConnectionModule.getNumberOfFreeServers() + "\n" +
+                "Free Servers: " + executionModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + executionModule.getQueueSize() + "\n" +
-                "Processed queries: " + executionModule.getServedQueries() + "\n";
+                "Processed queries: " + executionModule.getServedQueries() + "\n\n";
 
-        String rejectedQueries = "Rejected Queries:" + this.clientConnectionModule.getRejectedConnections() + "\n\n";
-        return simulation + parameters + clock + eventInExecution + clientConnectionData + executionData +
-                processManagerData + queryProcessingData + transactionAndDataAccessData + rejectedQueries;
+        return simulation + parameters + clock + eventInExecution + clientConnectionData +
+                processManagerData + queryProcessingData +  transactionAndDataAccessData + executionData;
     }
 
     public void startSimulation(JTextArea txtData){

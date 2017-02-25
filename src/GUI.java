@@ -269,7 +269,7 @@ public class GUI extends JFrame{
 
     private void displayLiveStatistics(){
         txtDataDisplay = new JTextArea();
-        txtDataDisplay.setFont(new Font("Normal", Font.BOLD, 20));
+        txtDataDisplay.setFont(new Font("Normal", Font.BOLD, 15));
         txtDataDisplay.setEditable(false);
         JPanel panel = new JPanel();
         panel.setLayout(new BoxLayout(panel, BoxLayout.PAGE_AXIS));
@@ -278,12 +278,7 @@ public class GUI extends JFrame{
         btnNext.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                for(int i = 0; i < 110; i++){
-                    txtDataDisplay.setText(txtDataDisplay.getText() + "\n" + i);
-                    txtDataDisplay.update(txtDataDisplay.getGraphics());
-                    txtDataDisplay.setCaretPosition(txtDataDisplay.getText().length() - 1);
-                }
-                //displayFinalSimulationResult(0);
+                displayFinalSimulationResult(0);
             }
         });
 
