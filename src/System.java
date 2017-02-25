@@ -17,7 +17,6 @@ public class System {
     private double timeout;
     private double timePerTrial;
 
-
     public System(int numberOfSimulations, double qDelayTime, int kConnections, int systemCalls, int nAvailableProcesses,
                   int pQueries, int mSentences,double timeout, double timePerTrial){
         this.numberOfSimulations = numberOfSimulations;
@@ -42,7 +41,6 @@ public class System {
 
             //crear estadisticas
             Statistics statistics = new Statistics(simulation);
-
 
         }
     }

@@ -1,6 +1,7 @@
 import java.util.Iterator;
 import java.util.List;
 
+
 /**
  * Store All the statistic information from some simulation.
  */

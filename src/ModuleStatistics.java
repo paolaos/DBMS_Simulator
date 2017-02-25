@@ -21,6 +21,7 @@ public class ModuleStatistics {
      *  Store the statistics information of the module.
      * @param module Module from which statistics will be saved
      */
+
     public ModuleStatistics(Module module){
         this.servedQueries = module.getServedQueries();
         this.averageQueueSize = module.getQueueSize();

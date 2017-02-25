@@ -23,10 +23,12 @@ public class QueryModuleStatistics {
      */
     private double timeOfExitFromQueue=0;
 
+public class QueryModuleStatistics {
+    private double timeOfEntryToModule=0;
+    private double timeOfEntryToQueue=0;
+    private double timeOfEntryToServer=0;
+    private double timeOfExitFromQueue=0;
 
-    /**
-     * Stores the time a query exit the module
-     */
     private double timeOfExitFromModule=0;
 
     public double getTimeOfEntryToModule() {

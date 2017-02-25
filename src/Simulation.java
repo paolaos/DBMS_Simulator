@@ -29,8 +29,6 @@ public class Simulation {
     private int killNumber;
     private Hashtable<Integer, Event> killEventsTable;
 
-
-
     public Simulation(int simulationNumber, double qDelayTime, int kConnections, int availableSystemCalls, int nAvailableProcesses,
                       int pQueries, int mSentences, double timeout, double timePerTrial){
 
@@ -160,7 +158,6 @@ public class Simulation {
         }
 
     }
-
     public String getData(Event event){
         String simulation = "Simulation number " + simulationNumber + "\n";
         String parameters = "Available connections(k): "+ clientConnectionModule.servers +
