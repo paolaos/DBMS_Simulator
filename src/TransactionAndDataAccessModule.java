@@ -215,7 +215,7 @@ public class TransactionAndDataAccessModule extends Module {
 
     @Override
     public int getNumberOfFreeServers() {
-       return pQueries - currentProcessedQueries;
+        return pQueries - currentProcessedQueries;
     }
 
     @Override

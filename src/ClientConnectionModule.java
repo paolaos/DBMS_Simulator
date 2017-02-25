@@ -335,4 +335,3 @@ public class ClientConnectionModule extends Module{
         averageTimeInService=totalTime/counter;
     }
 }
-
