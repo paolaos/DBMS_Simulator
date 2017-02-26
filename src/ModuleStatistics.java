@@ -23,7 +23,7 @@ public class ModuleStatistics {
      */
 
     public ModuleStatistics(Module module){
-        this.servedQueries = module.getServedQueries();
+        //this.servedQueries = module.getServedQueries();
         this.averageQueueSize = module.getQueueSize();
         this.averageQueryLifetime = module.simulation.getClientConnectionModule().getAverageQueryLifetime();
         this.idleTime = module.getIdleTime();

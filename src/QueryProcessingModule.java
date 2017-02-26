@@ -46,7 +46,6 @@ public class QueryProcessingModule extends Module {
     public void generateServiceEvent(Query query) {
         query.setCurrentModule(ModuleType.QUERY_PROCESSING_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query, EventType.ARRIVAL, ModuleType.QUERY_PROCESSING_MODULE));
-        servedQueries++;
     }
 
     //Se saca de la cola el siguiente y el query que llega de parámetro se envia al siguiente modulo
@@ -102,10 +101,6 @@ public class QueryProcessingModule extends Module {
        return nAvailableProcesses == currentProcesses;
     }
 
-    @Override
-    public double getNextExitTime() {
-        return 0;
-    }
 
     private double timeInQueryProcessingModule(QueryType query) {
         Random rnd = new Random();
@@ -144,11 +139,6 @@ public class QueryProcessingModule extends Module {
     @Override
     public int getQueueSize() {
        return queue.size();
-    }
-
-    @Override
-    public int getServedQueries() {
-        return servedQueries;
     }
 
     @Override
@@ -283,5 +273,26 @@ public class QueryProcessingModule extends Module {
     @Override
     public void computeAverageQueriesInService(List<Query> queryList) {
         averageQueriesInService = ClientConnectionModule.LAMBDA * averageTimeInService;
+    }
+
+
+    //Antes de Llamar este método se debe calcular el lambda real
+    @Override
+    public void fillStatistics( double lambda) {
+
+        this.computeAverageTimeInQueue(simulation.getClientConnectionModule().getAllQueries());//1/mu (Ws)
+        this.computeAverageServiceTimeMu();
+        this.computeWq(lambda,averageServiceTimeMu,true);
+        this.computeAverageTimeW(averageTimeInQueue , averageTimeInService);
+
+        this.computeLs(lambda,averageServiceTimeMu);
+        this.computeLq(lambda,averageServiceTimeMu,true);
+        this.computeAverageQueriesL(averageQueriesInQueue,averageQueriesInService);
+        this.computeAverageOccupiedTimeRho(lambda);
+
+        this.computeDdlAvgTime(simulation.getClientConnectionModule().getAllQueries());
+        this.computeUpdateAvgTime(simulation.getClientConnectionModule().getAllQueries());
+        this.computeSelectAvgTime(simulation.getClientConnectionModule().getAllQueries());
+        this.computeJoinAvgTime(simulation.getClientConnectionModule().getAllQueries());
     }
 }

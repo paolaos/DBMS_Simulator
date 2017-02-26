@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Queue;
 
 public abstract class Module {
+
+    protected  double realLambda;
     /**
      * Every child from *this contains a queue (with the exception of the first module)
      */
@@ -229,19 +231,10 @@ public abstract class Module {
     /**
      * Uses the basic formula of lambda/mu in order to store its value.
      */
-    public void computeAverageOccupiedTimeRho(){
-        averageOccupiedTimeRho = averageArrivalTimeLambda / averageServiceTimeMu;
+    public void computeAverageOccupiedTimeRho(double lambda){
+        averageOccupiedTimeRho = lambda / (servers*averageServiceTimeMu);
     }
 
-    public double computePropabilityThatNBeMajorThanS(double lambda , double mu) {
-        double probability =0;
-        return  probability;
-
-    }
-
-    public  void fillStatistics(int numberOfServers, double lambda , double mu ){
-
-    }
 
     public abstract double getIdleTime();
 
@@ -288,4 +281,82 @@ public abstract class Module {
     public double getAvgTimeInQueue() {
         return avgTimeInQueue;
     }
+
+
+
+    public  double  computeFactorial(int factorialOf){
+        if(factorialOf ==1|| factorialOf == 0)
+            return 1;
+
+        else
+            return factorialOf*computeFactorial(factorialOf-1);
+    }
+
+    public  double computePi0( double rho ){
+        double pi0=0;
+        int servers=this.servers;
+        if(servers ==1){
+            pi0 = 1-rho;
+
+        }else {
+            double valOfSumatory=0;
+            for (int i =0; i <= servers-1 ; i++){
+                valOfSumatory+=  Math.pow((servers * rho), i)/ computeFactorial(i);
+            }
+            pi0 = 1/(valOfSumatory + (Math.pow((servers*rho),servers )/(computeFactorial(servers)*(1-rho))));
+        }
+
+        return  pi0;
+    }
+
+    public double computePropabilityThatNBeMajorThanS(double rho  , double pi0 ) {
+        int servers=this.servers;
+        return  ((Math.pow((rho* servers),servers)*pi0))/(computeFactorial(servers)*(1-rho));
+    }
+
+
+    public  double computeLq( double lambda , double mu , boolean hasQueue ){
+        double lq =0;
+        if(hasQueue) {
+            int servers = this.servers;
+            if (servers == 1) {
+                lq = (Math.pow(lambda, 2)) / (mu * (mu - lambda));
+
+            } else {
+                double rho = lambda / (servers * mu);
+                double pi0 = computePi0(rho);
+                lq = (computePropabilityThatNBeMajorThanS(rho, pi0) * rho) / (1 - rho);
+            }
+
+        }
+        return lq;
+    }
+
+    double computeLs(double lambda , double mu){
+        return  lambda/mu;
+    }
+
+
+    public double  computeWq(double lambda , double mu , boolean hasQueue){
+        double wq=0;
+        if(hasQueue){
+            int servers = this.servers;
+            if(servers ==1 ){
+                wq =lambda / (mu*(mu - lambda));
+
+            }else {
+                double rho = lambda/(mu * servers);
+                double pi0= computePi0(rho);
+                wq = computePropabilityThatNBeMajorThanS(rho,pi0)/((servers*mu)- lambda);
+            }
+        }
+        return  wq;
+    }
+
+    public abstract void fillStatistics( double lambda  );
+
+
+
+
+
 }

@@ -29,6 +29,7 @@ public class Simulation {
     private int killNumber;
     private Hashtable<Integer, Event> killEventsTable;
 
+
     public Simulation(int simulationNumber, double qDelayTime, int kConnections, int availableSystemCalls, int nAvailableProcesses,
                       int pQueries, int mSentences, double timeout, double timePerTrial){
 
@@ -128,11 +129,8 @@ public class Simulation {
 
 
     private void manageKillEvent(Event event){
-        //si no está resuelta
-        if ( !event.getQuery().isSolved())
-        killNumber++;
-
-
+        if(!event.getQuery().isSolved())
+            killNumber++;
         switch (event.getQuery().getCurrentModule()){
 
             case CLIENT_CONNECTION_MODULE:
@@ -174,31 +172,31 @@ public class Simulation {
                 "Occupied servers: " + clientConnectionModule.getCurrentConnections() + "\n" +
                 "Free Servers: " + clientConnectionModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + clientConnectionModule.getQueueSize() + "\n" +
-                "Processed queries: " + clientConnectionModule.getServedQueries() + "\n\n";
+                "Processed queries: " + clientConnectionModule.getTotalProcessedQueries() + "\n\n";
 
         String processManagerData = "Process Manager Module: \n" +
                 "Occupied servers: " + processManagerModule + "\n" +
                 "Free Servers: " + processManagerModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + processManagerModule.getQueueSize() + "\n" +
-                "Processed queries: " + processManagerModule.getServedQueries() + "\n\n";
+                "Processed queries: " + processManagerModule.getTotalProcessedQueries() + "\n\n";
 
         String queryProcessingData = "Query Processing Module: \n" +
                 "Occupied servers: " + queryProcessingModule.getCurrentProcesses() + "\n" +
                 "Free Servers: " + queryProcessingModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + queryProcessingModule.getQueueSize() + "\n" +
-                "Processed queries: " + queryProcessingModule.getServedQueries() + "\n\n";
+                "Processed queries: " + queryProcessingModule.getTotalProcessedQueries() + "\n\n";
 
         String transactionAndDataAccessData = "Transaction and Data Access Module: \n" +
                 "Occupied servers: " + transactionAndDataAccessModule.getCurrentProcesses() + "\n" +
                 "Free Servers: " + clientConnectionModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + transactionAndDataAccessModule.getQueueSize() + "\n" +
-                "Processed queries: " + transactionAndDataAccessModule.getServedQueries() + "\n\n";
+                "Processed queries: " + transactionAndDataAccessModule.getTotalProcessedQueries() + "\n\n";
 
         String executionData = "Execution Module: \n" +
                 "Occupied servers: " + executionModule.getCurrentProcesses() + "\n" +
                 "Free Servers: " + executionModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + executionModule.getQueueSize() + "\n" +
-                "Processed queries: " + executionModule.getServedQueries() + "\n\n";
+                "Processed queries: " + executionModule.getTotalProcessedQueries() + "\n\n";
 
         return simulation + parameters + clock + eventInExecution + clientConnectionData +
                 processManagerData + queryProcessingData +  transactionAndDataAccessData + executionData;
@@ -208,8 +206,7 @@ public class Simulation {
         while(getClock() < timePerTrial){
             Event event = eventList.poll();
             clock = event.getTime();
-            if(event.getQuery().getId() == -1)
-                System.out.println(event.getEventType() + " " + event.getDestinationModule());
+
 
             switch (event.getEventType()){
                 case ARRIVAL:
@@ -224,9 +221,11 @@ public class Simulation {
                   manageKillEvent(event);
                     break;
             }
+
             txtData.setText(this.getData(event));
             txtData.update(txtData.getGraphics());
             txtData.setCaretPosition(txtData.getText().length());
+
             try{
                 Thread.sleep((long)qDelayTime * 1000);
             }catch(Exception e){
@@ -240,8 +239,7 @@ public class Simulation {
 
     public void runSimulation(){}
 
-    public void fillStatistics(){
-
+    public void fillStatistics(Statistics statistics){
 
     }
 
