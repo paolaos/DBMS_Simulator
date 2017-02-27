@@ -1,7 +1,7 @@
 import javax.swing.*;
-import java.lang.*;
 import java.lang.System;
-import java.util.*;
+import java.util.Hashtable;
+import java.util.PriorityQueue;
 
 /**
  * Created by Paola Ortega S on 2/3/2017.
@@ -31,7 +31,7 @@ public class Simulation {
 
 
     public Simulation(int simulationNumber, double qDelayTime, int kConnections, int availableSystemCalls, int nAvailableProcesses,
-                      int pQueries, int mSentences, double timeout, double timePerTrial){
+                      int pQueries, int mSentences, double timeout, double timePerTrial) {
 
         // Variable initialization
         this.simulationNumber = simulationNumber;
@@ -44,27 +44,27 @@ public class Simulation {
         executionModule = new ExecutionModule(this, mSentences);
         transactionAndDataAccessModule = new TransactionAndDataAccessModule(this, executionModule, pQueries);
         queryProcessingModule = new QueryProcessingModule(this, transactionAndDataAccessModule, nAvailableProcesses);
-        processManagerModule = new ProcessManagerModule(this, queryProcessingModule,availableSystemCalls);
+        processManagerModule = new ProcessManagerModule(this, queryProcessingModule, availableSystemCalls);
         clientConnectionModule = new ClientConnectionModule(this, processManagerModule, kConnections);
         executionModule.setNextModule(clientConnectionModule);
         totalTimeSimulation = 0;
         this.slowMode = slowMode;
         this.qDelayTime = qDelayTime;
         this.kConnections = kConnections;
-        this.availableSystemCalls=availableSystemCalls;
+        this.availableSystemCalls = availableSystemCalls;
         this.nAvailableProcesses = nAvailableProcesses;
         this.pQueries = pQueries;
         this.mSentences = mSentences;
         clientConnectionModule.generateFirstArrival();
-        killEventsTable= new Hashtable<Integer,Event>();
-        killNumber=0;
+        killEventsTable = new Hashtable<Integer, Event>();
+        killNumber = 0;
     }
 
     public Hashtable<Integer, Event> getKillEventsTable() {
         return killEventsTable;
     }
 
-    public void addEvent(Event event){
+    public void addEvent(Event event) {
         eventList.add(event);
     }
 
@@ -72,8 +72,8 @@ public class Simulation {
         return eventList;
     }
 
-    private void manageArrivalEvent(Event event){
-        switch (event.getDestinationModule()){
+    private void manageArrivalEvent(Event event) {
+        switch (event.getDestinationModule()) {
             case CLIENT_CONNECTION_MODULE:
                 clientConnectionModule.processArrival(event.getQuery());
                 break;
@@ -101,8 +101,8 @@ public class Simulation {
 
     }
 
-    private void manageExitEvent(Event event){
-        switch (event.getDestinationModule()){
+    private void manageExitEvent(Event event) {
+        switch (event.getDestinationModule()) {
 
             case CLIENT_CONNECTION_MODULE:
                 clientConnectionModule.processDeparture(event.getQuery());
@@ -118,7 +118,7 @@ public class Simulation {
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
 
-                    transactionAndDataAccessModule.processDeparture(event.getQuery());
+                transactionAndDataAccessModule.processDeparture(event.getQuery());
                 break;
 
             case EXECUTION_MODULE:
@@ -128,10 +128,11 @@ public class Simulation {
     }
 
 
-    private void manageKillEvent(Event event){
-        if(!event.getQuery().isSolved())
+    private void manageKillEvent(Event event) {
+        if (!event.getQuery().isSolved())
             killNumber++;
-        switch (event.getQuery().getCurrentModule()){
+
+        switch (event.getQuery().getCurrentModule()) {
 
             case CLIENT_CONNECTION_MODULE:
                 clientConnectionModule.processKill(event.getQuery());
@@ -156,17 +157,18 @@ public class Simulation {
         }
 
     }
-    public String getData(Event event){
+
+    public String getData(Event event) {
         String simulation = "Simulation number " + simulationNumber + "\n";
-        String parameters = "Available connections(k): "+ clientConnectionModule.servers +
+        String parameters = "Available connections(k): " + clientConnectionModule.servers +
                 "\nAvailable Systems Calls: " + processManagerModule.servers +
-                "\nAvailable Processes for query processing(n): "+ queryProcessingModule.servers+
-                "\nAvailable processes for query transactions(p): "+ transactionAndDataAccessModule.servers+
-                "\nAvailable processes for query executions(m): "+executionModule.servers;
+                "\nAvailable Processes for query processing(n): " + queryProcessingModule.servers +
+                "\nAvailable processes for query transactions(p): " + transactionAndDataAccessModule.servers +
+                "\nAvailable processes for query executions(m): " + executionModule.servers;
 
-        String clock="\nClock time: " + getClock();
+        String clock = "\nClock time: " + getClock();
 
-        String eventInExecution= "\nExecuting "+ event.getEventType()+ " in "+ event.getDestinationModule() +" module\n";
+        String eventInExecution = "\nExecuting " + event.getEventType() + " in " + event.getDestinationModule() + " module\n\n";
 
         String clientConnectionData = "Client Connection Module: \n" +
                 "Occupied servers: " + clientConnectionModule.getCurrentConnections() + "\n" +
@@ -199,17 +201,23 @@ public class Simulation {
                 "Processed queries: " + executionModule.getTotalProcessedQueries() + "\n\n";
 
         return simulation + parameters + clock + eventInExecution + clientConnectionData +
-                processManagerData + queryProcessingData +  transactionAndDataAccessData + executionData;
+                processManagerData + queryProcessingData + transactionAndDataAccessData + executionData;
     }
 
-    public void startSimulation(JTextArea txtData){
-        while(getClock() < timePerTrial){
+    public void startSimulation(JTextArea txtData) {
+        while (getClock() < timePerTrial) {
             Event event = eventList.poll();
             clock = event.getTime();
-            if(event.getQuery().getId() == -1)
+            if (event.getQuery().getId() == -1)
                 System.out.println(event.getEventType() + " " + event.getDestinationModule());
 
-            switch (event.getEventType()){
+            if (event.getQuery().getId() == 7){
+                int j=0;
+        }
+
+            switch (event.getEventType()) {
+
+
                 case ARRIVAL:
                     this.manageArrivalEvent(event);
                     break;
@@ -219,26 +227,51 @@ public class Simulation {
                     break;
 
                 case KILL:
-                  manageKillEvent(event);
+                    manageKillEvent(event);
                     break;
             }
             txtData.setText(this.getData(event));
             txtData.update(txtData.getGraphics());
-            txtData.setCaretPosition(txtData.getText().length());
-            try{
-                Thread.sleep((long)qDelayTime * 1000);
-            }catch(Exception e){
+            try {
+                Thread.sleep((long) qDelayTime * 1000);
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     }
 
 
+    public void runSimulation() {
+    }
 
+    public void fillStatistics() {
+        clientConnectionModule.computeAverageQueryLifetime(clientConnectionModule.getAllQueries());
+        //compute real lambda
+        double lambda = 0;
+        clientConnectionModule.fillStatistics(lambda);
+        if (clientConnectionModule.getAverageOccupiedTimeRho() > 1) {
+            //asignar el nuevo lambda
+        }
+        processManagerModule.fillStatistics(lambda);
+        if (processManagerModule.getAverageOccupiedTimeRho() > 1) {
+            //asignar el nuevo lambda
+        }
 
-    public void runSimulation(){}
+        queryProcessingModule.fillStatistics(lambda);
+        if (queryProcessingModule.getAverageOccupiedTimeRho() > 1) {
+            //asignar el nuevo lambda
+        }
 
-    public void fillStatistics(Statistics statistics){
+        transactionAndDataAccessModule.fillStatistics(lambda);
+        if (queryProcessingModule.getAverageOccupiedTimeRho() > 1) {
+            //asignar el nuevo lambda
+        }
+
+        executionModule.fillStatistics(lambda);
+        if (executionModule.getAverageOccupiedTimeRho() > 1) {
+            //asignar el nuevo lambda
+        }
+
 
     }
 
@@ -250,7 +283,7 @@ public class Simulation {
         return timeout;
     }
 
-    public ClientConnectionModule getClientConnectionModule(){
+    public ClientConnectionModule getClientConnectionModule() {
         return clientConnectionModule;
     }
 
@@ -270,18 +303,17 @@ public class Simulation {
         return executionModule;
     }
 
-    public static void main(String[]args){
+    public static void main(String[] args) {
         java.lang.System.out.println("Simulación DBMS");
-        Simulation s = new Simulation(0, 0, 15,1, 3, 2, 1, 15, 15000);
+        Simulation s = new Simulation(0, 0, 15, 1, 3, 2, 1, 15, 15000);
         //s.startSimulation();
-
-        System.out.println("Conexiones actuales "+ s.clientConnectionModule.getCurrentConnections());
-        System.out.println("Tamaño Cola módulo 2 "+s.processManagerModule.getQueueSize() );
-        System.out.println("Tamaño Cola módulo 3 "+s.queryProcessingModule.getQueueSize());
-        System.out.println("Tamaño Cola módulo 4 "+s.transactionAndDataAccessModule.getQueueSize());
-        System.out.println("Tamaño Cola módulo 5 "+s.executionModule.getQueueSize());
-        System.out.println("Consultas Éxitosas " +s.clientConnectionModule.getAllQueries().size());
-        System.out.println("Número de Conexiones Rechazadas "+s.clientConnectionModule.getRejectedConnections());
+        System.out.println("Conexiones actuales " + s.clientConnectionModule.getCurrentConnections());
+        System.out.println("Tamaño Cola módulo 2 " + s.processManagerModule.getQueueSize());
+        System.out.println("Tamaño Cola módulo 3 " + s.queryProcessingModule.getQueueSize());
+        System.out.println("Tamaño Cola módulo 4 " + s.transactionAndDataAccessModule.getQueueSize());
+        System.out.println("Tamaño Cola módulo 5 " + s.executionModule.getQueueSize());
+        System.out.println("Consultas Éxitosas " + s.clientConnectionModule.getAllQueries().size());
+        System.out.println("Número de Conexiones Rechazadas " + s.clientConnectionModule.getRejectedConnections());
 
     }
 

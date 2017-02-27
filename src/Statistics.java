@@ -11,6 +11,7 @@ public class Statistics {
     private ModuleStatistics queryProcessingStatistics;
     private ModuleStatistics transactionAndDataStatistics;
     private ModuleStatistics executionStatistics;
+    private ModuleStatistics clientConnectionStatisticsWithASolvedQuery;
 
     private double timeout;
     private double clock;
@@ -23,17 +24,20 @@ public class Statistics {
     private int nAvailableProcesses;
     private int pQueries;
     private int mSentences;
+    private int rejectedConnections;
 
     /**
      * Constructor of class statistics
-     * @param simulation  Simulation to save statistical information.
+     *
+     * @param simulation Simulation to save statistical information.
      */
-    public Statistics(Simulation simulation){
+    public Statistics(Simulation simulation) {
         this.clientConnectionStatistics = simulation.getClientConnectionModule().moduleStatistics;
         this.processManagerStatistics = simulation.getProcessManagerModule().moduleStatistics;
         this.queryProcessingStatistics = simulation.getQueryProcessingModule().moduleStatistics;
         this.transactionAndDataStatistics = simulation.getTransactionAndDataAccessModule().moduleStatistics;
         this.executionStatistics = simulation.getExecutionModule().moduleStatistics;
+        //this.clientConnectionStatisticsWithASolvedQuery
         this.timeout = simulation.getTimeout();
         this.clock = simulation.getClock();
         this.numberOfTrials = simulation.getNumberOfTrials();
@@ -45,17 +49,86 @@ public class Statistics {
         this.nAvailableProcesses = simulation.getnAvailableProcesses();
         this.pQueries = simulation.getpQueries();
         this.mSentences = simulation.getmSentences();
+        this.rejectedConnections = simulation.getClientConnectionModule().getRejectedConnections();
     }
 
     /**
-     * Method that compute all general statistics from all executions.
+     * Method that computes all general statistics from all executions.
+     *
      * @param statistics Contains all executions.
      */
-    public Statistics(List<Statistics> statistics){
+    public Statistics(List<Statistics> statistics) {
+        Statistics statistic = statistics.get(0);
+        this.timeout = statistic.getClock();
+        this.clock = statistic.getClock();
+        this.numberOfTrials = statistic.getNumberOfTrials();
+        this.timePerTrial = statistic.getTimePerTrial();
+        this.totalTimeSimulation = statistic.getTotalTimeSimulation();
+        this.slowMode = statistic.isSlowMode();
+        this.qDelayTime = statistic.getqDelayTime();
+        this.kConnections = statistic.getkConnections();
+        this.nAvailableProcesses = statistic.getnAvailableProcesses();
+        this.pQueries = statistic.getpQueries();
+        this.mSentences = statistic.getmSentences();
+
+        this.clientConnectionStatistics = new ModuleStatistics();
+        this.processManagerStatistics = new ModuleStatistics();
+        this.queryProcessingStatistics = new ModuleStatistics();
+        this.transactionAndDataStatistics = new ModuleStatistics();
+        this.executionStatistics = new ModuleStatistics();
+
         Iterator<Statistics> iterator = statistics.iterator();
-        while (iterator.hasNext()){
-            //TODO hacer las variables de w y s finales para calcularlas en este constructor.
+        while (iterator.hasNext()) {
+            Statistics currentStatistic = iterator.next();
+            this.addStatistics(clientConnectionStatistics, currentStatistic.getClientConnectionStatistics());
+            this.addStatistics(processManagerStatistics, currentStatistic.getProcessManagerStatistics());
+            this.addStatistics(queryProcessingStatistics, currentStatistic.getQueryProcessingStatistics());
+            this.addStatistics(transactionAndDataStatistics, currentStatistic.getTransactionAndDataStatistics());
+            this.addStatistics(executionStatistics, currentStatistic.getExecutionStatistics());
         }
+
+        int totalSimulations = statistics.size();
+        this.setAverageStatistics(clientConnectionStatistics, totalSimulations);
+        this.setAverageStatistics(processManagerStatistics, totalSimulations);
+        this.setAverageStatistics(queryProcessingStatistics, totalSimulations);
+        this.setAverageStatistics(transactionAndDataStatistics, totalSimulations);
+        this.setAverageStatistics(executionStatistics, totalSimulations);
+    }
+
+    /**
+     * Method that adds to a ModuleStatistics object, the values inside another ModuleStatistics
+     * object, used to add the values with the objective of getting the average of all
+     * simulations
+     *
+     * @param average ModuleStatistics object intended to contain the averages
+     * @param toAdd   ModuleStatistics that contains the values that will be added
+     */
+    private void addStatistics(ModuleStatistics average, ModuleStatistics toAdd) {
+        average.setTotalProcessedQueries(average.getTotalProcessedQueries() + toAdd.getTotalProcessedQueries());
+        average.setAverageQueueSize(average.getAverageQueueSize() + toAdd.getAverageQueueSize());
+        average.setAverageQueryLifetime(average.getAverageQueryLifetime() + toAdd.getAverageQueryLifetime());
+        average.setIdleTime(average.getIdleTime() + toAdd.getIdleTime());
+        average.setAverageDdlTime(average.getAverageDdlTime() + toAdd.getAverageDdlTime());
+        average.setAverageUpdateTime(average.getAverageUpdateTime() + toAdd.getAverageUpdateTime());
+        average.setAverageJoinTime(average.getAverageJoinTime() + toAdd.getAverageJoinTime());
+        average.setAverageSelectTime(average.getAverageSelectTime() + toAdd.getAverageSelectTime());
+    }
+
+    /**
+     * Method that takes a ModuleStatistics object, takes its values and divides them by the total int sent as parameter
+     *
+     * @param moduleStatistics object intended to hold the module averages
+     * @param total            total integer to divide in order to get the averages
+     */
+    private void setAverageStatistics(ModuleStatistics moduleStatistics, int total) {
+        moduleStatistics.setTotalProcessedQueries(moduleStatistics.getTotalProcessedQueries() / total);
+        moduleStatistics.setAverageQueueSize(moduleStatistics.getAverageQueueSize() / total);
+        moduleStatistics.setAverageQueryLifetime(moduleStatistics.getAverageQueryLifetime() / total);
+        moduleStatistics.setIdleTime(moduleStatistics.getIdleTime() / total);
+        moduleStatistics.setAverageDdlTime(moduleStatistics.getAverageDdlTime() / total);
+        moduleStatistics.setAverageUpdateTime(moduleStatistics.getAverageUpdateTime() / total);
+        moduleStatistics.setAverageJoinTime(moduleStatistics.getAverageJoinTime() / total);
+        moduleStatistics.setAverageSelectTime(moduleStatistics.getAverageSelectTime() / total);
     }
 
     public ModuleStatistics getClientConnectionStatistics() {
@@ -104,5 +177,25 @@ public class Statistics {
 
     public double getqDelayTime() {
         return qDelayTime;
+    }
+
+    public int getkConnections() {
+        return kConnections;
+    }
+
+    public int getnAvailableProcesses() {
+        return nAvailableProcesses;
+    }
+
+    public int getpQueries() {
+        return pQueries;
+    }
+
+    public int getmSentences() {
+        return mSentences;
+    }
+
+    public int getRejectedConnections() {
+        return rejectedConnections;
     }
 }

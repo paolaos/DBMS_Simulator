@@ -6,11 +6,11 @@ public enum ModuleType {
 
     private int moduleNumber;
 
-    ModuleType(int moduleNumber){
+    ModuleType(int moduleNumber) {
         this.moduleNumber = moduleNumber;
     }
 
-    public int getModuleNumber(){
+    public int getModuleNumber() {
         return moduleNumber;
     }
 }

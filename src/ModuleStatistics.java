@@ -7,7 +7,7 @@
  * Class that store all statistics from some module.
  */
 public class ModuleStatistics {
-    private int servedQueries;
+    private int totalProcessedQueries;
     private int averageQueueSize;
     private double averageQueryLifetime;
     private double idleTime;
@@ -18,12 +18,13 @@ public class ModuleStatistics {
     private double averageOccupiedTimeRho;
 
     /**
-     *  Store the statistics information of the module.
+     * Store the statistics information of the module.
+     *
      * @param module Module from which statistics will be saved
      */
 
-    public ModuleStatistics(Module module){
-        this.servedQueries = module.getServedQueries();
+    public ModuleStatistics(Module module) {
+        this.totalProcessedQueries = module.getTotalProcessedQueries();
         this.averageQueueSize = module.getQueueSize();
         this.averageQueryLifetime = module.simulation.getClientConnectionModule().getAverageQueryLifetime();
         this.idleTime = module.getIdleTime();
@@ -34,8 +35,24 @@ public class ModuleStatistics {
         this.averageOccupiedTimeRho = module.getAverageOccupiedTimeRho();
     }
 
-    public int getServedQueries() {
-        return servedQueries;
+    public ModuleStatistics() {
+        this.totalProcessedQueries = 0;
+        this.averageQueueSize = 0;
+        this.averageQueryLifetime = 0;
+        this.idleTime = 0;
+        this.averageDdlTime = 0;
+        this.averageUpdateTime = 0;
+        this.averageJoinTime = 0;
+        this.averageSelectTime = 0;
+        this.averageOccupiedTimeRho = 0;
+    }
+
+    public int getTotalProcessedQueries() {
+        return totalProcessedQueries;
+    }
+
+    public void setTotalProcessedQueries(int totalProcessedQueries) {
+        this.totalProcessedQueries = totalProcessedQueries;
     }
 
     public int getAverageQueueSize() {
@@ -70,15 +87,12 @@ public class ModuleStatistics {
         return averageOccupiedTimeRho;
     }
 
-    public void setServedQueries(int servedQueries) {
-        this.servedQueries = servedQueries;
-    }
-
     public void setAverageQueueSize(int averageQueueSize) {
         this.averageQueueSize = averageQueueSize;
     }
 
     public void setAverageQueryLifetime(double averageQueryLifetime) {
+
         this.averageQueryLifetime = averageQueryLifetime;
     }
 

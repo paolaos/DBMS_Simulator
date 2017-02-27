@@ -5,12 +5,13 @@ import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.lang.*;
+import java.util.Iterator;
 
 /**
  * Created by Paola Ortega S on 2/8/2017.
  */
-public class GUI extends JFrame{
+public class GUI extends JFrame {
+    private System system;
     private final String TITLE = "Simulation";
     private final String NUMBER_OF_SIMULATIONS = "Number of simulations";
     private final String MAX_TIME_PER_SIMULATION = "Maximum time to run the simulation";
@@ -72,6 +73,7 @@ public class GUI extends JFrame{
     private JButton btnStart;
 
     private JTextArea txtDataDisplay;
+    private int numberOfSimulations;
 
     public GUI() {
         super.setTitle(TITLE);
@@ -103,9 +105,9 @@ public class GUI extends JFrame{
         chkSlowMode.addChangeListener(new ChangeListener() {
             @Override
             public void stateChanged(ChangeEvent e) {
-                if(chkSlowMode.isSelected()){
+                if (chkSlowMode.isSelected()) {
                     txtDelay.setEnabled(true);
-                }else{
+                } else {
                     txtDelay.setEnabled(false);
                 }
             }
@@ -200,28 +202,28 @@ public class GUI extends JFrame{
         btnStart.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if(areParametersValid()){
+                if (areParametersValid()) {
                     //Empieza
-                    if(chkFortuna.isSelected())
+                    if (chkFortuna.isSelected())
                         ReproduceAudio.successSong();
 
-                    int numberOfSimulations = Integer.parseInt(txtNumberOfSimulations.getText());
-                    double maxTimePerSimulation= Double.parseDouble(txtMaxTimePerSimulation.getText());
-                    double delay =0;
-                    if(chkSlowMode.isSelected())
-                        delay=Double.parseDouble(txtDelay.getText());
+                    numberOfSimulations = Integer.parseInt(txtNumberOfSimulations.getText());
+                    double maxTimePerSimulation = Double.parseDouble(txtMaxTimePerSimulation.getText());
+                    double delay = 0;
+                    if (chkSlowMode.isSelected())
+                        delay = Double.parseDouble(txtDelay.getText());
 
-                    int kConnections=Integer.parseInt(txtKConnections.getText());
-                    int availableSystemCalls= Integer.parseInt(txtSystemCalls.getText());
+                    int kConnections = Integer.parseInt(txtKConnections.getText());
+                    int availableSystemCalls = Integer.parseInt(txtSystemCalls.getText());
                     int nAvailableProcesses = Integer.parseInt(txtNAvailableProcesses.getText());
                     int pAvailableProcesses = Integer.parseInt(txtPAvailableProcesses.getText());
                     int mAvailableProcesses = Integer.parseInt(txtMAvailableProcesses.getText());
                     double timeout = Double.parseDouble(txtTimeout.getText());
-                    System system = new System(numberOfSimulations, delay, kConnections, availableSystemCalls,
+                    system = new System(numberOfSimulations, delay, kConnections, availableSystemCalls,
                             nAvailableProcesses, pAvailableProcesses, mAvailableProcesses, timeout, maxTimePerSimulation);
                     displayLiveStatistics();
                     system.startSimulations(txtDataDisplay);
-                }else{
+                } else {
                     JDialog nonValidParametersDialog = new JDialog();
                     JLabel message = new JLabel("One or more parameters are either missing or are not valid");
                     message.setFont(new Font("Normal", Font.BOLD, 20));
@@ -258,7 +260,7 @@ public class GUI extends JFrame{
         super.setVisible(true);
     }
 
-    private void changeLayout(JComponent component){
+    private void changeLayout(JComponent component) {
         Border padding = BorderFactory.createEmptyBorder(15, 15, 15, 15);
         component.setBorder(padding);
         super.getContentPane().removeAll();
@@ -267,7 +269,7 @@ public class GUI extends JFrame{
         super.repaint();
     }
 
-    private void displayLiveStatistics(){
+    private void displayLiveStatistics() {
         txtDataDisplay = new JTextArea();
         txtDataDisplay.setFont(new Font("Normal", Font.BOLD, 15));
         txtDataDisplay.setEditable(false);
@@ -278,7 +280,7 @@ public class GUI extends JFrame{
         btnNext.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                displayFinalSimulationResult(0);
+                displayAllFinalSimulationResults();
             }
         });
 
@@ -288,7 +290,17 @@ public class GUI extends JFrame{
         changeLayout(panel);
     }
 
-    public void displayFinalSimulationResult(int simulationNumber){
+    public void displayAllFinalSimulationResults(){
+        Iterator<Statistics> iterator = system.getAllStatistics().iterator();
+        displayFinalSimulationResult(1, iterator.next());
+        /*int i = 1;
+        while (iterator.hasNext()){
+            displayFinalSimulationResult(i, iterator.next());
+            i++;
+        }*/
+    }
+
+    public void displayFinalSimulationResult(int simulationNumber, Statistics statistics) {
         JPanel mainPanel = new JPanel();
         mainPanel.setLayout(new BoxLayout(mainPanel, BoxLayout.Y_AXIS));
 
@@ -308,7 +320,7 @@ public class GUI extends JFrame{
         JTextField txtConnectionLifetime = new JTextField();
         txtConnectionLifetime.setFont(new Font("Normal", Font.BOLD, 20));
         txtConnectionLifetime.setEditable(false);
-        txtConnectionLifetime.setText("0.1");
+        txtConnectionLifetime.setText(statistics.getClientConnectionStatistics().getAverageQueryLifetime() + "");
         panelConnectionLife.add(lblConnectionLife);
         panelConnectionLife.add(txtConnectionLifetime);
 
@@ -319,7 +331,7 @@ public class GUI extends JFrame{
         JTextField txtRejectedConnections = new JTextField();
         txtRejectedConnections.setFont(new Font("Normal", Font.BOLD, 20));
         txtRejectedConnections.setEditable(false);
-        txtRejectedConnections.setText("54");
+        txtRejectedConnections.setText(statistics.getRejectedConnections() + "");
         panelRejectedConnections.add(lblRejectedConnections);
         panelRejectedConnections.add(txtRejectedConnections);
 
@@ -331,33 +343,56 @@ public class GUI extends JFrame{
         JPanel panelAveragePerModule = new JPanel();
         panelAveragePerModule.setLayout(new BoxLayout(panelAveragePerModule, BoxLayout.PAGE_AXIS));
         panelAveragePerModule.setLayout(new GridLayout(3, 3, 5, 5));
-        JTextArea txtAverageInModule1 = new JTextArea("Client Connection Module (without a solved query): \nDDL: \t " + "\nJoin: \t" + "\nSelect: \t" + "\nUpdate: \t" + "\nTotal idle time: \t" + "\nTotal average time in queue: \t"); //TODO pasar cada promedio
-        JTextArea txtAverageInModule2 = new JTextArea("Query Processing Module: \nDDL: \t " + "\nJoin: \t" + "\nSelect: \t" + "\nUpdate: \t" + "\nTotal idle time: \t" + "\nTotal average time in queue: \t");
-        JTextArea txtAverageInModule3 = new JTextArea("Process Manager Module: \nDDL: \t" + "\nJoin: \t" + "\nSelect: \t" + "\nUpdate: \t" + "\nTotal idle time: \t" + "\nTotal average time in queue: \t");
-        JTextArea txtAverageInModule4 = new JTextArea("Transaction and Data Access Module: \nDDL: \t" + "\nJoin: \t" + "\nSelect: \t" + "\nUpdate: \t" + "\nTotal idle time: \t" + "\nTotal average time in queue: \t");
-        JTextArea txtAverageInModule5 = new JTextArea("Execution Module: \nDDL: \t" + "\nJoin: \t" + "\nSelect: \t" + "\nUpdate: \t" + "\nTotal idle time: \t" + "\nTotal average time in queue: \t");
-        JTextArea txtAverageInModule6 = new JTextArea("Client Connection Module (with a solved query): \nDDL: \t" + "\nJoin: \t" + "\nSelect: \t" + "\nUpdate: \t" + "\nTotal idle time: \t" + "\nTotal average time in queue: \t");
+        JTextArea txtAverageInModule1 = new JTextArea("Client Connection Module (without a solved query): \nDDL: \t " + statistics.getClientConnectionStatistics().getAverageDdlTime() + "\nJoin: \t" +
+                statistics.getClientConnectionStatistics().getAverageJoinTime() + "\nSelect: \t" + statistics.getClientConnectionStatistics().getAverageSelectTime() + "\nUpdate: \t" +
+                statistics.getClientConnectionStatistics().getAverageUpdateTime() + "\nTotal idle time: \t" + statistics.getClientConnectionStatistics().getIdleTime() + "\nTotal average time in queue: \t"
+                + statistics.getClientConnectionStatistics().getAverageQueueSize());
+
+        JTextArea txtAverageInModule2 = new JTextArea("Process Manager Module: \nDDL: \t " + statistics.getProcessManagerStatistics().getAverageDdlTime() + "\nJoin: \t" +
+                statistics.getProcessManagerStatistics().getAverageJoinTime() + "\nSelect: \t" + statistics.getProcessManagerStatistics().getAverageSelectTime() + "\nUpdate: \t" +
+                statistics.getProcessManagerStatistics().getAverageUpdateTime() + "\nTotal idle time: \t" + statistics.getProcessManagerStatistics().getIdleTime() + "\nTotal average time in queue: \t"
+                + statistics.getProcessManagerStatistics().getAverageQueueSize());
+
+        JTextArea txtAverageInModule3 = new JTextArea("Query Processing Module: \nDDL: \t " + statistics.getQueryProcessingStatistics().getAverageDdlTime() + "\nJoin: \t" +
+                statistics.getQueryProcessingStatistics().getAverageJoinTime() + "\nSelect: \t" + statistics.getQueryProcessingStatistics().getAverageSelectTime() + "\nUpdate: \t" +
+                statistics.getQueryProcessingStatistics().getAverageUpdateTime() + "\nTotal idle time: \t" + statistics.getQueryProcessingStatistics().getIdleTime() + "\nTotal average time in queue: \t"
+                + statistics.getQueryProcessingStatistics().getAverageQueueSize());
+
+        JTextArea txtAverageInModule4 = new JTextArea("Transaction and Data Access Module: \nDDL: \t " + statistics.getTransactionAndDataStatistics().getAverageDdlTime() + "\nJoin: \t" +
+                statistics.getTransactionAndDataStatistics().getAverageJoinTime() + "\nSelect: \t" + statistics.getTransactionAndDataStatistics().getAverageSelectTime() + "\nUpdate: \t" +
+                statistics.getTransactionAndDataStatistics().getAverageUpdateTime() + "\nTotal idle time: \t" + statistics.getTransactionAndDataStatistics().getIdleTime() + "\nTotal average time in queue: \t"
+                + statistics.getTransactionAndDataStatistics().getAverageQueueSize());
+
+        JTextArea txtAverageInModule5 = new JTextArea("Execution Module: \nDDL: \t " + statistics.getExecutionStatistics().getAverageDdlTime() + "\nJoin: \t" +
+                statistics.getExecutionStatistics().getAverageJoinTime() + "\nSelect: \t" + statistics.getExecutionStatistics().getAverageSelectTime() + "\nUpdate: \t" +
+                statistics.getExecutionStatistics().getAverageUpdateTime() + "\nTotal idle time: \t" + statistics.getExecutionStatistics().getIdleTime() + "\nTotal average time in queue: \t"
+                + statistics.getExecutionStatistics().getAverageQueueSize());
+
+        /*JTextArea txtAverageInModule6 = new JTextArea("Client Connection Module (with a solved query): \nDDL: \t " + statistics.getQueryProcessingStatistics().getAverageDdlTime() + "\nJoin: \t" +
+                statistics.getQueryProcessingStatistics().getAverageJoinTime() + "\nSelect: \t" + statistics.getQueryProcessingStatistics().getAverageSelectTime() + "\nUpdate: \t" +
+                statistics.getQueryProcessingStatistics().getAverageUpdateTime() + "\nTotal idle time: \t" + statistics.getQueryProcessingStatistics().getIdleTime() + "\nTotal average time in queue: \t"
+                + statistics.getQueryProcessingStatistics().getAverageQueueSize());*/
 
         txtAverageInModule1.setFont(new Font("Normal", Font.BOLD, 15));
         txtAverageInModule2.setFont(new Font("Normal", Font.BOLD, 15));
         txtAverageInModule3.setFont(new Font("Normal", Font.BOLD, 15));
         txtAverageInModule4.setFont(new Font("Normal", Font.BOLD, 15));
         txtAverageInModule5.setFont(new Font("Normal", Font.BOLD, 15));
-        txtAverageInModule6.setFont(new Font("Normal", Font.BOLD, 15));
+        //txtAverageInModule6.setFont(new Font("Normal", Font.BOLD, 15));
 
         txtAverageInModule1.setEditable(false);
         txtAverageInModule2.setEditable(false);
         txtAverageInModule3.setEditable(false);
         txtAverageInModule4.setEditable(false);
         txtAverageInModule5.setEditable(false);
-        txtAverageInModule6.setEditable(false);
+        //txtAverageInModule6.setEditable(false);
 
         panelAveragePerModule.add(txtAverageInModule1);
         panelAveragePerModule.add(txtAverageInModule2);
         panelAveragePerModule.add(txtAverageInModule3);
         panelAveragePerModule.add(txtAverageInModule4);
         panelAveragePerModule.add(txtAverageInModule5);
-        panelAveragePerModule.add(txtAverageInModule6);
+        //panelAveragePerModule.add(txtAverageInModule6);
 
 
         mainPanel.add(panelSimulation);
@@ -368,54 +403,54 @@ public class GUI extends JFrame{
         changeLayout(mainPanel);
     }
 
-    private boolean areParametersValid( ){
-        boolean validParameters=true;
+    private boolean areParametersValid() {
+        boolean validParameters = true;
 
-        if(!digitValidation(txtNumberOfSimulations.getText(), false))
+        if (!digitValidation(txtNumberOfSimulations.getText(), false))
             validParameters = false;
 
-        if(!digitValidation(txtMaxTimePerSimulation.getText(),false))
-            validParameters=false;
-
-        if(chkSlowMode.isSelected() && !digitValidation(txtDelay.getText(), true))
+        if (!digitValidation(txtMaxTimePerSimulation.getText(), false))
             validParameters = false;
 
-        if(!digitValidation(txtKConnections.getText(),false))
-            validParameters=false;
+        if (chkSlowMode.isSelected() && !digitValidation(txtDelay.getText(), true))
+            validParameters = false;
 
-        if(!digitValidation(txtSystemCalls.getText(),false))
-            validParameters=false;
+        if (!digitValidation(txtKConnections.getText(), false))
+            validParameters = false;
 
-        if(!digitValidation(txtNAvailableProcesses.getText(),false))
-            validParameters=false;
+        if (!digitValidation(txtSystemCalls.getText(), false))
+            validParameters = false;
 
-        if(!digitValidation(txtPAvailableProcesses.getText(),false))
-            validParameters=false;
+        if (!digitValidation(txtNAvailableProcesses.getText(), false))
+            validParameters = false;
 
-        if(!digitValidation(txtMAvailableProcesses.getText(),false))
-            validParameters=false;
+        if (!digitValidation(txtPAvailableProcesses.getText(), false))
+            validParameters = false;
 
-        if(!digitValidation(txtTimeout.getText(),true))
-            validParameters=false;
+        if (!digitValidation(txtMAvailableProcesses.getText(), false))
+            validParameters = false;
 
-        if(!digitValidation(txtMaxTimePerSimulation.getText(), true))
+        if (!digitValidation(txtTimeout.getText(), true))
+            validParameters = false;
+
+        if (!digitValidation(txtMaxTimePerSimulation.getText(), true))
             validParameters = false;
 
         return validParameters;
     }
 
-    private boolean digitValidation(String number, boolean isDouble){
+    private boolean digitValidation(String number, boolean isDouble) {
         boolean isDigit = true;
-        if(number.equals(""))
+        if (number.equals(""))
             isDigit = false;
 
-        for(int i = 0; i < number.length() && isDigit; i++){
+        for (int i = 0; i < number.length() && isDigit; i++) {
             char currentCharacter = number.charAt(i);
-            if(!Character.isDigit(currentCharacter)){
-                if(!isDouble){
+            if (!Character.isDigit(currentCharacter)) {
+                if (!isDouble) {
                     isDigit = false;
-                }else{
-                    if(currentCharacter != '.')
+                } else {
+                    if (currentCharacter != '.')
                         isDigit = false;
                 }
             }
@@ -423,7 +458,7 @@ public class GUI extends JFrame{
         return isDigit;
     }
 
-    public static void main(String... args){
+    public static void main(String... args) {
         GUI gui = new GUI();
 
     }

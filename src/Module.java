@@ -1,5 +1,5 @@
 /**
- * Abstract class from where the 5 types of modules of the system are derived.
+ * Abstract class from which the 5 types of modules of the system are derived.
  */
 
 import java.util.List;
@@ -54,12 +54,12 @@ public abstract class Module {
     /**
      * Temporary variable used to store the current idle time in a query.
      */
-    protected  double idleTime;
+    protected double idleTime;
 
     /**
      * Sums up the total amount of idle time per query.
      */
-    protected  double totalIdleTime;
+    protected double totalIdleTime;
 
     // Variables used for statistics
 
@@ -135,43 +135,49 @@ public abstract class Module {
 
     /**
      * Calculates the average queries in the module and assigns the result to its global variable.
+     *
      * @param averageQueriesLQ average amount of queries in queue
      * @param averageQueriesLS average amount of queries in service
      */
-    public void computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS){
+    public void computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
         averageQueriesL = averageQueriesLQ + averageQueriesLS;
     }
 
     /**
      * Calculates the average amount of queries in queue and assigns the result to its global variable.
+     *
      * @param queryList list that contains all the queries that passed through *this.
      */
-    public abstract void computeAverageQueriesInQueue(List<Query> queryList) ;
+    public abstract void computeAverageQueriesInQueue(List<Query> queryList);
 
 
     /**
      * Calculates the average amount of queries in service and assigns the result to its global variable.
+     *
      * @param queryList list that contains all of the queries that passed through *this.
      */
     public abstract void computeAverageQueriesInService(List<Query> queryList);
 
     /**
      * Calculates the average time a query was in *this and assigns the result to its global variable.
+     *
      * @param averageTimeWQ the average time of a query in queue.
      * @param averageTimeWS the average time of a query in service.
      */
-    public void computeAverageTimeW(double averageTimeWQ , double averageTimeWS){
+    public void computeAverageTimeW(double averageTimeWQ, double averageTimeWS) {
         averageTimeW = averageTimeWQ + averageTimeWS;
     }
 
     /**
      * Calculates the average time a query was in queue and assigns the result to its global variable.
+     *
      * @param queryList list that contains all the queries that passed through *this.
      */
     public abstract void computeAverageTimeInQueue(List<Query> queryList);
 
     /**
      * Calculates the average time a query was in service and assigns the result to its global variable.
+     *
      * @param queryList list that contains all the queries that passed through *this.
      */
     public abstract void computeAverageTimeInService(List<Query> queryList);
@@ -179,24 +185,27 @@ public abstract class Module {
     /**
      * Calculates and stores the effective service rate for the module.
      */
-    public void computeAverageServiceTimeMu(){
-        averageServiceTimeMu = 1/ averageTimeInService;
+    public void computeAverageServiceTimeMu() {
+        averageServiceTimeMu = 1 / averageTimeInService;
     }
 
     /**
      * Decides whether query has to wait in queue or can be served immediately.
+     *
      * @param query specific query that's being processed in the module.
      */
     public abstract void processArrival(Query query);
 
     /**
      * Manages the query's exit from the module once it's done being served.
+     *
      * @param query specific query that was being processed in the module.
      */
     public abstract void processDeparture(Query query);
 
     /**
      * Hunts and kills a query inside the module in case the event containing the query indicates so.
+     *
      * @param query specific query to be killed.
      */
     public abstract void processKill(Query query);
@@ -204,69 +213,102 @@ public abstract class Module {
     /**
      * Creates an arrival event (and a kill event in the first module) of a
      * query to *this and inserts it to the system's event list
+     *
      * @param query specific query that arrives to the module.
      */
     public abstract void generateServiceEvent(Query query);
 
     /**
      * Verifies if all the servers inside the module are busy.
+     *
      * @return true if they are all busy, false otherwise.
      */
     public abstract boolean isBusy();
 
     /**
      * Fetches the variable that contains the amount of free servers.
+     *
      * @return the amount of free servers in *this.
      */
     public abstract int getNumberOfFreeServers();
 
     /**
      * Shows the amount of queries that are in *this's queue.
+     *
      * @return how many queries are in queue.
      */
-    public abstract int getQueueSize();
+    public int getQueueSize() {
+        return queue.size();
+    }
 
     /**
      * Uses the basic formula of lambda/mu in order to store its value.
      */
-    public void computeAverageOccupiedTimeRho(){
+    public void computeAverageOccupiedTimeRho(double lambda) {
         averageOccupiedTimeRho = averageArrivalTimeLambda / averageServiceTimeMu;
     }
 
-    public  double  computeFactorial(int factorialOf){
-        if(factorialOf ==1|| factorialOf == 0)
-            return 1;
-
-        else
-            return factorialOf*computeFactorial(factorialOf-1);
+    /**
+     * Calculates factorial numbers for statistical purposes.
+     *
+     * @param factorialOf the number to be used to calculate the factorial.
+     * @return the number's factorial.
+     */
+    public double computeFactorial(int factorialOf) {
+        double factorial = 1;
+        for (int i = 1; i <= factorialOf; i++) {
+            factorial *= i;
+        }
+        return factorial;
     }
 
-    public  double computePi0( double rho ){
-        double pi0=0;
-        int servers=this.servers;
-        if(servers ==1){
-            pi0 = 1-rho;
 
-        }else {
-            double valOfSumatory=0;
-            for (int i =0; i <= servers-1 ; i++){
-                valOfSumatory+=  Math.pow((servers * rho), i)/ computeFactorial(i);
+    /**
+     * Calculates the probability that all servers are idle.
+     *
+     * @param rho the module's traffic.
+     * @return the probability that all servers are idle.
+     */
+    public double computePi0(double rho) {
+        double pi0 = 0;
+        int servers = this.servers;
+        if (servers == 1) {
+            pi0 = 1 - rho;
+
+        } else {
+            double valOfSumatory = 0;
+            for (int i = 0; i <= servers - 1; i++) {
+                valOfSumatory += Math.pow((servers * rho), i) / computeFactorial(i);
             }
-            pi0 = 1/(valOfSumatory + (Math.pow((servers*rho),servers )/(computeFactorial(servers)*(1-rho))));
+            pi0 = 1 / (valOfSumatory + (Math.pow((servers * rho), servers) / (computeFactorial(servers) * (1 - rho))));
         }
 
-        return  pi0;
+        return pi0;
     }
 
-    public double computePropabilityThatNBeMajorThanS(double rho  , double pi0 ) {
-        int servers=this.servers;
-        return  ((Math.pow((rho* servers),servers)*pi0))/(computeFactorial(servers)*(1-rho));
+    /**
+     * TODO preguntar a Brayan.
+     *
+     * @param rho
+     * @param pi0
+     * @return
+     */
+    public double computePropabilityThatNBeMajorThanS(double rho, double pi0) {
+        int servers = this.servers;
+        return ((Math.pow((rho * servers), servers) * pi0)) / (computeFactorial(servers) * (1 - rho));
     }
 
-
-    public  double computeLq( double lambda , double mu , boolean hasQueue ){
-        double lq =0;
-        if(hasQueue) {
+    /**
+     * Calculates the mean number of queries in queue.
+     *
+     * @param lambda   customer arrival rate.
+     * @param mu       customer service rate.
+     * @param hasQueue whether the module has a queue or not.
+     * @return the mean number of queries in queue.
+     */
+    public double computeLq(double lambda, double mu, boolean hasQueue) {
+        double lq = 0;
+        if (hasQueue) {
             int servers = this.servers;
             if (servers == 1) {
                 lq = (Math.pow(lambda, 2)) / (mu * (mu - lambda));
@@ -281,57 +323,124 @@ public abstract class Module {
         return lq;
     }
 
-    double computeLs(double lambda , double mu){
-        return  lambda/mu;
+    /**
+     * Calculates the mean number of queries in service.
+     *
+     * @param lambda customer arrival rate.
+     * @param mu     customer service rate.
+     * @return the mean number of queries in service.
+     */
+    double computeLs(double lambda, double mu) {
+        return lambda / mu;
     }
 
-    public double  computeWq(double lambda , double mu , boolean hasQueue){
-        double wq=0;
-        if(hasQueue){
+    /**
+     * Calculates the average time a query spends in queue.
+     *
+     * @param lambda   customer arrival rate.
+     * @param mu       customer service rate.
+     * @param hasQueue whether the module has a queue or not.
+     * @return the average time a query spends in queue.
+     */
+    public double computeWq(double lambda, double mu, boolean hasQueue) {
+        double wq = 0;
+        if (hasQueue) {
             int servers = this.servers;
-            if(servers ==1 ){
-                wq =lambda / (mu*(mu - lambda));
+            if (servers == 1) {
+                wq = lambda / (mu * (mu - lambda));
 
-            }else {
-                double rho = lambda/(mu * servers);
-                double pi0= computePi0(rho);
-                wq = computePropabilityThatNBeMajorThanS(rho,pi0)/((servers*mu)- lambda);
+            } else {
+                double rho = lambda / (mu * servers);
+                double pi0 = computePi0(rho);
+                wq = computePropabilityThatNBeMajorThanS(rho, pi0) / ((servers * mu) - lambda);
             }
         }
-        return  wq;
+        return wq;
     }
 
-    public  void fillStatistics(int numberOfServers, double lambda , double mu ){
-
+    /**
+     * Calculates the amount of time that the server(s) were idle.
+     *
+     * @return the amount of time the servers were idle.
+     */
+    public double getIdleTime() {
+        return totalIdleTime;
     }
 
-    public abstract double getIdleTime();
-
-    public double getDdlAvgTime(){
-        return ddlAvgTime;
-    }
-
+    /**
+     * Uses a query list in order to accumulate the total amount of DDL queries'
+     * time in the system and finds its mean.
+     *
+     * @param queryList the list of queries in the system.
+     */
     public abstract void computeDdlAvgTime(List<Query> queryList);
 
-    public double getUpdateAvgTime(){
+    /**
+     * Uses a query list in order to accumulate the total amount of Update queries'
+     * time in the system and finds its mean.
+     *
+     * @param queryList the list of queries in the system.
+     */
+    public abstract void computeUpdateAvgTime(List<Query> queryList);
+
+    /**
+     * Uses a query list in order to accumulate the total amount of Join queries'
+     * time in the system and finds its mean.
+     *
+     * @param queryList the list of queries in the system.
+     */
+    public abstract void computeJoinAvgTime(List<Query> queryList);
+
+    /**
+     * Uses a query list in order to accumulate the total amount of Select queries'
+     * time in the system and finds its mean.
+     *
+     * @param queryList the list of queries in the system.
+     */
+    public abstract void computeSelectAvgTime(List<Query> queryList);
+
+    /**
+     * Calculates all the statistics using their respective methods and inserts the values in a Statistics class.
+     *
+     * @param lambda the mean arrival rate
+     */
+    public void fillStatistics(double lambda) {
+        this.computeAverageTimeInQueue(simulation.getClientConnectionModule().getAllQueries());//1/mu (Ws)
+        this.computeAverageServiceTimeMu();
+        this.computeWq(lambda, averageServiceTimeMu, true);
+        this.computeAverageTimeW(averageTimeInQueue, averageTimeInService);
+
+        this.computeLs(lambda, averageServiceTimeMu);
+        this.computeLq(lambda, averageServiceTimeMu, true);
+        this.computeAverageQueriesL(averageQueriesInQueue, averageQueriesInService);
+        this.computeAverageOccupiedTimeRho(lambda);
+
+        this.computeDdlAvgTime(simulation.getClientConnectionModule().getAllQueries());
+        this.computeUpdateAvgTime(simulation.getClientConnectionModule().getAllQueries());
+        this.computeSelectAvgTime(simulation.getClientConnectionModule().getAllQueries());
+        this.computeJoinAvgTime(simulation.getClientConnectionModule().getAllQueries());
+
+        ModuleStatistics moduleStatistics = new ModuleStatistics(this);
+        this.setModuleStatistics(moduleStatistics);
+    }
+
+    public double getUpdateAvgTime() {
         return updateAvgTime;
     }
 
-    public abstract void computeUpdateAvgTime(List<Query> queryList);
+    public double getDdlAvgTime() {
+        return ddlAvgTime;
+    }
 
-    public double getJoinAvgTime(){
+    public double getJoinAvgTime() {
         return joinAvgTime;
     }
 
-    public abstract void computeJoinAvgTime(List<Query> queryList);
-
-    public double getSelectAvgTime(){
+    public double getSelectAvgTime() {
         return selectAvgTime;
     }
 
-    public abstract void computeSelectAvgTime(List<Query> queryList);
-
-    public double getAverageOccupiedTimeRho(){
+    public double getAverageOccupiedTimeRho() {
         return averageOccupiedTimeRho;
     }
 
@@ -351,4 +460,7 @@ public abstract class Module {
         return avgTimeInQueue;
     }
 
+    public void setModuleStatistics(ModuleStatistics moduleStatistics) {
+        this.moduleStatistics = moduleStatistics;
+    }
 }

@@ -1,10 +1,13 @@
-import java.lang.*;
 import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class ClientConnectionModule extends Module{
+/**
+ * This module controls the amount of concurrent connections held within the system and also controls both the
+ * entry and exit of queries in the system.
+ */
+public class ClientConnectionModule extends Module {
     /**
      * Average number of arrivals to the system per time second.
      */
@@ -47,7 +50,7 @@ public class ClientConnectionModule extends Module{
     private int totalProcessedQueriesFromLastModule;
 
 
-    public ClientConnectionModule(Simulation simulation, Module nextModule, int kConnections){
+    public ClientConnectionModule(Simulation simulation, Module nextModule, int kConnections) {
         this.simulation = simulation;
         this.nextModule = nextModule;
         this.kConnections = kConnections;
@@ -56,45 +59,69 @@ public class ClientConnectionModule extends Module{
         currentId = 1;
         rejectedConnections = 0;
         currentConnections = 0;
-        idleTime=0;
-        totalIdleTime=0;
+        idleTime = 0;
+        totalIdleTime = 0;
         averageQueryLifetime = 0;
-        totalProcessedQueriesFromLastModule=0;
-        totalProcessedQueries=0;
-        servers=kConnections;
+        totalProcessedQueriesFromLastModule = 0;
+        totalProcessedQueries = 0;
+        servers = kConnections;
     }
 
+    /**
+     * Decides whether query has to wait in queue or can be served immediately.
+     *
+     * @param query specific query that's being processed in the module.
+     */
     @Override
     public void processArrival(Query query) {
-        if(query.isSolved()) {
+        if (query.isSolved()) {
             processArrivalLastModule(query);
 
-        }else {
+        } else {
             processArrivalFirstModule(query);
             if (currentConnections == 0)
                 totalIdleTime += simulation.getClock() - idleTime;
         }
     }
 
+    /**
+     * Creates an arrival event (and a kill event in the first module) of a
+     * query to *this and inserts it to the system's event list
+     *
+     * @param query specific query that arrives to the module.
+     */
     @Override
-    public void generateServiceEvent(Query query){
-        if(query == null){
+    public void generateServiceEvent(Query query) {
+        if (query == null) {
             query = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
                     ModuleType.CLIENT_CONNECTION_MODULE);
         }
-        double nextArrivalTime = DistributionGenerator.getNextArrivalTime(LAMBDA);
-        simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime, query,
+        if(query.isSolved()){
+
+            simulation.addEvent(new Event(simulation.getClock(), query,
+                    EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
+
+        }else{
+
+            double nextArrivalTime = DistributionGenerator.getNextArrivalTime(LAMBDA);
+            simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime, query,
                 EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
-        Event killEvent =new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), query,
+            Event killEvent = new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), query,
                 EventType.KILL, null);
-        simulation.addEvent(killEvent);
+            simulation.addEvent(killEvent);
         //agregar kill con el id del query
-        simulation.getKillEventsTable().put(query.getId(),killEvent);
+        simulation.getKillEventsTable().put(query.getId(), killEvent);
+            }
     }
 
+    /**
+     * Manages the query's exit from the module once it's done being served.
+     *
+     * @param query specific query that was being processed in the module.
+     */
     @Override
     public void processDeparture(Query query) {
-        if(query.isSolved())
+        if (query.isSolved())
             processDepartureOfSystem(query);
 
         else
@@ -102,182 +129,261 @@ public class ClientConnectionModule extends Module{
 
     }
 
+    /**
+     * Verifies if all the servers inside the module are busy.
+     *
+     * @return true if they are all busy, false otherwise.
+     */
     @Override
     public boolean isBusy() {
         return currentConnections == kConnections;
     }
 
+    /**
+     * Hunts and kills a query inside the module in case the event containing the query indicates so.
+     *
+     * @param query specific query to be killed.
+     */
     @Override
     public void processKill(Query query) {
         //para cuando vaya al siguiente modulo no enviarlo.
+        if (!query.isSolved())
         query.setKill(true);
     }
 
+    /**
+     * Fetches the variable that contains the amount of free servers.
+     *
+     * @return the amount of free servers in *this.
+     */
     @Override
     public int getNumberOfFreeServers() {
         return kConnections - currentConnections;
     }
 
+    /**
+     * Shows the amount of queries that are in *this's queue.
+     *
+     * @return how many queries are in queue.
+     */
     @Override
     public int getQueueSize() {
         return 0;
     }
 
+    /**
+     * Uses a query list in order to accumulate the total amount of DDL queries'
+     * time in the system and finds its mean.
+     *
+     * @param queryList the list of queries in the system.
+     */
     @Override
-    public double getIdleTime() {
-        return totalIdleTime;
-    }
-
-    @Override
-    public void computeDdlAvgTime(List <Query> queryList) {
-        double totalTime=0;
-        int ddlCounter=0;
+    public void computeDdlAvgTime(List<Query> queryList) {
+        double totalTime = 0;
+        int counter = 0;
         Iterator<Query> iterator = queryList.iterator();
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Query query = iterator.next();
-            if (query.getQueryType()==QueryType.DDL){
-                double arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
-                double exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
-                totalTime+=exitTime-arrivalTime;
-                ddlCounter++;
+            if (query.getQueryType() == QueryType.DDL) {
+                double arrivalTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
+                double exitTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+                totalTime += (exitTime - arrivalTime);
+                counter++;
 
             }
-
         }
-        this.ddlAvgTime = totalTime/ddlCounter;
+        if(counter == 0){
+            this.ddlAvgTime = 0;
+        }else
+            this.ddlAvgTime = totalTime / counter;
+
     }
 
+    /**
+     * Uses a query list in order to accumulate the total amount of Update queries'
+     * time in the system and finds its mean.
+     *
+     * @param queryList the list of queries in the system.
+     */
     @Override
-    public void computeUpdateAvgTime(List <Query> queryList) {
-        double totalTime=0;
-        int updateCounter=0;
+    public void computeUpdateAvgTime(List<Query> queryList) {
+        double totalTime = 0;
+        int counter = 0;
         Iterator<Query> iterator = queryList.iterator();
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Query query = iterator.next();
-            if (query.getQueryType()==QueryType.UPDATE){
-                double arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
-                double exitTime=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
-                totalTime+=exitTime-arrivalTime;
-                updateCounter++;
+            if (query.getQueryType() == QueryType.UPDATE) {
+                double arrivalTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
+                double exitTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+                totalTime += (exitTime - arrivalTime);
+                counter++;
+
             }
         }
-        this.updateAvgTime = totalTime/updateCounter;
+        this.updateAvgTime = totalTime / counter;
     }
 
+    /**
+     * Uses a query list in order to accumulate the total amount of Join queries'
+     * time in the system and finds its mean.
+     *
+     * @param queryList the list of queries in the system.
+     */
     @Override
-    public void computeJoinAvgTime(List <Query> queryList) {
-        double totalTime=0;
-        int joinCounter=0;
+    public void computeJoinAvgTime(List<Query> queryList) {
+        double totalTime = 0;
+        int counter = 0;
         Iterator<Query> iterator = queryList.iterator();
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Query query = iterator.next();
-            if (query.getQueryType()==QueryType.JOIN){
+            if (query.getQueryType() == QueryType.JOIN) {
+                double arrivalTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
+                double exitTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+                totalTime += (exitTime - arrivalTime);
+                counter++;
 
-                double arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
-                double exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
-                totalTime+=exitTime-arrivalTime;
-                joinCounter++;
             }
         }
-        this.joinAvgTime = totalTime/joinCounter;
+        this.joinAvgTime = totalTime / counter;
     }
 
+    /**
+     * Uses a query list in order to accumulate the total amount of Select queries'
+     * time in the system and finds its mean.
+     *
+     * @param queryList the list of queries in the system.
+     */
     @Override
-    public void computeSelectAvgTime(List <Query> queryList) {
-        double totalTime=0;
-        int selectCounter=0;
+    public void computeSelectAvgTime(List<Query> queryList) {
+        double totalTime = 0;
+        int counter = 0;
         Iterator<Query> iterator = queryList.iterator();
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Query query = iterator.next();
-            if (query.getQueryType()==QueryType.SELECT){
-                double arrivalTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
-                double exitTime= query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
-                totalTime+=exitTime-arrivalTime;
-                selectCounter++;
+            if (query.getQueryType() == QueryType.SELECT) {
+                double arrivalTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToModule();
+                double exitTime = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+                totalTime += (exitTime - arrivalTime);
+                counter++;
+
             }
         }
-        this.selectAvgTime = totalTime/selectCounter;
+        this.selectAvgTime = totalTime / counter;
     }
 
+    /**
+     * Calculates the average queries in the module and assigns the result to its global variable.
+     *
+     * @param averageQueriesLQ average amount of queries in queue
+     * @param averageQueriesLS average amount of queries in service
+     */
     @Override
     public void computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
         averageQueriesL = averageQueriesLQ + averageQueriesLS;
     }
 
-    //TODO usando valor placeholder
+    /**
+     * Calculates the average amount of queries in queue and assigns the result to its global variable.
+     *
+     * @param queryList list that contains all the queries that passed through *this.
+     */
     @Override
     public void computeAverageQueriesInQueue(List<Query> queryList) {
         Iterator<Query> iterator = queryList.iterator();
         Query query = iterator.next();
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
 
         }
     }
 
+    /**
+     * Calculates the average amount of queries in service and assigns the result to its global variable.
+     *
+     * @param queryList list that contains all of the queries that passed through *this.
+     */
     @Override
     public void computeAverageQueriesInService(List<Query> queryList) {
 
     }
 
+    /**
+     * Calculates the average time a query was in *this and assigns the result to its global variable.
+     *
+     * @param averageTimeWQ the average time of a query in queue.
+     * @param averageTimeWS the average time of a query in service.
+     */
     @Override
     public void computeAverageTimeW(double averageTimeWQ, double averageTimeWS) {
         averageTimeW = averageTimeWQ + averageTimeWS;
     }
 
+    /**
+     * Calculates the average time a query was in queue and assigns the result to its global variable.
+     *
+     * @param queryList list that contains all the queries that passed through *this.
+     */
     @Override
     public void computeAverageTimeInQueue(List<Query> queryList) {
         Iterator<Query> iterator = queryList.iterator();
-        int counter=0;
-        double totalTime=0;
+        int counter = 0;
+        double totalTime = 0;
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Query query = iterator.next();
-            double entryTimeToQueue=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToQueue();
-            double exitTimeFromQueue=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromQueue();
+            double entryTimeToQueue = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToQueue();
+            double exitTimeFromQueue = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromQueue();
             double totalTimeInQueue = exitTimeFromQueue - entryTimeToQueue;
-            if(totalTimeInQueue > 0){
+            if (totalTimeInQueue > 0) {
                 counter++;
-                totalTime+=totalTimeInQueue;
+                totalTime += totalTimeInQueue;
             }
         }
-        averageTimeInService=totalTime/counter;
+        averageTimeInService = totalTime / counter;
     }
 
+    /**
+     * Calculates the average time a query was in service and assigns the result to its global variable.
+     *
+     * @param queryList list that contains all the queries that passed through *this.
+     */
     @Override
     public void computeAverageTimeInService(List<Query> queryList) {
         Iterator<Query> iterator = queryList.iterator();
-        int counter=0;
-        double totalTime=0;
+        int counter = 0;
+        double totalTime = 0;
 
-        while (iterator.hasNext()){
+        while (iterator.hasNext()) {
             Query query = iterator.next();
-            double entryTimeToServer=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToServer();
-            double exitTimeFromServer=query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
+            double entryTimeToServer = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToServer();
+            double exitTimeFromServer = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromModule();
             double totalTimeInServer = exitTimeFromServer - entryTimeToServer;
-            if(totalTimeInServer > 0){
+            if (totalTimeInServer > 0) {
                 counter++;
-                totalTime+=totalTimeInServer;
+                totalTime += totalTimeInServer;
             }
         }
-        averageTimeInService=totalTime/counter;
+        averageTimeInService = totalTime / counter;
     }
 
     /**
      * Decides what to do with the query in case it's unresolved.
+     *
      * @param query specific unresolved query
      */
-    private void processArrivalFirstModule(Query query){
-        if(isBusy())
+    private void processArrivalFirstModule(Query query) {
+        if (isBusy())
             rejectedConnections++;
         else {
             currentConnections++;
-            simulation.addEvent(new Event(simulation.getClock() + getNextExitTime(), query,
+            double time= + getNextExitTime();
+            simulation.addEvent(new Event(simulation.getClock()+time, query,
                     EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
             query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(simulation.getClock());
+            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock()+time);
 
             allQueries.add(query);
         }
@@ -286,49 +392,58 @@ public class ClientConnectionModule extends Module{
 
     /**
      * Decides what to do with the query in case it's resolved.
+     *
      * @param query specific resolved query.
      */
-    private void processArrivalLastModule(Query query){
+    private void processArrivalLastModule(Query query) {
         //sumarle al total time del query.
-        simulation.addEvent(new Event(getResultantTime(query.getNumberOfBlocks()) + simulation.getClock(),
+        double time = getResultantTime(query.getNumberOfBlocks());
+        simulation.addEvent(new Event( time + simulation.getClock(),
                 query, EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfEntryToModule(this.simulation.getClock());
+        query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(this.simulation.getClock()+ time);
 
     }
 
     /**
      * Creates the first event and places it in this simulation in order to start in execution time.
      */
-    public void generateFirstArrival(){
+    public void generateFirstArrival() {
         Query query = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
                 ModuleType.CLIENT_CONNECTION_MODULE);
-        simulation.addEvent(new Event(simulation.getClock() , query,
+        simulation.addEvent(new Event(simulation.getClock(), query,
                 EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
 
     }
 
     /**
-     * Handles the query's departure to the next module
-     * @param query
+     * Handles the unresolved query's departure to the next module.
+     *
+     * @param query specific unresolved query.
      */
-    private void processDepartureToNextModule(Query query){
-        query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
+    private void processDepartureToNextModule(Query query) {
+       // query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         totalProcessedQueries++;
         if (!query.isKill()) {
             nextModule.generateServiceEvent(query);
 
-        }else {
+        } else {
             currentConnections--;
         }
 
     }
 
-    private void processDepartureOfSystem(Query query){
+    /**
+     * Handles the resolved query's departure out of the system.
+     *
+     * @param query specific resolved query.
+     */
+    private void processDepartureOfSystem(Query query) {
         currentConnections--;
-        query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
+        //query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         totalProcessedQueriesFromLastModule++;
-        if (currentConnections==0)
-            idleTime=simulation.getClock();
+        if (currentConnections == 0)
+            idleTime = simulation.getClock();
         //TODO restar tiempo de entrada al sistema
         query.setTotalTime(simulation.getClock() - query.getTimeOfEntry());
         //se elimina el Kill
@@ -337,31 +452,47 @@ public class ClientConnectionModule extends Module{
 
     }
 
-    public double getNextExitTime(){
-        return DistributionGenerator.getNextRandomValueByUniform(0.01,0.05);
+    /**
+     * Generates the exit time of the module using the uniform distribution random number generator.
+     *
+     * @return the random value.
+     */
+    public double getNextExitTime() {
+        return DistributionGenerator.getNextRandomValueByUniform(0.01, 0.05);
     }
 
+    /**
+     * Creates the time the query takes to display its results to the user.
+     *
+     * @param numberOfBlocks the amount of blocks that had to be loaded for the query.
+     * @return the resultant time.
+     */
     public double getResultantTime(int numberOfBlocks) {
         double average = numberOfBlocks / 3; //hacerlo en entero y redondearlo para arriba?
         return average / 2;
     }
 
-    public List<Query> getAllQueries(){
-        return allQueries;
-    }
-
-    //solo primer modulo
-    public void computeAverageQueryLifetime(List<Query> queryList){
+    /**
+     * Calculates the mean of the times each query lasted in the system, whether it was solved
+     * or not. Mainly for statistical purposes.
+     *
+     * @param queryList the list containing all the resolved queries.
+     */
+    public void computeAverageQueryLifetime(List<Query> queryList) {
         double avgConnectionLife = 0;
         int size = queryList.size();
-        for(int i = 0; i < size; i++){
+        for (int i = 0; i < size; i++) {
             avgConnectionLife += queryList.get(i).getTotalTime();
         }
 
         averageQueryLifetime = avgConnectionLife / size;
+    } //solo primer modulo
+
+    public List<Query> getAllQueries() {
+        return allQueries;
     }
 
-    public double getAverageQueryLifetime(){
+    public double getAverageQueryLifetime() {
         return averageQueryLifetime;
     }
 

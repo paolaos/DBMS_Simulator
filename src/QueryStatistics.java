@@ -16,7 +16,7 @@ public class QueryStatistics {
     /**
      * Constructor of class QueryStatistics
      */
-    public QueryStatistics(){
+    public QueryStatistics() {
         clientConnectionStatisticsWithoutResolvedQuery = new QueryModuleStatistics();
         processManagerStatistics = new QueryModuleStatistics();
         queryProcessingStatistics = new QueryModuleStatistics();

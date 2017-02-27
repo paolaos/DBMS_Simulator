@@ -1,5 +1,4 @@
-
-public class Query implements Comparable<Query>{
+public class Query implements Comparable<Query> {
     private double timeOfEntry;
     private double totalTime;
     private QueryType type;
@@ -8,34 +7,33 @@ public class Query implements Comparable<Query>{
     private int id;
     private int numberOfBlocks;
     private boolean solved;
-    private  boolean isInQueue;
+    private boolean isInQueue;
     private boolean kill;
 
-    public Query(int id, double timeOfEntry , QueryType type, ModuleType currentModule){
+    public Query(int id, double timeOfEntry, QueryType type, ModuleType currentModule) {
         this.id = id;
         this.timeOfEntry = timeOfEntry;
         this.type = type;
         totalTime = 0;
         isInQueue = false;
         this.currentModule = currentModule;
-        numberOfBlocks=0;
+        numberOfBlocks = 0;
         solved = false;
         queryStatistics = new QueryStatistics();
-        kill=false;
+        kill = false;
     }
-
-
 
     public boolean isSolved() {
         return solved;
     }
 
-    public   boolean getIsInQueue(){return isInQueue; }
-
-    public void setIsInQueue(boolean isInQueue){
-        isInQueue= isInQueue;
+    public boolean getIsInQueue() {
+        return isInQueue;
     }
 
+    public void setIsInQueue(boolean isInQueue) {
+        isInQueue = isInQueue;
+    }
 
     public boolean isKill() {
         return kill;
@@ -57,7 +55,7 @@ public class Query implements Comparable<Query>{
         this.numberOfBlocks = numberOfBlocks;
     }
 
-    public QueryType getQueryType(){
+    public QueryType getQueryType() {
         return type;
     }
 
@@ -83,17 +81,17 @@ public class Query implements Comparable<Query>{
         return totalTime;
     }
 
-    public int getPriority(){
+    public int getPriority() {
         return type.getPriority();
     }
 
     @Override
     public int compareTo(Query query) {
         int toReturn = 0;
-        if(type.getPriority() < query.getPriority())
+        if (type.getPriority() < query.getPriority())
             toReturn = -1;
 
-        else if(type.getPriority() > query.getPriority())
+        else if (type.getPriority() > query.getPriority())
             toReturn = 1;
 
         return toReturn;

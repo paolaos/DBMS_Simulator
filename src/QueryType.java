@@ -7,12 +7,12 @@ public enum QueryType {
     private int priority;
     private boolean readOnly;
 
-    QueryType(int priority, boolean readOnly){
+    QueryType(int priority, boolean readOnly) {
         this.priority = priority;
         this.readOnly = readOnly;
     }
 
-    public int getPriority(){
+    public int getPriority() {
         return priority;
     }
 
