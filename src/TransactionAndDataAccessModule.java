@@ -514,4 +514,25 @@ public class TransactionAndDataAccessModule extends Module {
     public int getCurrentProcesses() {
         return currentProcessedQueries;
     }
+
+
+    //Antes de Llamar este método se debe calcular el lambda real
+    @Override
+    public void fillStatistics( double lambda) {
+        this.computeAverageTimeInQueue(simulation.getClientConnectionModule().getAllQueries());//1/mu (Ws)
+        this.computeAverageServiceTimeMu();
+        this.computeWq(lambda,averageServiceTimeMu,true);
+        this.computeAverageTimeW(averageTimeInQueue , averageTimeInService);
+
+        this.computeLs(lambda,averageServiceTimeMu);
+        this.computeLq(lambda,averageServiceTimeMu,true);
+        this.computeAverageQueriesL(averageQueriesInQueue,averageQueriesInService);
+        this.computeAverageOccupiedTimeRho(lambda);
+
+        this.computeDdlAvgTime(simulation.getClientConnectionModule().getAllQueries());
+        this.computeUpdateAvgTime(simulation.getClientConnectionModule().getAllQueries());
+        this.computeSelectAvgTime(simulation.getClientConnectionModule().getAllQueries());
+        this.computeJoinAvgTime(simulation.getClientConnectionModule().getAllQueries());
+    }
+
 }
