@@ -37,7 +37,7 @@ public class System {
                     nAvailableProcesses, pQueries, mSentences, timeout, timePerTrial);
             simulation.startSimulation(txtData);
             //llamar metodo que haga las probas.
-            simulation.fillStatistics();
+            //simulation.fillStatistics();
 
             //crear estadisticas
             Statistics statistics = new Statistics(simulation);

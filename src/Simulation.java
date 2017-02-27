@@ -206,8 +206,7 @@ public class Simulation {
         while(getClock() < timePerTrial){
             Event event = eventList.poll();
             clock = event.getTime();
-            if(event.getQuery().getId() == -1)
-                System.out.println(event.getEventType() + " " + event.getDestinationModule());
+
 
             switch (event.getEventType()){
                 case ARRIVAL:
@@ -222,9 +221,11 @@ public class Simulation {
                   manageKillEvent(event);
                     break;
             }
+
             txtData.setText(this.getData(event));
             txtData.update(txtData.getGraphics());
             txtData.setCaretPosition(txtData.getText().length());
+
             try{
                 Thread.sleep((long)qDelayTime * 1000);
             }catch(Exception e){
