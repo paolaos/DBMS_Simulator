@@ -1,3 +1,4 @@
+import java.lang.*;
 import java.util.Iterator;
 import java.util.List;
 import java.util.concurrent.LinkedBlockingQueue;
@@ -35,6 +36,7 @@ public class ProcessManagerModule extends Module {
      */
     @Override
     public void processArrival(Query query) {
+        counterArrivals++;
         query.getQueryStatistics().getProcessManagerStatistics().setTimeOfEntryToModule(simulation.getClock());
         if (this.isBusy()) {
             query.setIsInQueue(true);
@@ -171,6 +173,7 @@ public class ProcessManagerModule extends Module {
             }
 
         }
+
         if(counter == 0){
             this.ddlAvgTime = 0;
         }else
@@ -203,9 +206,8 @@ public class ProcessManagerModule extends Module {
             }
 
         }
-
         this.updateAvgTime = totalTime / counter;
-        java.lang.System.out.println(updateAvgTime);
+
     }
 
     /**
@@ -234,7 +236,6 @@ public class ProcessManagerModule extends Module {
             }
 
         }
-
         this.joinAvgTime = totalTime / counter;
     }
 
@@ -264,7 +265,6 @@ public class ProcessManagerModule extends Module {
             }
 
         }
-
         this.selectAvgTime = totalTime / counter;
     }
 
@@ -309,7 +309,7 @@ public class ProcessManagerModule extends Module {
      * @param queryList list that contains all the queries that passed through *this.
      */
     @Override
-    public void computeAverageTimeInService(List<Query> queryList) {
+    public double computeAverageTimeInService(List<Query> queryList) {
         Iterator<Query> iterator = queryList.iterator();
         double totalTime = 0;
         int counter = 0;
@@ -323,7 +323,7 @@ public class ProcessManagerModule extends Module {
                 totalTime += totalTimeInServer;
             }
         }
-        averageTimeInService = totalTime / counter;
+        return totalTime / counter;
     }
 
     /**
@@ -333,8 +333,8 @@ public class ProcessManagerModule extends Module {
      * @param averageQueriesLS average amount of queries in service
      */
     @Override
-    public void computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
-        averageQueriesL = averageQueriesLQ + averageQueriesLS;
+    public double computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
+        return averageQueriesLQ + averageQueriesLS;
     }
 
     /**
@@ -357,4 +357,7 @@ public class ProcessManagerModule extends Module {
         averageQueriesInService = ClientConnectionModule.LAMBDA * averageTimeInService;
     }
 
+    public int getCurrentSystemCalls() {
+        return currentSystemCalls;
+    }
 }

@@ -33,6 +33,7 @@ public class ExecutionModule extends Module {
         this.mSentences = mSentences;
         currentSentences = 0;
         servers = mSentences;
+
     }
 
     /**
@@ -43,6 +44,7 @@ public class ExecutionModule extends Module {
     @Override
     public void processArrival(Query query) {
         query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToModule(simulation.getClock());
+        counterArrivals++;
         if (isBusy()) {
             query.setIsInQueue(true);
             queue.offer(query);
@@ -173,7 +175,6 @@ public class ExecutionModule extends Module {
                 double arrivalTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfEntryToModule();
                 double exitTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfExitFromModule();
                 double totalTimeInServer = exitTime - arrivalTime;
-                java.lang.System.out.println( exitTime + " - " + arrivalTime+" = " + (exitTime - arrivalTime)+"\n");
                 if (totalTimeInServer > 0) {
                     counter++;
                     totalTime += totalTimeInServer;
@@ -206,8 +207,7 @@ public class ExecutionModule extends Module {
                 double arrivalTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfEntryToModule();
                 double exitTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfExitFromModule();
                 double totalTimeInServer = exitTime - arrivalTime;
-                java.lang.System.out.println( exitTime + " - " + arrivalTime+" = " + (exitTime - arrivalTime)+"\n");
-                if (totalTimeInServer > 0) {
+               if (totalTimeInServer > 0) {
                     counter++;
                     totalTime += totalTimeInServer;
                 }
@@ -236,8 +236,7 @@ public class ExecutionModule extends Module {
                 double arrivalTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfEntryToModule();
                 double exitTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfExitFromModule();
                 double totalTimeInServer = exitTime - arrivalTime;
-                java.lang.System.out.println( exitTime + " - " + arrivalTime+" = " + (exitTime - arrivalTime)+"\n");
-                if (totalTimeInServer > 0) {
+                 if (totalTimeInServer > 0) {
                     counter++;
                     totalTime += totalTimeInServer;
                 }
@@ -266,7 +265,6 @@ public class ExecutionModule extends Module {
                 double arrivalTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfEntryToModule();
                 double exitTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfExitFromModule();
                 double totalTimeInServer = exitTime - arrivalTime;
-                java.lang.System.out.println( exitTime + " - " + arrivalTime+" = " + (exitTime - arrivalTime)+"\n");
                 if (totalTimeInServer > 0) {
                     counter++;
                     totalTime += totalTimeInServer;
@@ -319,7 +317,7 @@ public class ExecutionModule extends Module {
      * @param queryList list that contains all the queries that passed through *this.
      */
     @Override
-    public void computeAverageTimeInService(List<Query> queryList) {
+    public double computeAverageTimeInService(List<Query> queryList) {
         Iterator<Query> iterator = queryList.iterator();
         int counter = 0;
         double totalTime = 0;
@@ -334,7 +332,7 @@ public class ExecutionModule extends Module {
                 totalTime += totalTimeInServer;
             }
         }
-        averageTimeInService = totalTime / counter;
+        return totalTime / counter;
     }
 
     /**
@@ -344,8 +342,8 @@ public class ExecutionModule extends Module {
      * @param averageQueriesLS average amount of queries in service
      */
     @Override
-    public void computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
-        averageQueriesL = averageQueriesLQ + averageQueriesLS;
+    public double computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
+        return averageQueriesLQ + averageQueriesLS;
     }
 
     /**

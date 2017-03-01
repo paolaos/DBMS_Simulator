@@ -9,6 +9,8 @@
 public class ModuleStatistics {
     private int totalProcessedQueries;
     private int averageQueueSize;
+    private double trueLambda;
+    private double avgServiceTimeMu;
     private double averageQueryLifetime;
     private double idleTime;
     private double averageDdlTime;
@@ -16,6 +18,12 @@ public class ModuleStatistics {
     private double averageJoinTime;
     private double averageSelectTime;
     private double averageOccupiedTimeRho;
+    private int rejectedConnections;
+    private double averageQueriesL;
+    private double averageQueriesLQ;
+    private double averageQueriesLS;
+    private double averageTimeW;
+    private double averageTimeWQ;
 
     /**
      * Store the statistics information of the module.
@@ -26,13 +34,34 @@ public class ModuleStatistics {
     public ModuleStatistics(Module module) {
         this.totalProcessedQueries = module.getTotalProcessedQueries();
         this.averageQueueSize = module.getQueueSize();
-        this.averageQueryLifetime = module.simulation.getClientConnectionModule().getAverageQueryLifetime();
+        //TODO pasar a estadistica general
+        //this.averageQueryLifetime = module.simulation.getClientConnectionModule().getAverageQueryLifetime();
         this.idleTime = module.getIdleTime();
         this.averageDdlTime = module.getDdlAvgTime();
         this.averageUpdateTime = module.getUpdateAvgTime();
         this.averageJoinTime = module.getJoinAvgTime();
         this.averageSelectTime = module.getSelectAvgTime();
         this.averageOccupiedTimeRho = module.getAverageOccupiedTimeRho();
+        this.trueLambda = module.computeRealLambda();
+        this.avgServiceTimeMu = module.getAverageServiceTimeMu();
+        this.averageQueriesL = module.getAverageQueriesL();
+        this.averageQueriesLQ = module.getAverageQueriesInQueue();
+        this.averageQueriesLS = module.getAverageQueriesInService();
+        this.averageTimeW = module.getAverageTimeW();
+        this.averageTimeWQ = module.getAvgTimeInQueue();
+    }
+
+    public ModuleStatistics(ClientConnectionModule module, boolean isLastModule) {
+        if(!isLastModule) {
+            this.totalProcessedQueries = module.getTotalProcessedQueriesFromLastModule();
+            this.averageQueueSize =0;
+            this.idleTime = module.getIdleTime();
+            this.averageDdlTime = module.getDdlAvgTimeInLastModule();
+            this.averageUpdateTime = module.getUpdateAvgTimeInLastModule();
+            this.averageJoinTime = module.getJoinAvgTimeInLastModule();
+            this.averageSelectTime = module.getSelectAvgTimeInLastModule();
+            this.averageOccupiedTimeRho = module.getAverageOccupiedTimeRho();
+        }
     }
 
     public ModuleStatistics() {
@@ -118,5 +147,41 @@ public class ModuleStatistics {
 
     public void setAverageOccupiedTimeRho(double averageOccupiedTimeRho) {
         this.averageOccupiedTimeRho = averageOccupiedTimeRho;
+    }
+
+    public int getRejectedConnections() {
+        return rejectedConnections;
+    }
+
+    public void setRejectedConnections(int rejectedConnections) {
+        this.rejectedConnections = rejectedConnections;
+    }
+
+    public double getTrueLambda() {
+        return trueLambda;
+    }
+
+    public double getAvgServiceTimeMu() {
+        return avgServiceTimeMu;
+    }
+
+    public double getAverageQueriesL(){
+        return averageQueriesL;
+    }
+
+    public double getAverageQueriesLQ() {
+        return averageQueriesLQ;
+    }
+
+    public double getAverageQueriesLS() {
+        return averageQueriesLS;
+    }
+
+    public double getAverageTimeW() {
+        return averageTimeW;
+    }
+
+    public double getAverageTimeWQ() {
+        return averageTimeWQ;
     }
 }

@@ -85,6 +85,11 @@ public class Query implements Comparable<Query> {
         return type.getPriority();
     }
 
+    /**
+     * CompareTo method of the Query class. It compares the priority of the types of the two queries
+     * @param query query to be compared with
+     * @return 0 if the queries have the same priority, -1 if the current one has less priority, 1 otherwise.
+     */
     @Override
     public int compareTo(Query query) {
         int toReturn = 0;

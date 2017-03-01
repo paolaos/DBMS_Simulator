@@ -34,6 +34,7 @@ public class QueryProcessingModule extends Module {
      */
     @Override
     public void processArrival(Query query) {
+        counterArrivals++;
         query.getQueryStatistics().getQueryProcessingStatistics().setTimeOfEntryToModule(simulation.getClock());
         if (isBusy()) {
             query.setIsInQueue(true);
@@ -297,7 +298,7 @@ public class QueryProcessingModule extends Module {
      * @param queryList list that contains all the queries that passed through *this.
      */
     @Override
-    public void computeAverageTimeInService(List<Query> queryList) {
+    public double computeAverageTimeInService(List<Query> queryList) {
         Iterator<Query> iterator = queryList.iterator();
         double totalTimeInService = 0;
         int counter = 0;
@@ -310,7 +311,7 @@ public class QueryProcessingModule extends Module {
                 counter++;
             }
         }
-        averageTimeInService = totalTimeInService / counter;
+        return totalTimeInService / counter;
     }
 
     /**
@@ -320,8 +321,8 @@ public class QueryProcessingModule extends Module {
      * @param averageQueriesLS average amount of queries in service
      */
     @Override
-    public void computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
-        averageQueriesL = averageQueriesLQ + averageQueriesLS;
+    public double computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
+        return averageQueriesLQ + averageQueriesLS;
     }
 
     /**
@@ -339,6 +340,8 @@ public class QueryProcessingModule extends Module {
      *
      * @param queryList list that contains all of the queries that passed through *this.
      */
+
+    //Todo HOLAAAAA hay que Cambiarlo
     @Override
     public void computeAverageQueriesInService(List<Query> queryList) {
         averageQueriesInService = ClientConnectionModule.LAMBDA * averageTimeInService;

@@ -39,7 +39,12 @@ public class Event implements Comparable<Event> {
         return destinationModule;
     }
 
-
+    /**
+     * CompareTo method of the Event class, it returns -1 if the current event's time is lesser than the other one's.
+     * It returns 1 in any other case, this is in order to maintain a correct order of the events in the PriorityQueue
+     * @param o Event to be compared with
+     * @return -1 if the current event is set to be earlier, 1 otherwise.
+     */
     @Override
     public int compareTo(Event o) {
         int toReturn = 0;

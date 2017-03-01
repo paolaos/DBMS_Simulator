@@ -6,6 +6,8 @@ import java.util.PriorityQueue;
 /**
  * Created by Paola Ortega S on 2/3/2017.
  */
+
+
 public class Simulation {
     private int simulationNumber;
     private double timeout;
@@ -40,6 +42,7 @@ public class Simulation {
         numberOfTrials = 0;
         this.timePerTrial = timePerTrial;
         eventList = new PriorityQueue<>();
+        this.availableSystemCalls = availableSystemCalls;
 
         executionModule = new ExecutionModule(this, mSentences);
         transactionAndDataAccessModule = new TransactionAndDataAccessModule(this, executionModule, pQueries);
@@ -47,7 +50,7 @@ public class Simulation {
         processManagerModule = new ProcessManagerModule(this, queryProcessingModule, availableSystemCalls);
         clientConnectionModule = new ClientConnectionModule(this, processManagerModule, kConnections);
         executionModule.setNextModule(clientConnectionModule);
-        totalTimeSimulation = 0;
+
         this.slowMode = slowMode;
         this.qDelayTime = qDelayTime;
         this.kConnections = kConnections;
@@ -59,6 +62,8 @@ public class Simulation {
         killEventsTable = new Hashtable<Integer, Event>();
         killNumber = 0;
     }
+
+
 
     public Hashtable<Integer, Event> getKillEventsTable() {
         return killEventsTable;
@@ -87,10 +92,7 @@ public class Simulation {
                 break;
 
             case TRANSACTION_AND_DATA_ACCESS_MODULE:
-
-
                 transactionAndDataAccessModule.processArrival(event.getQuery());
-
                 break;
 
             case EXECUTION_MODULE:
@@ -177,7 +179,7 @@ public class Simulation {
                 "Processed queries: " + clientConnectionModule.getTotalProcessedQueries() + "\n\n";
 
         String processManagerData = "Process Manager Module: \n" +
-                "Occupied servers: " + processManagerModule + "\n" +
+                "Occupied servers: " + processManagerModule.getCurrentSystemCalls() + "\n" +
                 "Free Servers: " + processManagerModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + processManagerModule.getQueueSize() + "\n" +
                 "Processed queries: " + processManagerModule.getTotalProcessedQueries() + "\n\n";
@@ -190,7 +192,7 @@ public class Simulation {
 
         String transactionAndDataAccessData = "Transaction and Data Access Module: \n" +
                 "Occupied servers: " + transactionAndDataAccessModule.getCurrentProcesses() + "\n" +
-                "Free Servers: " + clientConnectionModule.getNumberOfFreeServers() + "\n" +
+                "Free Servers: " + transactionAndDataAccessModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + transactionAndDataAccessModule.getQueueSize() + "\n" +
                 "Processed queries: " + transactionAndDataAccessModule.getTotalProcessedQueries() + "\n\n";
 
@@ -200,8 +202,14 @@ public class Simulation {
                 "Size of the Queue: " + executionModule.getQueueSize() + "\n" +
                 "Processed queries: " + executionModule.getTotalProcessedQueries() + "\n\n";
 
+        String lastModuleData = "Exit Module: \n" +
+                "Occupied servers: " + clientConnectionModule.getCurrentConnections() + "\n" +
+                "Free Servers: " + clientConnectionModule.getNumberOfFreeServers() + "\n" +
+                "Size of the Queue: " + clientConnectionModule.getQueueSize() + "\n" +
+                "Processed queries: " + clientConnectionModule.getTotalProcessedQueries() + "\n\n";
+
         return simulation + parameters + clock + eventInExecution + clientConnectionData +
-                processManagerData + queryProcessingData + transactionAndDataAccessData + executionData;
+                processManagerData + queryProcessingData + transactionAndDataAccessData + executionData + lastModuleData;
     }
 
     public void startSimulation(JTextArea txtData) {
@@ -240,37 +248,52 @@ public class Simulation {
         }
     }
 
-
-    public void runSimulation() {
+    public int getKillNumber() {
+        return killNumber;
     }
+
+
 
     public void fillStatistics() {
         clientConnectionModule.computeAverageQueryLifetime(clientConnectionModule.getAllQueries());
         //compute real lambda
-        double lambda = 0;
-        clientConnectionModule.fillStatistics(lambda);
+
+        double lambda = clientConnectionModule.computeRealLambda();
+        boolean isTheLastModule=true;
+
+        clientConnectionModule.fillStatistics(lambda , !isTheLastModule);
         if (clientConnectionModule.getAverageOccupiedTimeRho() > 1) {
             //asignar el nuevo lambda
+            lambda =clientConnectionModule.computeRealLambda();
         }
-        processManagerModule.fillStatistics(lambda);
+        processManagerModule.fillStatistics(lambda, !isTheLastModule);
         if (processManagerModule.getAverageOccupiedTimeRho() > 1) {
             //asignar el nuevo lambda
+            lambda= processManagerModule.computeRealLambda();
         }
 
-        queryProcessingModule.fillStatistics(lambda);
+        queryProcessingModule.fillStatistics(lambda, !isTheLastModule);
         if (queryProcessingModule.getAverageOccupiedTimeRho() > 1) {
             //asignar el nuevo lambda
+            lambda= queryProcessingModule.computeRealLambda();
+
         }
 
-        transactionAndDataAccessModule.fillStatistics(lambda);
-        if (queryProcessingModule.getAverageOccupiedTimeRho() > 1) {
+        transactionAndDataAccessModule.fillStatistics(lambda, !isTheLastModule);
+        if (transactionAndDataAccessModule.getAverageOccupiedTimeRho() > 1) {
             //asignar el nuevo lambda
+            lambda= transactionAndDataAccessModule.computeRealLambda();
         }
 
-        executionModule.fillStatistics(lambda);
+        executionModule.fillStatistics(lambda,!isTheLastModule);
         if (executionModule.getAverageOccupiedTimeRho() > 1) {
             //asignar el nuevo lambda
+            lambda= executionModule.computeRealLambda();
         }
+
+        clientConnectionModule.fillStatistics(lambda,isTheLastModule);
+
+
 
 
     }
@@ -326,7 +349,7 @@ public class Simulation {
     }
 
     public double getTotalTimeSimulation() {
-        return totalTimeSimulation;
+        return timePerTrial;
     }
 
     public boolean isSlowMode() {
@@ -351,5 +374,9 @@ public class Simulation {
 
     public int getmSentences() {
         return mSentences;
+    }
+
+    public int getAvailableSystemCalls() {
+        return availableSystemCalls;
     }
 }

@@ -11,7 +11,7 @@ public class Statistics {
     private ModuleStatistics queryProcessingStatistics;
     private ModuleStatistics transactionAndDataStatistics;
     private ModuleStatistics executionStatistics;
-    private ModuleStatistics clientConnectionStatisticsWithASolvedQuery;
+    private ModuleStatistics clientConnectionStatisticsWithASolvedQueryStatistics;
 
     private double timeout;
     private double clock;
@@ -20,11 +20,13 @@ public class Statistics {
     private double totalTimeSimulation;
     private boolean slowMode;
     private double qDelayTime;
+    private int systemCalls;
     private int kConnections;
     private int nAvailableProcesses;
     private int pQueries;
     private int mSentences;
-    private int rejectedConnections;
+    private double rejectedConnections;
+    private double avgQueryLifetime;
 
     /**
      * Constructor of class statistics
@@ -37,7 +39,8 @@ public class Statistics {
         this.queryProcessingStatistics = simulation.getQueryProcessingModule().moduleStatistics;
         this.transactionAndDataStatistics = simulation.getTransactionAndDataAccessModule().moduleStatistics;
         this.executionStatistics = simulation.getExecutionModule().moduleStatistics;
-        //this.clientConnectionStatisticsWithASolvedQuery
+        this.clientConnectionStatisticsWithASolvedQueryStatistics = new ModuleStatistics(simulation.getClientConnectionModule(), false);
+
         this.timeout = simulation.getTimeout();
         this.clock = simulation.getClock();
         this.numberOfTrials = simulation.getNumberOfTrials();
@@ -45,11 +48,13 @@ public class Statistics {
         this.totalTimeSimulation = simulation.getTotalTimeSimulation();
         this.slowMode = simulation.isSlowMode();
         this.qDelayTime = simulation.getqDelayTime();
+        this.systemCalls = simulation.getAvailableSystemCalls();
         this.kConnections = simulation.getkConnections();
         this.nAvailableProcesses = simulation.getnAvailableProcesses();
         this.pQueries = simulation.getpQueries();
         this.mSentences = simulation.getmSentences();
         this.rejectedConnections = simulation.getClientConnectionModule().getRejectedConnections();
+        this.avgQueryLifetime = simulation.getClientConnectionModule().getAverageQueryLifetime();
     }
 
     /**
@@ -66,16 +71,20 @@ public class Statistics {
         this.totalTimeSimulation = statistic.getTotalTimeSimulation();
         this.slowMode = statistic.isSlowMode();
         this.qDelayTime = statistic.getqDelayTime();
+        this.systemCalls = statistic.getSystemCalls();
         this.kConnections = statistic.getkConnections();
         this.nAvailableProcesses = statistic.getnAvailableProcesses();
         this.pQueries = statistic.getpQueries();
         this.mSentences = statistic.getmSentences();
+        this.avgQueryLifetime = statistic.getAvgQueryLifetime();
 
         this.clientConnectionStatistics = new ModuleStatistics();
         this.processManagerStatistics = new ModuleStatistics();
         this.queryProcessingStatistics = new ModuleStatistics();
         this.transactionAndDataStatistics = new ModuleStatistics();
         this.executionStatistics = new ModuleStatistics();
+        this.clientConnectionStatisticsWithASolvedQueryStatistics = new ModuleStatistics();
+
 
         Iterator<Statistics> iterator = statistics.iterator();
         while (iterator.hasNext()) {
@@ -85,14 +94,18 @@ public class Statistics {
             this.addStatistics(queryProcessingStatistics, currentStatistic.getQueryProcessingStatistics());
             this.addStatistics(transactionAndDataStatistics, currentStatistic.getTransactionAndDataStatistics());
             this.addStatistics(executionStatistics, currentStatistic.getExecutionStatistics());
+            this.addStatistics(clientConnectionStatisticsWithASolvedQueryStatistics, currentStatistic.getClientConnectionStatisticsWithASolvedQueryStatistics());
+            this.rejectedConnections += currentStatistic.getRejectedConnections();
         }
 
         int totalSimulations = statistics.size();
+        this.rejectedConnections /= totalSimulations;
         this.setAverageStatistics(clientConnectionStatistics, totalSimulations);
         this.setAverageStatistics(processManagerStatistics, totalSimulations);
         this.setAverageStatistics(queryProcessingStatistics, totalSimulations);
         this.setAverageStatistics(transactionAndDataStatistics, totalSimulations);
         this.setAverageStatistics(executionStatistics, totalSimulations);
+        this.setAverageStatistics(clientConnectionStatisticsWithASolvedQueryStatistics, totalSimulations);
     }
 
     /**
@@ -195,7 +208,23 @@ public class Statistics {
         return mSentences;
     }
 
-    public int getRejectedConnections() {
+    public double getRejectedConnections() {
         return rejectedConnections;
+    }
+
+    public void setRejectedConnections(int rejectedConnections){
+        this.rejectedConnections = rejectedConnections;
+    }
+
+    public double getAvgQueryLifetime() {
+        return avgQueryLifetime;
+    }
+
+    public ModuleStatistics getClientConnectionStatisticsWithASolvedQueryStatistics() {
+        return clientConnectionStatisticsWithASolvedQueryStatistics;
+    }
+
+    public int getSystemCalls() {
+        return systemCalls;
     }
 }
