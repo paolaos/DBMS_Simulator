@@ -39,7 +39,8 @@ public class Statistics {
         this.queryProcessingStatistics = simulation.getQueryProcessingModule().moduleStatistics;
         this.transactionAndDataStatistics = simulation.getTransactionAndDataAccessModule().moduleStatistics;
         this.executionStatistics = simulation.getExecutionModule().moduleStatistics;
-        this.clientConnectionStatisticsWithASolvedQueryStatistics = new ModuleStatistics(simulation.getClientConnectionModule(), false);
+        this.clientConnectionStatisticsWithASolvedQueryStatistics = simulation.getClientConnectionModule().getModuleStatisticsOfLastModule();
+        //this.clientConnectionStatisticsWithASolvedQueryStatistics = new ModuleStatistics(simulation.getClientConnectionModule(), false);
 
         this.timeout = simulation.getTimeout();
         this.clock = simulation.getClock();

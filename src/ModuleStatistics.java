@@ -8,7 +8,7 @@
  */
 public class ModuleStatistics {
     private int totalProcessedQueries;
-    private int averageQueueSize;
+    private double averageQueueSize;
     private double trueLambda;
     private double avgServiceTimeMu;
     private double averageQueryLifetime;
@@ -20,7 +20,7 @@ public class ModuleStatistics {
     private double averageOccupiedTimeRho;
     private int rejectedConnections;
     private double averageQueriesL;
-    private double averageQueriesLQ;
+
     private double averageQueriesLS;
     private double averageTimeW;
     private double averageTimeWQ;
@@ -33,7 +33,7 @@ public class ModuleStatistics {
 
     public ModuleStatistics(Module module) {
         this.totalProcessedQueries = module.getTotalProcessedQueries();
-        this.averageQueueSize = module.getQueueSize();
+        this.averageQueueSize = module.getAverageQueriesInQueue();
         //TODO pasar a estadistica general
         //this.averageQueryLifetime = module.simulation.getClientConnectionModule().getAverageQueryLifetime();
         this.idleTime = module.getIdleTime();
@@ -45,7 +45,7 @@ public class ModuleStatistics {
         this.trueLambda = module.computeRealLambda();
         this.avgServiceTimeMu = module.getAverageServiceTimeMu();
         this.averageQueriesL = module.getAverageQueriesL();
-        this.averageQueriesLQ = module.getAverageQueriesInQueue();
+
         this.averageQueriesLS = module.getAverageQueriesInService();
         this.averageTimeW = module.getAverageTimeW();
         this.averageTimeWQ = module.getAvgTimeInQueue();
@@ -84,7 +84,7 @@ public class ModuleStatistics {
         this.totalProcessedQueries = totalProcessedQueries;
     }
 
-    public int getAverageQueueSize() {
+    public double getAverageQueueSize() {
         return averageQueueSize;
     }
 
@@ -116,7 +116,7 @@ public class ModuleStatistics {
         return averageOccupiedTimeRho;
     }
 
-    public void setAverageQueueSize(int averageQueueSize) {
+    public void setAverageQueueSize(double averageQueueSize) {
         this.averageQueueSize = averageQueueSize;
     }
 
@@ -170,7 +170,7 @@ public class ModuleStatistics {
     }
 
     public double getAverageQueriesLQ() {
-        return averageQueriesLQ;
+        return averageQueueSize;
     }
 
     public double getAverageQueriesLS() {

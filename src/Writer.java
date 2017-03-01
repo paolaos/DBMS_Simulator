@@ -149,18 +149,13 @@ public class Writer {
         velocityContext.put("executionWq", statistic.getExecutionStatistics().getAverageTimeWQ());
 
         //Ws's
-        velocityContext.put("clientConnectionWs", 1 / statistic.getClientConnectionStatistics().getAvgServiceTimeMu());
-        velocityContext.put("processManagerWs", 1 / statistic.getProcessManagerStatistics().getAvgServiceTimeMu());
-        velocityContext.put("queryProcessingWs", 1 / statistic.getQueryProcessingStatistics().getAvgServiceTimeMu());
-        velocityContext.put("transactionAndDataWs", 1 / statistic.getTransactionAndDataStatistics().getAvgServiceTimeMu());
-        velocityContext.put("executionWs", 1 / statistic.getExecutionStatistics().getAvgServiceTimeMu());
+        velocityContext.put("clientConnectionWs",1/statistic.getClientConnectionStatistics().getAvgServiceTimeMu());
+        velocityContext.put("processManagerWs", 1/statistic.getProcessManagerStatistics().getAvgServiceTimeMu());
+        velocityContext.put("queryProcessingWs", 1/statistic.getQueryProcessingStatistics().getAvgServiceTimeMu());
+        velocityContext.put("transactionAndDataWs", 1/statistic.getTransactionAndDataStatistics().getAvgServiceTimeMu());
+        velocityContext.put("executionWs", 1/statistic.getExecutionStatistics().getAvgServiceTimeMu());
 
-        //Queue sizes
-        velocityContext.put("clientConnectionQueueSize", statistic.getClientConnectionStatistics().getAverageQueueSize());
-        velocityContext.put("processManagerQueueSize", statistic.getProcessManagerStatistics().getAverageQueueSize());
-        velocityContext.put("queryProcessingQueueSize", statistic.getQueryProcessingStatistics().getAverageQueueSize());
-        velocityContext.put("transactionAndDataQueueSize", statistic.getTransactionAndDataStatistics().getAverageQueueSize());
-        velocityContext.put("executionQueueSize", statistic.getExecutionStatistics().getAverageQueueSize());
+
 
         StringWriter stringWriter = new StringWriter();
         template.merge(velocityContext, stringWriter);

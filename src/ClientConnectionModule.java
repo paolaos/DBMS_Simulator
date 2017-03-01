@@ -444,7 +444,9 @@ public class ClientConnectionModule extends Module {
 
             simulation.addEvent(new Event(simulation.getClock()+time, query,
                     EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
+
             query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(simulation.getClock());
+            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToServer(simulation.getClock());
             query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock()+time);
 
             allQueries.add(query);
@@ -464,6 +466,8 @@ public class ClientConnectionModule extends Module {
         simulation.addEvent(new Event( time + simulation.getClock(),
                 query, EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfEntryToModule(this.simulation.getClock());
+        query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfEntryToServer(this.simulation.getClock());
+
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(this.simulation.getClock()+ time);
 
     }
@@ -485,7 +489,7 @@ public class ClientConnectionModule extends Module {
      * @param query specific unresolved query.
      */
     private void processDepartureToNextModule(Query query) {
-        query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
+        //query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         totalProcessedQueries++;
         if (!query.isKill()) {
             nextModule.generateServiceEvent(query);

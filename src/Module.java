@@ -427,13 +427,14 @@ public abstract class Module {
         if(!isTheLastModule) {
             this.averageTimeInService = this.computeAverageTimeInService(simulation.getClientConnectionModule().getAllQueries());//1/mu (Ws)
             this.averageServiceTimeMu = this.computeAverageServiceTimeMu();
-            this.averageTimeInQueue = this.computeWq(lambda, averageServiceTimeMu, this.hasQueue);
+            this.avgTimeInQueue = this.computeWq(lambda, averageServiceTimeMu, this.hasQueue);
+
 
             this.averageOccupiedTimeRho =computeAverageOccupiedTimeRho(lambda);
             this.computeAverageTimeW(averageTimeInQueue, averageTimeInService);
 
             this.averageQueriesInService = this.computeLs(lambda, averageServiceTimeMu);
-            averageQueriesInQueue = this.computeLq(lambda, averageServiceTimeMu, this.hasQueue);
+            this.averageQueriesInQueue = this.computeLq(lambda, averageServiceTimeMu, this.hasQueue);
             this.averageQueriesL= this.computeAverageQueriesL(averageQueriesInQueue, averageQueriesInService);
 
             this.computeDdlAvgTime(simulation.getClientConnectionModule().getAllQueries());
@@ -448,7 +449,7 @@ public abstract class Module {
             this.simulation.getClientConnectionModule().setAverageTimeInServiceInLastModule(this.simulation.getClientConnectionModule().computeAverageTimeInServiceInLastModule(simulation.getClientConnectionModule().getAllQueries()));//1/mu (Ws));
             this.simulation.getClientConnectionModule().setAverageServiceTimeMuInLastModule(this.simulation.getClientConnectionModule().computeAverageServiceTimeMu());
 
-            this.simulation.getClientConnectionModule().setAverageTimeInQueueInLastModule(this.computeWq(lambda,this.simulation.getClientConnectionModule().getAverageServiceTimeMuInLastModule(),false));
+            this.simulation.getClientConnectionModule().setAverageTimeInQueueInLastModule(this.computeWq(lambda,this.simulation.getClientConnectionModule().getAverageServiceTimeMuInLastModule(),this.hasQueue));
             this.simulation.getClientConnectionModule().setAverageOccupiedTimeRhoInLastModule(this.simulation.getClientConnectionModule().computeAverageOccupiedTimeRhoInlastModule((lambda)));
 
             this.computeAverageTimeW(this.simulation.getClientConnectionModule().getAverageTimeInQueueInLastModule(),

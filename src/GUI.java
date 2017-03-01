@@ -2,12 +2,11 @@ import javax.swing.*;
 import javax.swing.border.Border;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
-import java.awt.Font;
-import java.awt.BorderLayout;
-import java.awt.GridLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
+import java.io.IOException;
 import java.util.Iterator;
 
 /**
@@ -391,6 +390,25 @@ public class GUI extends JFrame {
         mainPanel.add(panelRejectedConnections);
         mainPanel.add(panelAveragePerModuleTitle);
         mainPanel.add(panelAveragePerModule);
+
+        if(simulationNumber == 0){
+            JButton htmlButton = new JButton("Display statistics by simulation");
+            htmlButton.addActionListener(new ActionListener() {
+                @Override
+                public void actionPerformed(ActionEvent e) {
+                    File f = new File("statistics/index.html");
+                    try{
+                        Desktop d = Desktop.getDesktop();
+                        d.open(f);
+                    }catch(IOException exc){
+                        exc.printStackTrace();
+                    }
+                }
+            });
+            mainPanel.add(htmlButton);
+
+        }
+
         return mainPanel;
     }
 

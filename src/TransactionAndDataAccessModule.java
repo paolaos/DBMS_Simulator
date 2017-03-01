@@ -395,7 +395,7 @@ public class TransactionAndDataAccessModule extends Module {
      */
     @Override
     public void computeAverageTimeW(double averageTimeWQ, double averageTimeWS) {
-
+       this.averageTimeW=averageTimeWQ+averageTimeWS;
     }
 
     /**
