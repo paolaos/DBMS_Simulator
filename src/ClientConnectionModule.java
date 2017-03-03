@@ -8,6 +8,8 @@ import java.util.concurrent.LinkedBlockingQueue;
  * entry and exit of queries in the system.
  */
 public class ClientConnectionModule extends Module {
+
+    //////////////////////////////////////////// BEFORE THE QUERY IS PROCESSED ///////////////////////////////////////
     /**
      * Average number of arrivals to the system per time second.
      */
@@ -44,50 +46,6 @@ public class ClientConnectionModule extends Module {
      */
     private double averageQueryLifetime;
 
-    /**
-     * Counter that verifies how many queries managed to exit the last module.
-     */
-    private int totalProcessedQueriesFromLastModule;
-
-
-
-    /**
-     * Average time a DDL query type lasts inside the module.
-     */
-    protected double ddlAvgTimeInLastModule;
-
-    /**
-     * Average time an Update query type lasts inside the module.
-     */
-    protected double updateAvgTimeInLastModule;
-
-    /**
-     * Average time a Join query type lasts inside the module.
-     */
-    protected double joinAvgTimeInLastModule;
-
-    /**
-     * Average time a Select query type lasts inside the module.
-     */
-    protected double selectAvgTimeInLastModule;
-
-
-    protected ModuleStatistics moduleStatisticsOfLastModule;
-
-    public ModuleStatistics getModuleStatisticsOfLastModule() {
-        return moduleStatisticsOfLastModule;
-    }
-
-    public void setModuleStatisticsOfLastModule(ModuleStatistics moduleStatisticsOfLastModule) {
-        this.moduleStatisticsOfLastModule = moduleStatisticsOfLastModule;
-    }
-
-    private int counterArrivalsToLastModule;
-
-    public double computeRealLambda(){
-        return counterArrivalsToLastModule/simulation.getTotalTimeSimulation();
-    }
-
     public ClientConnectionModule(Simulation simulation, Module nextModule, int kConnections) {
         this.simulation = simulation;
         this.nextModule = nextModule;
@@ -103,8 +61,8 @@ public class ClientConnectionModule extends Module {
         totalProcessedQueriesFromLastModule = 0;
         totalProcessedQueries = 0;
         servers = kConnections;
-        hasQueue=false;
-        counterArrivalsToLastModule=0;
+        hasQueue = false;
+        counterArrivalsToLastModule = 0;
     }
 
     /**
@@ -133,25 +91,22 @@ public class ClientConnectionModule extends Module {
     @Override
     public void generateServiceEvent(Query query) {
         if (query == null) {
-            query = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
+            currentId++;
+            query = new Query(currentId, simulation.getClock(), DistributionGenerator.generateType(),
                     ModuleType.CLIENT_CONNECTION_MODULE);
         }
-        if(query.isSolved()){
-
+        if (query.isSolved()) {
             simulation.addEvent(new Event(simulation.getClock(), query,
                     EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
-
-        }else{
-
+        } else {
             double nextArrivalTime = DistributionGenerator.getNextArrivalTime(LAMBDA);
             simulation.addEvent(new Event(simulation.getClock() + nextArrivalTime, query,
-                EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
+                    EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
             Event killEvent = new Event(simulation.getClock() + nextArrivalTime + simulation.getTimeout(), query,
-                EventType.KILL, null);
+                    EventType.KILL, null);
             simulation.addEvent(killEvent);
-        //agregar kill con el id del query
-        simulation.getKillEventsTable().put(query.getId(), killEvent);
-            }
+            simulation.getKillEventsTable().put(query.getId(), killEvent);
+        }
     }
 
     /**
@@ -186,9 +141,8 @@ public class ClientConnectionModule extends Module {
      */
     @Override
     public void processKill(Query query) {
-        //para cuando vaya al siguiente modulo no enviarlo.
         if (!query.isSolved())
-        query.setKill(true);
+            query.setKill(true);
     }
 
     /**
@@ -233,9 +187,9 @@ public class ClientConnectionModule extends Module {
 
             }
         }
-        if(counter == 0){
+        if (counter == 0) {
             this.ddlAvgTime = 0;
-        }else
+        } else
             this.ddlAvgTime = totalTime / counter;
 
     }
@@ -326,30 +280,6 @@ public class ClientConnectionModule extends Module {
         return averageQueriesLQ + averageQueriesLS;
     }
 
-    /**
-     * Calculates the average amount of queries in queue and assigns the result to its global variable.
-     *
-     * @param queryList list that contains all the queries that passed through *this.
-     */
-    @Override
-    public void computeAverageQueriesInQueue(List<Query> queryList) {
-        Iterator<Query> iterator = queryList.iterator();
-        Query query = iterator.next();
-        while (iterator.hasNext()) {
-
-        }
-    }
-
-    /**
-     * Calculates the average amount of queries in service and assigns the result to its global variable.
-     *
-     * @param queryList list that contains all of the queries that passed through *this.
-     */
-    //TODO
-    @Override
-    public void computeAverageQueriesInService(List<Query> queryList) {
-
-    }
 
     /**
      * Calculates the average time a query was in *this and assigns the result to its global variable.
@@ -368,22 +298,9 @@ public class ClientConnectionModule extends Module {
      * @param queryList list that contains all the queries that passed through *this.
      */
     @Override
-    public void computeAverageTimeInQueue(List<Query> queryList) {
-        Iterator<Query> iterator = queryList.iterator();
-        int counter = 0;
-        double totalTime = 0;
+    public double computeAverageTimeInQueue(List<Query> queryList) {
 
-        while (iterator.hasNext()) {
-            Query query = iterator.next();
-            double entryTimeToQueue = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfEntryToQueue();
-            double exitTimeFromQueue = query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().getTimeOfExitFromQueue();
-            double totalTimeInQueue = exitTimeFromQueue - entryTimeToQueue;
-            if (totalTimeInQueue > 0) {
-                counter++;
-                totalTime += totalTimeInQueue;
-            }
-        }
-        averageTimeInService = totalTime / counter;
+        return 0;
     }
 
     /**
@@ -439,16 +356,13 @@ public class ClientConnectionModule extends Module {
         else {
             counterArrivals++;
             currentConnections++;
-            double time=  getNextExitTime();
-            java.lang.System.out.println("TIEMPOOOOOOOOOOOOOOOOOO"+time);
-
-            simulation.addEvent(new Event(simulation.getClock()+time, query,
+            double time = getNextExitTime();
+            simulation.addEvent(new Event(simulation.getClock() + time, query,
                     EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
 
             query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToModule(simulation.getClock());
             query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfEntryToServer(simulation.getClock());
-            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock()+time);
-
+            query.getQueryStatistics().getClientConnectionStatisticsWithoutResolvedQuery().setTimeOfExitFromModule(simulation.getClock() + time);
             allQueries.add(query);
         }
         generateServiceEvent(null);
@@ -460,15 +374,14 @@ public class ClientConnectionModule extends Module {
      * @param query specific resolved query.
      */
     private void processArrivalLastModule(Query query) {
-        //sumarle al total time del query.
         counterArrivalsToLastModule++;
         double time = getResultantTime(query.getNumberOfBlocks());
-        simulation.addEvent(new Event( time + simulation.getClock(),
+        simulation.addEvent(new Event(time + simulation.getClock(),
                 query, EventType.EXIT, ModuleType.CLIENT_CONNECTION_MODULE));
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfEntryToModule(this.simulation.getClock());
         query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfEntryToServer(this.simulation.getClock());
 
-        query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(this.simulation.getClock()+ time);
+        query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(this.simulation.getClock() + time);
 
     }
 
@@ -476,7 +389,8 @@ public class ClientConnectionModule extends Module {
      * Creates the first event and places it in this simulation in order to start in execution time.
      */
     public void generateFirstArrival() {
-        Query query = new Query(currentId++, simulation.getClock(), DistributionGenerator.generateType(),
+        currentId++;
+        Query query = new Query(currentId, simulation.getClock(), DistributionGenerator.generateType(),
                 ModuleType.CLIENT_CONNECTION_MODULE);
         simulation.addEvent(new Event(simulation.getClock(), query,
                 EventType.ARRIVAL, ModuleType.CLIENT_CONNECTION_MODULE));
@@ -507,15 +421,13 @@ public class ClientConnectionModule extends Module {
      */
     private void processDepartureOfSystem(Query query) {
         currentConnections--;
-        //query.getQueryStatistics().getClientConnectionStatisticsWithResolvedQuery().setTimeOfExitFromModule(simulation.getClock());
         totalProcessedQueriesFromLastModule++;
         if (currentConnections == 0)
             idleTime = simulation.getClock();
-        //TODO restar tiempo de entrada al sistema
         query.setTotalTime(simulation.getClock() - query.getTimeOfEntry());
-        //se elimina el Kill
         Event eventToRemove = simulation.getKillEventsTable().get(query.getId());
         simulation.getEventList().remove(eventToRemove);
+
 
     }
 
@@ -535,7 +447,7 @@ public class ClientConnectionModule extends Module {
      * @return the resultant time.
      */
     public double getResultantTime(int numberOfBlocks) {
-        double average = numberOfBlocks / 3; //hacerlo en entero y redondearlo para arriba?
+        double average = numberOfBlocks / 3;
         return average / 2;
     }
 
@@ -575,13 +487,94 @@ public class ClientConnectionModule extends Module {
         this.currentConnections = currentConnections;
     }
 
-    public int getTotalProcessedQueriesFromLastModule() {
-        return totalProcessedQueriesFromLastModule;
+    //////////////////////////////////////////// AFTER THE QUERY IS PROCESSED ///////////////////////////////////////
+
+    /**
+     * Stores the average amount of queries from its respective module. Mainly used for statistical purposes.
+     */
+    private double averageQueriesLInLastModule;
+
+    /**
+     * Stores the average amount of queries in queue from its respective module. Mainly used for statistical purposes.
+     */
+    private double averageQueriesInQueueInLastModule;
+
+    /**
+     * Stores the average amount of queries in service from its respective module. Mainly used for statistical purposes.
+     */
+    private double averageQueriesInServiceInLastModule;
+
+    /**
+     * Stores the average amount of time per query from its respective module. Mainly used for statistical purposes.
+     */
+    private double averageTimeWInLastModule;
+
+    /**
+     * Stores the average amount of time in queue from its respective module. Mainly used for statistical purposes.
+     */
+    private double averageTimeInQueueInLastModule;
+
+    /**
+     * Stores the average amount of time in service from its respective module. Mainly used for statistical purposes.
+     */
+    private double averageTimeInServiceInLastModule;
+
+    /**
+     * The effective service rate in its respective module.
+     */
+    protected double averageServiceTimeMuInLastModule;
+
+    /**
+     * Counter that verifies how many queries managed to exit the last module.
+     */
+    private int totalProcessedQueriesFromLastModule;
+
+    /**
+     * Average time a DDL query type lasts inside the module.
+     */
+    private double ddlAvgTimeInLastModule;
+
+    /**
+     * Average time an Update query type lasts inside the module.
+     */
+    private double updateAvgTimeInLastModule;
+
+    /**
+     * Average time a Join query type lasts inside the module.
+     */
+    private double joinAvgTimeInLastModule;
+
+    /**
+     * Average time a Select query type lasts inside the module.
+     */
+    private double selectAvgTimeInLastModule;
+
+    /**
+     * Tracks down the amount of queries that arrive successfully into the module.
+     */
+    private int counterArrivalsToLastModule;
+
+    /**
+     * Stores the average occupied time in the module, only treating queries that have been solved.
+     */
+    private double averageOccupiedTimeRhoInLastModule;
+
+    /**
+     * Used to store all statistics from this module, considering the query has been already solved
+     */
+    private ModuleStatistics moduleStatisticsOfLastModule;
+
+    public void setModuleStatisticsOfLastModule(ModuleStatistics moduleStatisticsOfLastModule) {
+        this.moduleStatisticsOfLastModule = moduleStatisticsOfLastModule;
     }
 
-
-    ///////////////////////////////////////////////////////////////////////////////////
-
+    /**
+     * Generates a new mean arrival rate value base on the current values, in case the previous module is unstable.
+     * @return the new mean arrival rate value
+     */
+    public double computeRealLambdaToLastModule() {
+        return counterArrivalsToLastModule / simulation.getTotalTimeSimulation();
+    }
 
     /**
      * Uses a query list in order to accumulate the total amount of DDL queries'
@@ -605,9 +598,9 @@ public class ClientConnectionModule extends Module {
 
             }
         }
-        if(counter == 0){
+        if (counter == 0) {
             this.ddlAvgTimeInLastModule = 0;
-        }else
+        } else
             this.ddlAvgTimeInLastModule = totalTime / counter;
 
     }
@@ -668,7 +661,6 @@ public class ClientConnectionModule extends Module {
      *
      * @param queryList the list of queries in the system.
      */
-
     public void computeSelectAvgTimeInLastModule(List<Query> queryList) {
         double totalTime = 0;
         int counter = 0;
@@ -687,23 +679,34 @@ public class ClientConnectionModule extends Module {
         this.selectAvgTimeInLastModule = totalTime / counter;
     }
 
-    public void setDdlAvgTimeInLastModule(double ddlAvgTimeInLastModule) {
-        this.ddlAvgTimeInLastModule = ddlAvgTimeInLastModule;
+    /**
+     * Calculates all the statistics using their respective methods and inserts the values in a Statistics class.
+     *
+     * @param lambda the mean arrival rate
+     */
+    @Override
+    public void fillStatistics(double lambda, boolean isTheLastModule) {
+        if (!isTheLastModule)
+            super.fillStatistics(lambda, false);
+        else {
+            averageTimeInServiceInLastModule = computeAverageTimeInServiceInLastModule(allQueries);
+            averageServiceTimeMuInLastModule = computeAverageServiceTimeMu();
+            averageTimeInQueueInLastModule = computeWq(lambda, averageServiceTimeMuInLastModule, false);
+            averageOccupiedTimeRhoInLastModule = computeAverageOccupiedTimeRhoInLastModule(lambda);
+            setAverageTimeWInLastModule(1 / averageServiceTimeMuInLastModule);
+            averageQueriesInServiceInLastModule = computeLs(lambda, averageServiceTimeMuInLastModule);
+            averageQueriesInQueueInLastModule = 0;
+            averageQueriesLInLastModule = averageQueriesInServiceInLastModule;
+
+            computeDdlAvgTimeInLastModule(this.allQueries);
+            computeJoinAvgTimeInLastModule(this.allQueries);
+            computeSelectAvgTimeInLastModule(this.allQueries);
+            computeUpdateAvgTimeInLastModule(this.allQueries);
+
+            ModuleStatistics moduleStatistics = new ModuleStatistics(this, true);
+            setModuleStatisticsOfLastModule(moduleStatistics);
+        }
     }
-
-    public void setUpdateAvgTimeInLastModule(double updateAvgTimeInLastModule) {
-        this.updateAvgTimeInLastModule = updateAvgTimeInLastModule;
-    }
-
-    public void setJoinAvgTimeInLastModule(double joinAvgTimeInLastModule) {
-        this.joinAvgTimeInLastModule = joinAvgTimeInLastModule;
-    }
-
-    public void setSelectAvgTimeInLastModule(double selectAvgTimeInLastModule) {
-        this.selectAvgTimeInLastModule = selectAvgTimeInLastModule;
-    }
-
-
 
     public double getDdlAvgTimeInLastModule() {
         return ddlAvgTimeInLastModule;
@@ -721,107 +724,24 @@ public class ClientConnectionModule extends Module {
         return selectAvgTimeInLastModule;
     }
 
-
-
-    /**
-     * Calculates the mean of the time spent in queue per query.
-     */
-    private double avgTimeInQueueInLastModule;
-
-    /**
-     * Stores the average amount of queries from its respective module. Mainly used for statistical purposes.
-     */
-    private double averageQueriesLInLastModule;
-
-    /**
-     * Stores the average amount of queries in queue from its respective module. Mainly used for statistical purposes.
-     */
-    private double averageQueriesInQueueInLastModule;
-
-    /**
-     * Stores the average amount of queries in service from its respective module. Mainly used for statistical purposes.
-     */
-    private double averageQueriesInServiceInLastModule;
-
-    /**
-     * Stores the average amount of time per query from its respective module. Mainly used for statistical purposes.
-     */
-    private double averageTimeWInLastModule;
-
-    /**
-     * Stores the average amount of time in queue from its respective module. Mainly used for statistical purposes.
-     */
-    private double averageTimeInQueueInLastModule;
-
-    /**
-     * Stores the average amount of time in service from its respective module. Mainly used for statistical purposes.
-     */
-    private double averageTimeInServiceInLastModule;
-
-    /**
-     * The effective service rate in its respective module.
-     */
-    protected double averageServiceTimeMuInLastModule;
+    public ModuleStatistics getModuleStatisticsOfLastModule() {
+        return moduleStatisticsOfLastModule;
+    }
 
     public double getAverageServiceTimeMuInLastModule() {
         return averageServiceTimeMuInLastModule;
     }
 
-    private double averageOccupiedTimeRhoInLastModule;
-
-    public void setAverageOccupiedTimeRhoInLastModule(double averageOccupiedTimeRhoInLastModule) {
-        this.averageOccupiedTimeRhoInLastModule = averageOccupiedTimeRhoInLastModule;
-    }
-
-    public double computeAverageOccupiedTimeRhoInlastModule(double lambda) {
-        return lambda/ servers*averageServiceTimeMuInLastModule;
-    }
-
-
-    public void setAvgTimeInQueueInLastModule(double avgTimeInQueueInLastModule) {
-        this.avgTimeInQueueInLastModule = avgTimeInQueueInLastModule;
-    }
-
-    public void setAverageQueriesLInLastModule(double averageQueriesLInLastModule) {
-        this.averageQueriesLInLastModule = averageQueriesLInLastModule;
-    }
-
-    public void setAverageQueriesInQueueInLastModule(double averageQueriesInQueueInLastModule) {
-        this.averageQueriesInQueueInLastModule = averageQueriesInQueueInLastModule;
-    }
-
-    public void setAverageQueriesInServiceInLastModule(double averageQueriesInServiceInLastModule) {
-        this.averageQueriesInServiceInLastModule = averageQueriesInServiceInLastModule;
+    public double computeAverageOccupiedTimeRhoInLastModule(double lambda) {
+        return lambda / servers * averageServiceTimeMuInLastModule;
     }
 
     public void setAverageTimeWInLastModule(double averageTimeWInLastModule) {
         this.averageTimeWInLastModule = averageTimeWInLastModule;
     }
 
-    public void setAverageTimeInQueueInLastModule(double averageTimeInQueueInLastModule) {
-        this.averageTimeInQueueInLastModule = averageTimeInQueueInLastModule;
-    }
-
-    public void setAverageTimeInServiceInLastModule(double averageTimeInServiceInLastModule) {
-        this.averageTimeInServiceInLastModule = averageTimeInServiceInLastModule;
-    }
-
-    public void setAverageServiceTimeMuInLastModule(double averageServiceTimeMuInLastModule) {
-        this.averageServiceTimeMuInLastModule = averageServiceTimeMuInLastModule;
-    }
-
-
-
-    public double getAvgTimeInQueueInLastModule() {
-        return avgTimeInQueueInLastModule;
-    }
-
     public double getAverageQueriesLInLastModule() {
         return averageQueriesLInLastModule;
-    }
-
-    public double getAverageQueriesInQueueInLastModule() {
-        return averageQueriesInQueueInLastModule;
     }
 
     public double getAverageQueriesInServiceInLastModule() {
@@ -836,12 +756,13 @@ public class ClientConnectionModule extends Module {
         return averageTimeInQueueInLastModule;
     }
 
-    public double getAverageTimeInServiceInLastModule() {
-        return averageTimeInServiceInLastModule;
-    }
-
     public double getAverageOccupiedTimeRhoInLastModule() {
         return averageOccupiedTimeRhoInLastModule;
     }
+
+    public int getTotalProcessedQueriesFromLastModule() {
+        return totalProcessedQueriesFromLastModule;
+    }
+
 }
 

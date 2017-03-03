@@ -266,19 +266,19 @@ public class GUI extends JFrame {
         changeLayout(panel);
     }
 
-    public void displayAllFinalSimulationResults(){
+    public void displayAllFinalSimulationResults() {
         JTabbedPane tabbedPane = new JTabbedPane();
         Iterator<Statistics> iterator = system.getAllStatistics().iterator();
         int counter = 0;
-        while(iterator.hasNext()){
+        while (iterator.hasNext()) {
             Statistics statistic = iterator.next();
-            tabbedPane.addTab("Simulation " + (counter + 1), displayFinalSimulationResult(counter + 1,statistic));
+            tabbedPane.addTab("Simulation " + (counter + 1), displayFinalSimulationResult(counter + 1, statistic));
             counter++;
         }
         Statistics generalStatistics = new Statistics(system.getAllStatistics());
         Writer.writeIndex(counter, generalStatistics.getTimePerTrial(), generalStatistics.getkConnections(),
                 generalStatistics.getSystemCalls(), generalStatistics.getnAvailableProcesses(), generalStatistics.getpQueries(),
-                generalStatistics.getmSentences(),generalStatistics.getTimeout());
+                generalStatistics.getmSentences(), generalStatistics.getTimeout(), generalStatistics);
 
         JPanel lastAveragePanel = displayFinalSimulationResult(0, generalStatistics);
         tabbedPane.addTab("Final Average", lastAveragePanel);
@@ -293,14 +293,14 @@ public class GUI extends JFrame {
         panelSimulation.setLayout(new FlowLayout());
         JLabel lblSimulation = new JLabel();
         panelSimulation.add(lblSimulation);
-        if(simulationNumber != 0) {
+        if (simulationNumber != 0) {
             lblSimulation.setText("Simulation number: ");
             JTextField txtSimulationNumber = new JTextField("" + simulationNumber);
             txtSimulationNumber.setFont(new Font("Normal", Font.BOLD, 20));
             txtSimulationNumber.setEditable(false);
             panelSimulation.add(txtSimulationNumber);
             Writer.writeStatistics(statistics, simulationNumber);
-        }else{
+        } else {
             lblSimulation.setText("Final result");
         }
         lblSimulation.setFont(new Font("Normal", Font.BOLD, 20));
@@ -391,16 +391,16 @@ public class GUI extends JFrame {
         mainPanel.add(panelAveragePerModuleTitle);
         mainPanel.add(panelAveragePerModule);
 
-        if(simulationNumber == 0){
+        if (simulationNumber == 0) {
             JButton htmlButton = new JButton("Display statistics by simulation");
             htmlButton.addActionListener(new ActionListener() {
                 @Override
                 public void actionPerformed(ActionEvent e) {
                     File f = new File("statistics/index.html");
-                    try{
+                    try {
                         Desktop d = Desktop.getDesktop();
                         d.open(f);
-                    }catch(IOException exc){
+                    } catch (IOException exc) {
                         exc.printStackTrace();
                     }
                 }
@@ -419,7 +419,7 @@ public class GUI extends JFrame {
         if (!digitValidation(txtNumberOfSimulations.getText(), false))
             validParameters = false;
 
-        if (!digitValidation(txtMaxTimePerSimulation.getText(), false))
+        if (!digitValidation(txtMaxTimePerSimulation.getText(), true))
             validParameters = false;
 
         if (chkSlowMode.isSelected() && !digitValidation(txtDelay.getText(), true))
@@ -468,7 +468,4 @@ public class GUI extends JFrame {
         return isDigit;
     }
 
-    public static void main(String... args) {
-        GUI gui = new GUI();
-    }
 }

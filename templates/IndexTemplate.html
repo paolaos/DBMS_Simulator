@@ -1,30 +1,158 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>Statistics</title>
-	</head>
-	<body>
-		<h2>Simulation info</h2>
-		<br>
-		<h4>Execution Parameters</h4>
-		<p>Number of simulations: $numberOfSimulations</p>
+<style>
+    	table {
+        	border-collapse: collapse;
+        	width: 100%;
+    	}
 
-		<p>Maximum time to run the simulation: $maxTimePerSimulation s</p>
+	    th, td {
+    	    text-align: left;
+        	padding: 8px;
+    	}
 
-		<p>Number of concurrent connections: $kConnections</p>
+	    tr:nth-child(even) {
+    	    background-color: #ebefed
+    	}
 
-		<p>Number of threads for system calls: $systemCalls</p>
+    	th {
+        	background-color: #c6d1d7;
+        	color: #000000;
+    	}
 
-		<p>Number of available processes for query processing: $nAvailableProcesses</p>
 
-		<p>Number of available processes for query transactions: $pAvailableProcesses</p>
+</style>
+<head>
+    <title>Statistics</title>
+</head>
+<body>
+<h2>Simulation info</h2>
+<br>
+<h4>Execution Parameters</h4>
+<p>Number of simulations: $numberOfSimulations</p>
 
-		<p>Number of available processes for query executions: $mAvailableProcesses</p>
+<p>Maximum time to run the simulation: $maxTimePerSimulation s</p>
 
-		<p>Connection timeout: $timeout s</p>
-		<br>
+<p>Number of concurrent connections: $kConnections</p>
 
-		<h4>Global simulation statistics</h4>
+<p>Number of threads for system calls: $systemCalls</p>
 
-	</body>
+<p>Number of available processes for query processing: $nAvailableProcesses</p>
+
+<p>Number of available processes for query transactions: $pAvailableProcesses</p>
+
+<p>Number of available processes for query executions: $mAvailableProcesses</p>
+
+<p>Connection timeout: $timeout s</p>
+<br>
+
+<h4>Global simulation statistics </h4>
+
+<table style="width: 100%">
+    <caption style="font-size:200%"><b> Statistics per module</b>
+
+    </caption>
+    <tr>
+        <th>Data</th>
+        <th>Client Connection Module</th>
+        <th>Process Manager Module</th>
+        <th>Query Processing Module</th>
+        <th>Transaction and Data Access Module</th>
+        <th>Execution Module</th>
+        <th>Client Connection Module (with resolved queries)</th>
+    </tr>
+    <tr>
+        <td>Stability:</td>
+        <td>$clientConnectionStability</td>
+        <td>$processManagerStability</td>
+        <td>$queryProcessingStability</td>
+        <td>$transactionAndDataStability</td>
+        <td>$executionStability</td>
+        <td>$lastModuleStability</td>
+    </tr>
+    <tr>
+        <td>Arrivals per second:</td>
+        <td>$clientConnectionLambda</td>
+        <td>$processManagerLambda</td>
+        <td>$queryProcessingLambda</td>
+        <td>$transactionAndDataLambda</td>
+        <td>$executionLambda</td>
+        <td>$lastModuleLambda</td>
+    </tr>
+    <tr>
+        <td>Served queries per second:</td>
+        <td>$clientConnectionMu</td>
+        <td>$processManagerMu</td>
+        <td>$queryProcessingMu</td>
+        <td>$transactionAndDataMu</td>
+        <td>$executionMu</td>
+        <td>$lastModuleMu</td>
+    </tr>
+    <tr>
+        <td>Occupied time:</td>
+        <td>$clientConnectionRho</td>
+        <td>$processManagerRho</td>
+        <td>$queryProcessingRho</td>
+        <td>$transactionAndDataRho</td>
+        <td>$executionRho</td>
+        <td>$lastModuleRho</td>
+    </tr>
+    <tr>
+        <td>Average queries in system:</td>
+        <td>$clientConnectionL</td>
+        <td>$processManagerL</td>
+        <td>$queryProcessingL</td>
+        <td>$transactionAndDataL</td>
+        <td>$executionL</td>
+        <td>$lastModuleL</td>
+    </tr>
+    <tr>
+        <td>Average queries in queue:</td>
+        <td>$clientConnectionLq</td>
+        <td>$processManagerLq</td>
+        <td>$queryProcessingLq</td>
+        <td>$transactionAndDataLq</td>
+        <td>$executionLq</td>
+        <td>$lastModuleLq</td>
+    </tr>
+    <tr>
+        <td>Average queries in service:</td>
+        <td>$clientConnectionLs</td>
+        <td>$processManagerLs</td>
+        <td>$queryProcessingLs</td>
+        <td>$transactionAndDataLs</td>
+        <td>$executionLs</td>
+        <td>$lastModuleLs</td>
+    </tr>
+    <tr>
+        <td>Average time in system:</td>
+        <td>$clientConnectionW</td>
+        <td>$processManagerW</td>
+        <td>$queryProcessingW</td>
+        <td>$transactionAndDataW</td>
+        <td>$executionW</td>
+        <td>$lastModuleW</td>
+    </tr>
+    <tr>
+        <td>Average time in queue:</td>
+        <td>$clientConnectionWq</td>
+        <td>$processManagerWq</td>
+        <td>$queryProcessingWq</td>
+        <td>$transactionAndDataWq</td>
+        <td>$executionWq</td>
+        <td>$lastModuleWq</td>
+    </tr>
+    <tr>
+        <td>Average time in service:</td>
+        <td>$clientConnectionWs</td>
+        <td>$processManagerWs</td>
+        <td>$queryProcessingWs</td>
+        <td>$transactionAndDataWs</td>
+        <td>$executionWs</td>
+        <td>$lastModuleWs</td>
+    </tr>
+</table>
+<br>
+<br>
+</body>
 </html>

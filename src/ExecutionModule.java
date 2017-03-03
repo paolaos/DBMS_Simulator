@@ -54,8 +54,8 @@ public class ExecutionModule extends Module {
                 totalIdleTime += simulation.getClock() - idleTime;
 
             currentSentences++;
-            double time= getTotalTime(query);
-            double exitTime = simulation.getClock() +time;
+            double time = getTotalTime(query);
+            double exitTime = simulation.getClock() + time;
             //java.lang.System.out.println(time);
             simulation.addEvent(new Event(exitTime, query, EventType.EXIT, ModuleType.EXECUTION_MODULE));
             query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToServer(simulation.getClock());
@@ -72,12 +72,10 @@ public class ExecutionModule extends Module {
     @Override
     public void processDeparture(Query query) {
         totalProcessedQueries++;
-       // query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromModule(simulation.getClock());
         if (queue.size() > 0) {
-            double time=getTotalTime(query);
-            double exitTime = simulation.getClock() + time;
-           // java.lang.System.out.println(time);
             Query quer = queue.poll();
+            double time = getTotalTime(quer);
+            double exitTime = simulation.getClock() + time;
             quer.setIsInQueue(false);
             simulation.addEvent(new Event(exitTime, quer, EventType.EXIT, ModuleType.EXECUTION_MODULE));
             quer.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromQueue(simulation.getClock());
@@ -92,8 +90,9 @@ public class ExecutionModule extends Module {
         }
 
         if (!query.isKill()) {
-            nextModule.generateServiceEvent(query);
             query.setSolved(true);
+            nextModule.generateServiceEvent(query);
+
 
         } else {
             int actualConnections = simulation.getClientConnectionModule().getCurrentConnections() - 1;
@@ -132,19 +131,17 @@ public class ExecutionModule extends Module {
     public void processKill(Query query) {
         if (query.getIsInQueue()) {
             queue.remove(query);
-            //momento en que sale de la cola
             query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromQueue(simulation.getClock());
             query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromModule(simulation.getClock());
 
             int actualConnections = simulation.getClientConnectionModule().getCurrentConnections() - 1;
             simulation.getClientConnectionModule().setCurrentConnections(actualConnections);
         } else {
-            //si es el que tiene bloqueado el sistema
             query.setKill(true);
         }
-        //se quita del mapeo porque ya va a morir
         Event killEventToRemove = simulation.getKillEventsTable().get(query.getId());
         simulation.getKillEventsTable().remove(killEventToRemove);
+        simulation.getEventList().remove(killEventToRemove);
     }
 
     /**
@@ -183,9 +180,9 @@ public class ExecutionModule extends Module {
             }
 
         }
-        if(counter == 0){
+        if (counter == 0) {
             this.ddlAvgTime = 0;
-        }else
+        } else
             this.ddlAvgTime = totalTime / counter;
     }
 
@@ -207,7 +204,7 @@ public class ExecutionModule extends Module {
                 double arrivalTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfEntryToModule();
                 double exitTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfExitFromModule();
                 double totalTimeInServer = exitTime - arrivalTime;
-               if (totalTimeInServer > 0) {
+                if (totalTimeInServer > 0) {
                     counter++;
                     totalTime += totalTimeInServer;
                 }
@@ -236,7 +233,7 @@ public class ExecutionModule extends Module {
                 double arrivalTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfEntryToModule();
                 double exitTime = query.getQueryStatistics().getExecutionStatistics().getTimeOfExitFromModule();
                 double totalTimeInServer = exitTime - arrivalTime;
-                 if (totalTimeInServer > 0) {
+                if (totalTimeInServer > 0) {
                     counter++;
                     totalTime += totalTimeInServer;
                 }
@@ -293,7 +290,7 @@ public class ExecutionModule extends Module {
      * @param queryList list that contains all the queries that passed through *this.
      */
     @Override
-    public void computeAverageTimeInQueue(List<Query> queryList) {
+    public double computeAverageTimeInQueue(List<Query> queryList) {
         Iterator<Query> iterator = queryList.iterator();
         int counter = 0;
         double totalTime = 0;
@@ -308,7 +305,7 @@ public class ExecutionModule extends Module {
                 totalTime += totalTimeInQueue;
             }
         }
-        averageTimeInService = totalTime / counter;
+        return totalTime / counter;
     }
 
     /**
@@ -344,26 +341,6 @@ public class ExecutionModule extends Module {
     @Override
     public double computeAverageQueriesL(double averageQueriesLQ, double averageQueriesLS) {
         return averageQueriesLQ + averageQueriesLS;
-    }
-
-    /**
-     * Calculates the average amount of queries in queue and assigns the result to its global variable.
-     *
-     * @param queryList list that contains all the queries that passed through *this.
-     */
-    @Override
-    public void computeAverageQueriesInQueue(List<Query> queryList) {
-        averageQueriesInQueue = ClientConnectionModule.LAMBDA * averageTimeInQueue;
-    }
-
-    /**
-     * Calculates the average amount of queries in service and assigns the result to its global variable.
-     *
-     * @param queryList list that contains all of the queries that passed through *this.
-     */
-    @Override
-    public void computeAverageQueriesInService(List<Query> queryList) {
-        averageQueriesInService = ClientConnectionModule.LAMBDA * averageTimeInService;
     }
 
     /**

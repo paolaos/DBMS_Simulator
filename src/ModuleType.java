@@ -10,7 +10,4 @@ public enum ModuleType {
         this.moduleNumber = moduleNumber;
     }
 
-    public int getModuleNumber() {
-        return moduleNumber;
-    }
 }

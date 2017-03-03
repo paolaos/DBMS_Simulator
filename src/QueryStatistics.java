@@ -47,7 +47,6 @@ public class QueryStatistics {
         return transactionAndDataAccessStatistics;
     }
 
-
     public QueryModuleStatistics getExecutionStatistics() {
         return executionStatistics;
     }

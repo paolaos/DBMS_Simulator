@@ -1,6 +1,8 @@
 import javax.swing.*;
 import java.lang.System;
 import java.util.Hashtable;
+import java.util.Iterator;
+import java.util.List;
 import java.util.PriorityQueue;
 
 /**
@@ -20,7 +22,6 @@ public class Simulation {
     private QueryProcessingModule queryProcessingModule;
     private TransactionAndDataAccessModule transactionAndDataAccessModule;
     private ExecutionModule executionModule;
-    private double totalTimeSimulation;
     private boolean slowMode;
     private double qDelayTime;
     private int kConnections;
@@ -29,6 +30,7 @@ public class Simulation {
     private int pQueries;
     private int mSentences;
     private int killNumber;
+    private double killPercentage;
     private Hashtable<Integer, Event> killEventsTable;
 
 
@@ -51,7 +53,6 @@ public class Simulation {
         clientConnectionModule = new ClientConnectionModule(this, processManagerModule, kConnections);
         executionModule.setNextModule(clientConnectionModule);
 
-        this.slowMode = slowMode;
         this.qDelayTime = qDelayTime;
         this.kConnections = kConnections;
         this.availableSystemCalls = availableSystemCalls;
@@ -59,10 +60,9 @@ public class Simulation {
         this.pQueries = pQueries;
         this.mSentences = mSentences;
         clientConnectionModule.generateFirstArrival();
-        killEventsTable = new Hashtable<Integer, Event>();
+        killEventsTable = new Hashtable<>();
         killNumber = 0;
     }
-
 
 
     public Hashtable<Integer, Event> getKillEventsTable() {
@@ -131,8 +131,7 @@ public class Simulation {
 
 
     private void manageKillEvent(Event event) {
-        if (!event.getQuery().isSolved())
-            killNumber++;
+
 
         switch (event.getQuery().getCurrentModule()) {
 
@@ -206,7 +205,7 @@ public class Simulation {
                 "Occupied servers: " + clientConnectionModule.getCurrentConnections() + "\n" +
                 "Free Servers: " + clientConnectionModule.getNumberOfFreeServers() + "\n" +
                 "Size of the Queue: " + clientConnectionModule.getQueueSize() + "\n" +
-                "Processed queries: " + clientConnectionModule.getTotalProcessedQueries() + "\n\n";
+                "Processed queries: " + clientConnectionModule.getTotalProcessedQueriesFromLastModule() + "\n\n";
 
         return simulation + parameters + clock + eventInExecution + clientConnectionData +
                 processManagerData + queryProcessingData + transactionAndDataAccessData + executionData + lastModuleData;
@@ -218,13 +217,7 @@ public class Simulation {
             clock = event.getTime();
             if (event.getQuery().getId() == -1)
                 System.out.println(event.getEventType() + " " + event.getDestinationModule());
-
-            if (event.getQuery().getId() == 7){
-                int j=0;
-        }
-
             switch (event.getEventType()) {
-
 
                 case ARRIVAL:
                     this.manageArrivalEvent(event);
@@ -248,54 +241,46 @@ public class Simulation {
         }
     }
 
-    public int getKillNumber() {
-        return killNumber;
-    }
-
-
-
     public void fillStatistics() {
         clientConnectionModule.computeAverageQueryLifetime(clientConnectionModule.getAllQueries());
         //compute real lambda
 
         double lambda = clientConnectionModule.computeRealLambda();
-        boolean isTheLastModule=true;
+        boolean isTheLastModule = true;
 
-        clientConnectionModule.fillStatistics(lambda , !isTheLastModule);
+        clientConnectionModule.fillStatistics(lambda, !isTheLastModule);
         if (clientConnectionModule.getAverageOccupiedTimeRho() > 1) {
             //asignar el nuevo lambda
-            lambda =clientConnectionModule.computeRealLambda();
+            lambda = processManagerModule.computeRealLambda();
         }
         processManagerModule.fillStatistics(lambda, !isTheLastModule);
         if (processManagerModule.getAverageOccupiedTimeRho() > 1) {
             //asignar el nuevo lambda
-            lambda= processManagerModule.computeRealLambda();
+            lambda = queryProcessingModule.computeRealLambda();
         }
 
         queryProcessingModule.fillStatistics(lambda, !isTheLastModule);
         if (queryProcessingModule.getAverageOccupiedTimeRho() > 1) {
             //asignar el nuevo lambda
-            lambda= queryProcessingModule.computeRealLambda();
+            lambda = transactionAndDataAccessModule.computeRealLambda();
 
         }
 
         transactionAndDataAccessModule.fillStatistics(lambda, !isTheLastModule);
         if (transactionAndDataAccessModule.getAverageOccupiedTimeRho() > 1) {
             //asignar el nuevo lambda
-            lambda= transactionAndDataAccessModule.computeRealLambda();
+            lambda = executionModule.computeRealLambda();
         }
 
-        executionModule.fillStatistics(lambda,!isTheLastModule);
+        executionModule.fillStatistics(lambda, !isTheLastModule);
         if (executionModule.getAverageOccupiedTimeRho() > 1) {
             //asignar el nuevo lambda
-            lambda= executionModule.computeRealLambda();
+            lambda = clientConnectionModule.computeRealLambdaToLastModule();
         }
 
-        clientConnectionModule.fillStatistics(lambda,isTheLastModule);
-
-
-
-
+        clientConnectionModule.fillStatistics(lambda, isTheLastModule);
+        this.getKillNumber(clientConnectionModule.getAllQueries());
+        this.computeKillPercentage();
     }
 
     public double getClock() {
@@ -326,18 +311,14 @@ public class Simulation {
         return executionModule;
     }
 
-    public static void main(String[] args) {
-        java.lang.System.out.println("Simulación DBMS");
-        Simulation s = new Simulation(0, 0, 15, 1, 3, 2, 1, 15, 15000);
-        //s.startSimulation();
-        System.out.println("Conexiones actuales " + s.clientConnectionModule.getCurrentConnections());
-        System.out.println("Tamaño Cola módulo 2 " + s.processManagerModule.getQueueSize());
-        System.out.println("Tamaño Cola módulo 3 " + s.queryProcessingModule.getQueueSize());
-        System.out.println("Tamaño Cola módulo 4 " + s.transactionAndDataAccessModule.getQueueSize());
-        System.out.println("Tamaño Cola módulo 5 " + s.executionModule.getQueueSize());
-        System.out.println("Consultas Éxitosas " + s.clientConnectionModule.getAllQueries().size());
-        System.out.println("Número de Conexiones Rechazadas " + s.clientConnectionModule.getRejectedConnections());
-
+    public int getKillNumber(List<Query> allQueries) {
+        Iterator<Query> iterator = allQueries.iterator();
+        while (iterator.hasNext()) {
+            Query query = iterator.next();
+            if (query.isKill())
+                killNumber++;
+        }
+        return killNumber;
     }
 
     public int getNumberOfTrials() {
@@ -379,4 +360,14 @@ public class Simulation {
     public int getAvailableSystemCalls() {
         return availableSystemCalls;
     }
+
+    public double getKillPercentage() {
+        return killPercentage;
+    }
+
+    public void computeKillPercentage() {
+        killPercentage = (double) this.getKillNumber(this.clientConnectionModule.getAllQueries()) / (double) this.clientConnectionModule.getAllQueries().size();
+        System.out.println("Resultado: " + killPercentage);
+    }
+
 }

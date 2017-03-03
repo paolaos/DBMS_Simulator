@@ -24,15 +24,16 @@ public class System {
     /**
      * Constructor for the System class. It takes the parameters chosen by the user and passed from the GUI and creates
      * a list of Statistics.
+     *
      * @param numberOfSimulations number of simulations to be run
-     * @param qDelayTime delay time between events
-     * @param kConnections number of connections to be handled
-     * @param systemCalls maximum number of system calls
+     * @param qDelayTime          delay time between events
+     * @param kConnections        number of connections to be handled
+     * @param systemCalls         maximum number of system calls
      * @param nAvailableProcesses available processes for query processing
-     * @param pQueries available processes for query transactions
-     * @param mSentences available processes for query executions
-     * @param timeout timeout of the queries
-     * @param timePerTrial amount of time the simulation is allowed to run
+     * @param pQueries            available processes for query transactions
+     * @param mSentences          available processes for query executions
+     * @param timeout             timeout of the queries
+     * @param timePerTrial        amount of time the simulation is allowed to run
      */
     public System(int numberOfSimulations, double qDelayTime, int kConnections, int systemCalls, int nAvailableProcesses,
                   int pQueries, int mSentences, double timeout, double timePerTrial) {
@@ -53,6 +54,7 @@ public class System {
      * The method uses the parameters set by the user to make a cycle of simulations. In the cycle, a Simulation
      * is created with the user input, set to run and then a Statistics object is made and filled with the Simulation's
      * data and added to the Statistics list.
+     *
      * @param txtData text field that will display the data of the simulations
      */
     public void startSimulations(JTextArea txtData) {
@@ -60,11 +62,6 @@ public class System {
             Simulation simulation = new Simulation(i + 1, qDelayTime, kConnections, systemCalls,
                     nAvailableProcesses, pQueries, mSentences, timeout, timePerTrial);
             simulation.startSimulation(txtData);
-
-            java.lang.System.out.println("Cantidad de rechazadas"+simulation.getClientConnectionModule().getRejectedConnections());
-            java.lang.System.out.println("Canrtidad de procesos timeout "+ simulation.getKillNumber());
-            java.lang.System.out.println("Cantidad de procesos consultas "+ simulation.getClientConnectionModule().getAllQueries().size());
-            java.lang.System.out.println("Total terminadas" + simulation.getClientConnectionModule().getTotalProcessedQueriesFromLastModule());
             simulation.fillStatistics();
             Statistics statistics = new Statistics(simulation);
             allStatistics.add(statistics);

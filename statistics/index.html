@@ -1,34 +1,160 @@
 <!DOCTYPE HTML>
 <html>
-	<head>
-		<title>Statistics</title>
-	</head>
-	<body>
-		<h2>Simulation info</h2>
-		<br>
-		<h4>Execution Parameters</h4>
-		<p>Number of simulations: 5</p>
+<style>
+    	table {
+        	border-collapse: collapse;
+        	width: 100%;
+    	}
 
-		<p>Maximum time to run the simulation: 2.345 s</p>
+	    th, td {
+    	    text-align: left;
+        	padding: 8px;
+    	}
 
-		<p>Number of concurrent connections: 3</p>
+	    tr:nth-child(even) {
+    	    background-color: #ebefed
+    	}
 
-		<p>Number of available processes for query processing: 6</p>
+    	th {
+        	background-color: #c6d1d7;
+        	color: #000000;
+    	}
 
-		<p>Number of available processes for query transactions: 1</p>
 
-		<p>Number of available processes for query executions: 5</p>
+</style>
+<head>
+    <title>Statistics</title>
+</head>
+<body>
+<h2>Simulation info</h2>
+<br>
+<h4>Execution Parameters</h4>
+<p>Number of simulations: 1</p>
 
-		<p>Connection timeout: 3.444 s</p>
-		<br>
+<p>Maximum time to run the simulation: 100.0 s</p>
 
-		<h4>Global simulation statistics</h4>
+<p>Number of concurrent connections: 15</p>
 
-			<a href="simulation 1.html">Simulation1</a><br>
-		<a href="simulation 2.html">Simulation2</a><br>
-		<a href="simulation 3.html">Simulation3</a><br>
-		<a href="simulation 4.html">Simulation4</a><br>
-		<a href="simulation 5.html">Simulation5</a><br>
+<p>Number of threads for system calls: 1</p>
 
-</body>
+<p>Number of available processes for query processing: 3</p>
+
+<p>Number of available processes for query transactions: 2</p>
+
+<p>Number of available processes for query executions: 1</p>
+
+<p>Connection timeout: 15.0 s</p>
+<br>
+
+<h4>Global simulation statistics </h4>
+
+<table style="width: 100%">
+    <caption style="font-size:200%"><b> Statistics per module</b>
+
+    </caption>
+    <tr>
+        <th>Data</th>
+        <th>Client Connection Module</th>
+        <th>Process Manager Module</th>
+        <th>Query Processing Module</th>
+        <th>Transaction and Data Access Module</th>
+        <th>Execution Module</th>
+        <th>Client Connection Module (with resolved queries)</th>
+    </tr>
+    <tr>
+        <td>Stability:</td>
+        <td>true</td>
+        <td>false</td>
+        <td>true</td>
+        <td>true</td>
+        <td>true</td>
+        <td>false</td>
+    </tr>
+    <tr>
+        <td>Arrivals per second:</td>
+        <td>0.68</td>
+        <td>0.68</td>
+        <td>0.63</td>
+        <td>0.62</td>
+        <td>0.6</td>
+        <td>0.58</td>
+    </tr>
+    <tr>
+        <td>Served queries per second:</td>
+        <td>32.94207839215967</td>
+        <td>0.6721981615935809</td>
+        <td>0.4270130934896998</td>
+        <td>0.6737665724842428</td>
+        <td>1.412795215333537</td>
+        <td>32.94207839215967</td>
+    </tr>
+    <tr>
+        <td>Occupied time:</td>
+        <td>0.00137615279745442</td>
+        <td>1.0116064560306492</td>
+        <td>0.49178819853931605</td>
+        <td>0.46752096774193536</td>
+        <td>0.4459245000000001</td>
+        <td>0.4459245000000001</td>
+    </tr>
+    <tr>
+        <td>Average queries in system:</td>
+        <td>0.0206422919618163</td>
+        <td>-87.15894441501324</td>
+        <td>1.696106894556388</td>
+        <td>0.865779564945161</td>
+        <td>0.8048081894976411</td>
+        <td>0.01912447637638863</td>
+    </tr>
+    <tr>
+        <td>Average queries in queue:</td>
+        <td>0.0</td>
+        <td>-176.34110174208777</td>
+        <td>0.4414845978768793</td>
+        <td>0.5230900328587077</td>
+        <td>0.7177673789952819</td>
+        <td>0.0</td>
+    </tr>
+    <tr>
+        <td>Average queries in service:</td>
+        <td>0.0206422919618163</td>
+        <td>1.0116064560306492</td>
+        <td>1.4753645956179482</td>
+        <td>0.9350419354838707</td>
+        <td>0.4459245000000001</td>
+        <td>0.01912447637638863</td>
+    </tr>
+    <tr>
+        <td>Average time in system:</td>
+        <td>0.03035631170855338</td>
+        <td>4.167413391653776</td>
+        <td>2.4601113628821243</td>
+        <td>2.6037522545280027</td>
+        <td>2.757632308856595</td>
+        <td>0.03035631170855338</td>
+    </tr>
+    <tr>
+        <td>Average time in queue:</td>
+        <td>0.0</td>
+        <td>2.6797568386675272</td>
+        <td>0.11826279840919085</td>
+        <td>1.1195587061409065</td>
+        <td>2.049815642189928</td>
+        <td>0.0</td>
+    </tr>
+    <tr>
+        <td>Average time in service:</td>
+        <td>0.03035631170855338</td>
+        <td>1.4876565529862487</td>
+        <td>2.3418485644729334</td>
+        <td>1.4841935483870963</td>
+        <td>0.7078166666666669</td>
+        <td>0.03035631170855338</td>
+    </tr>
+</table>
+<br>
+<br>
+		<a href=simulation1.html>Simulation1</a><br>
+
+	</body>
 </html>

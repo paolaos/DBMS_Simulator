@@ -13,16 +13,6 @@ public abstract class Module {
     protected Queue<Query> queue;
 
     /**
-     * Sums up every query's time in queue in order to be used with other statistics.
-     */
-    protected double accumulatedTimeInQueue;
-
-    /**
-     * Sums up every query's time in service in order to be used with other statistics.
-     */
-    protected double accumulatedTimeInService;
-
-    /**
      * Counter for every query that has been served in the system.
      */
     protected int totalProcessedQueries;
@@ -90,11 +80,6 @@ public abstract class Module {
     protected double averageTimeW;
 
     /**
-     * Stores the average amount of time in queue from its respective module. Mainly used for statistical purposes.
-     */
-    protected double averageTimeInQueue;
-
-    /**
      * Stores the average amount of time in service from its respective module. Mainly used for statistical purposes.
      */
     protected double averageTimeInService;
@@ -145,21 +130,6 @@ public abstract class Module {
     }
 
     /**
-     * Calculates the average amount of queries in queue and assigns the result to its global variable.
-     *
-     * @param queryList list that contains all the queries that passed through *this.
-     */
-    public abstract void computeAverageQueriesInQueue(List<Query> queryList);
-
-
-    /**
-     * Calculates the average amount of queries in service and assigns the result to its global variable.
-     *
-     * @param queryList list that contains all of the queries that passed through *this.
-     */
-    public abstract void computeAverageQueriesInService(List<Query> queryList);
-
-    /**
      * Calculates the average time a query was in *this and assigns the result to its global variable.
      *
      * @param averageTimeWQ the average time of a query in queue.
@@ -174,7 +144,7 @@ public abstract class Module {
      *
      * @param queryList list that contains all the queries that passed through *this.
      */
-    public abstract void computeAverageTimeInQueue(List<Query> queryList);
+    public abstract double computeAverageTimeInQueue(List<Query> queryList);
 
     /**
      * Calculates the average time a query was in service and assigns the result to its global variable.
@@ -187,7 +157,7 @@ public abstract class Module {
      * Calculates and stores the effective service rate for the module.
      */
     public double computeAverageServiceTimeMu() {
-        return   1 / averageTimeInService;
+        return 1 / averageTimeInService;
     }
 
     /**
@@ -243,19 +213,15 @@ public abstract class Module {
     }
 
 
-    protected boolean hasQueue=true;
+    protected boolean hasQueue = true;
 
-    protected int counterArrivals=0;
+    protected int counterArrivals = 0;
 
-    public int getCounterArrivals() {
-        return this.counterArrivals;
-    }
-
-    public double computeRealLambda(){
-        java.lang.System.out.println("Número de llegadas "+counterArrivals);
-        java.lang.System.out.println("Tiempo de simulación "+  this.simulation.getTotalTimeSimulation());
-        java.lang.System.out.println("Promedio de arribos" +this.simulation.getTotalTimeSimulation());
-        averageArrivalTimeLambda = counterArrivals/this.simulation.getTotalTimeSimulation();
+    public double computeRealLambda() {
+        java.lang.System.out.println("Número de llegadas " + counterArrivals);
+        java.lang.System.out.println("Tiempo de simulación " + this.simulation.getTotalTimeSimulation());
+        java.lang.System.out.println("Promedio de arribos" + this.simulation.getTotalTimeSimulation());
+        averageArrivalTimeLambda = counterArrivals / this.simulation.getTotalTimeSimulation();
         return averageArrivalTimeLambda;
     }
 
@@ -263,7 +229,7 @@ public abstract class Module {
      * Uses the basic formula of lambda/mu in order to store its value.
      */
     public double computeAverageOccupiedTimeRho(double lambda) {
-        return lambda / servers*averageServiceTimeMu;
+        return lambda / (servers * averageServiceTimeMu);
     }
 
     /**
@@ -288,7 +254,7 @@ public abstract class Module {
      * @return the probability that all servers are idle.
      */
     public double computePi0(double rho) {
-        double pi0 = 0;
+        double pi0;
         int servers = this.servers;
         if (servers == 1) {
             pi0 = 1 - rho;
@@ -305,13 +271,13 @@ public abstract class Module {
     }
 
     /**
-     * TODO preguntar a Brayan.
+     * Used to calculate average time in system and average time in queue when *this has more than one server.
      *
-     * @param rho
-     * @param pi0
+     * @param rho the module's traffic.
+     * @param pi0 the probability that there are cero queries being served.
      * @return
      */
-    public double computePropabilityThatNBeMajorThanS(double rho, double pi0) {
+    public double computeProbabilityThatNBeMajorThanS(double rho, double pi0) {
         int servers = this.servers;
         return ((Math.pow((rho * servers), servers) * pi0)) / (computeFactorial(servers) * (1 - rho));
     }
@@ -324,7 +290,7 @@ public abstract class Module {
      * @param hasQueue whether the module has a queue or not.
      * @return the mean number of queries in queue.
      */
-    public double computeLq( double lambda, double mu, boolean hasQueue) {
+    public double computeLq(double lambda, double mu, boolean hasQueue) {
         double lq = 0;
         if (hasQueue) {
             int servers = this.servers;
@@ -334,7 +300,7 @@ public abstract class Module {
             } else {
                 double rho = lambda / (servers * mu);
                 double pi0 = computePi0(rho);
-                lq = (computePropabilityThatNBeMajorThanS(rho, pi0) * rho) / (1 - rho);
+                lq = (computeProbabilityThatNBeMajorThanS(rho, pi0) * rho) / (1 - rho);
             }
 
         }
@@ -348,7 +314,7 @@ public abstract class Module {
      * @param mu     customer service rate.
      * @return the mean number of queries in service.
      */
-   public double computeLs(double lambda, double mu) {
+    public double computeLs(double lambda, double mu) {
         return lambda / mu;
     }
 
@@ -370,7 +336,7 @@ public abstract class Module {
             } else {
                 double rho = lambda / (mu * servers);
                 double pi0 = computePi0(rho);
-                wq = computePropabilityThatNBeMajorThanS(rho, pi0) / ((servers * mu) - lambda);
+                wq = computeProbabilityThatNBeMajorThanS(rho, pi0) / ((servers * mu) - lambda);
             }
         }
         return wq;
@@ -422,20 +388,19 @@ public abstract class Module {
      *
      * @param lambda the mean arrival rate
      */
-    public void fillStatistics(double lambda , boolean isTheLastModule) {
-        //hay que ver con que se va a calcular dependiendo de lo que pase con el módulo anterior
-        if(!isTheLastModule) {
+    public void fillStatistics(double lambda, boolean isTheLastModule) {
+        if (!isTheLastModule) {
             this.averageTimeInService = this.computeAverageTimeInService(simulation.getClientConnectionModule().getAllQueries());//1/mu (Ws)
+            //this.avgTimeInQueue = this.computeWq(lambda, averageServiceTimeMu, this.hasQueue);
+            this.avgTimeInQueue = this.computeAverageTimeInQueue(simulation.getClientConnectionModule().getAllQueries());//Wq
             this.averageServiceTimeMu = this.computeAverageServiceTimeMu();
-            this.avgTimeInQueue = this.computeWq(lambda, averageServiceTimeMu, this.hasQueue);
 
-
-            this.averageOccupiedTimeRho =computeAverageOccupiedTimeRho(lambda);
-            this.computeAverageTimeW(averageTimeInQueue, averageTimeInService);
+            this.averageOccupiedTimeRho = computeAverageOccupiedTimeRho(lambda);
+            this.computeAverageTimeW(avgTimeInQueue, averageTimeInService);
 
             this.averageQueriesInService = this.computeLs(lambda, averageServiceTimeMu);
             this.averageQueriesInQueue = this.computeLq(lambda, averageServiceTimeMu, this.hasQueue);
-            this.averageQueriesL= this.computeAverageQueriesL(averageQueriesInQueue, averageQueriesInService);
+            this.averageQueriesL = this.computeAverageQueriesL(averageQueriesInQueue, averageQueriesInService);
 
             this.computeDdlAvgTime(simulation.getClientConnectionModule().getAllQueries());
             this.computeUpdateAvgTime(simulation.getClientConnectionModule().getAllQueries());
@@ -444,41 +409,6 @@ public abstract class Module {
 
             ModuleStatistics moduleStatistics = new ModuleStatistics(this);
             this.setModuleStatistics(moduleStatistics);
-        }else {
-
-            this.simulation.getClientConnectionModule().setAverageTimeInServiceInLastModule(this.simulation.getClientConnectionModule().computeAverageTimeInServiceInLastModule(simulation.getClientConnectionModule().getAllQueries()));//1/mu (Ws));
-            this.simulation.getClientConnectionModule().setAverageServiceTimeMuInLastModule(this.simulation.getClientConnectionModule().computeAverageServiceTimeMu());
-
-            this.simulation.getClientConnectionModule().setAverageTimeInQueueInLastModule(this.computeWq(lambda,this.simulation.getClientConnectionModule().getAverageServiceTimeMuInLastModule(),this.hasQueue));
-            this.simulation.getClientConnectionModule().setAverageOccupiedTimeRhoInLastModule(this.simulation.getClientConnectionModule().computeAverageOccupiedTimeRhoInlastModule((lambda)));
-
-            this.computeAverageTimeW(this.simulation.getClientConnectionModule().getAverageTimeInQueueInLastModule(),
-                    this.simulation.getClientConnectionModule().getAverageTimeInServiceInLastModule());
-
-            this.simulation.getClientConnectionModule().setAverageQueriesInServiceInLastModule( this.computeLs(lambda,
-                    this.simulation.getClientConnectionModule().getAverageServiceTimeMuInLastModule()));
-
-
-
-            this.simulation.getClientConnectionModule().setAverageQueriesInQueueInLastModule(this.computeLq(lambda,
-                    this.simulation.getClientConnectionModule().getAverageServiceTimeMuInLastModule(), this.hasQueue));
-
-            this.computeAverageQueriesL(  this.simulation.getClientConnectionModule().getAverageQueriesInQueueInLastModule(),
-                    this.simulation.getClientConnectionModule().getAverageQueriesInServiceInLastModule());
-
-
-            this.simulation.getClientConnectionModule().setAverageQueriesInQueueInLastModule(this.computeAverageQueriesL(this.simulation.getClientConnectionModule().getAverageQueriesInQueueInLastModule(),
-                    this.simulation.getClientConnectionModule().getAverageQueriesInServiceInLastModule()));
-
-            this.simulation.getClientConnectionModule().computeDdlAvgTimeInLastModule(simulation.getClientConnectionModule().getAllQueries());
-            this.simulation.getClientConnectionModule().computeUpdateAvgTimeInLastModule(simulation.getClientConnectionModule().getAllQueries());
-            this.simulation.getClientConnectionModule().computeSelectAvgTimeInLastModule(simulation.getClientConnectionModule().getAllQueries());
-            this.simulation.getClientConnectionModule().computeJoinAvgTimeInLastModule(simulation.getClientConnectionModule().getAllQueries());
-
-            ModuleStatistics moduleStatistics = new ModuleStatistics(this);
-            this.simulation.getClientConnectionModule().setModuleStatisticsOfLastModule(moduleStatistics);
-
-
         }
     }
 
@@ -502,14 +432,6 @@ public abstract class Module {
         return averageOccupiedTimeRho;
     }
 
-    public double getAccumulatedTimeInQueue() {
-        return accumulatedTimeInQueue;
-    }
-
-    public double getAccumulatedTimeInService() {
-        return accumulatedTimeInService;
-    }
-
     public int getTotalProcessedQueries() {
         return totalProcessedQueries;
     }
@@ -526,7 +448,7 @@ public abstract class Module {
         return averageServiceTimeMu;
     }
 
-    public double getAverageQueriesL(){
+    public double getAverageQueriesL() {
         return averageQueriesL;
     }
 
@@ -540,13 +462,5 @@ public abstract class Module {
 
     public double getAverageTimeW() {
         return averageTimeW;
-    }
-
-    public double getAverageTimeInQueue() {
-        return averageTimeInQueue;
-    }
-
-    public double getAverageTimeInService() {
-        return averageTimeInService;
     }
 }

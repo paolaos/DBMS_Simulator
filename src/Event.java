@@ -5,7 +5,7 @@ public class Event implements Comparable<Event> {
 
     private double time;
     private EventType eventType;
-    private ModuleType destinationModule; // para kill no aplica
+    private ModuleType destinationModule;
     private Query query;
 
     public Event(double time, Query query, EventType eventType, ModuleType destinationModule) {
@@ -15,13 +15,6 @@ public class Event implements Comparable<Event> {
         this.time = time;
     }
 
-    public Event(double time, ModuleType destinationModule, Query query) {
-        this.time = time;
-        this.destinationModule = destinationModule;
-        this.query = query;
-    }
-
-
     public void setTime(double time) {
         this.time = time;
     }
@@ -29,7 +22,6 @@ public class Event implements Comparable<Event> {
     public double getTime() {
         return time;
     }
-
 
     public EventType getEventType() {
         return eventType;
@@ -42,6 +34,7 @@ public class Event implements Comparable<Event> {
     /**
      * CompareTo method of the Event class, it returns -1 if the current event's time is lesser than the other one's.
      * It returns 1 in any other case, this is in order to maintain a correct order of the events in the PriorityQueue
+     *
      * @param o Event to be compared with
      * @return -1 if the current event is set to be earlier, 1 otherwise.
      */

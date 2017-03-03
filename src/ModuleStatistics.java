@@ -34,8 +34,7 @@ public class ModuleStatistics {
     public ModuleStatistics(Module module) {
         this.totalProcessedQueries = module.getTotalProcessedQueries();
         this.averageQueueSize = module.getAverageQueriesInQueue();
-        //TODO pasar a estadistica general
-        //this.averageQueryLifetime = module.simulation.getClientConnectionModule().getAverageQueryLifetime();
+        this.averageQueryLifetime = module.simulation.getClientConnectionModule().getAverageQueryLifetime();
         this.idleTime = module.getIdleTime();
         this.averageDdlTime = module.getDdlAvgTime();
         this.averageUpdateTime = module.getUpdateAvgTime();
@@ -51,19 +50,6 @@ public class ModuleStatistics {
         this.averageTimeWQ = module.getAvgTimeInQueue();
     }
 
-    public ModuleStatistics(ClientConnectionModule module, boolean isLastModule) {
-        if(!isLastModule) {
-            this.totalProcessedQueries = module.getTotalProcessedQueriesFromLastModule();
-            this.averageQueueSize =0;
-            this.idleTime = module.getIdleTime();
-            this.averageDdlTime = module.getDdlAvgTimeInLastModule();
-            this.averageUpdateTime = module.getUpdateAvgTimeInLastModule();
-            this.averageJoinTime = module.getJoinAvgTimeInLastModule();
-            this.averageSelectTime = module.getSelectAvgTimeInLastModule();
-            this.averageOccupiedTimeRho = module.getAverageOccupiedTimeRho();
-        }
-    }
-
     public ModuleStatistics() {
         this.totalProcessedQueries = 0;
         this.averageQueueSize = 0;
@@ -74,6 +60,49 @@ public class ModuleStatistics {
         this.averageJoinTime = 0;
         this.averageSelectTime = 0;
         this.averageOccupiedTimeRho = 0;
+    }
+
+    public ModuleStatistics(ClientConnectionModule module, boolean isLastModule) {
+        if (isLastModule) {
+            this.totalProcessedQueries = module.getTotalProcessedQueriesFromLastModule();
+            this.averageQueueSize = 0;
+            this.idleTime = module.getIdleTime();
+            this.averageDdlTime = module.getDdlAvgTimeInLastModule();
+            this.averageUpdateTime = module.getUpdateAvgTimeInLastModule();
+            this.averageJoinTime = module.getJoinAvgTimeInLastModule();
+            this.averageSelectTime = module.getSelectAvgTimeInLastModule();
+            this.averageOccupiedTimeRho = module.getAverageOccupiedTimeRhoInLastModule();
+            this.trueLambda = module.computeRealLambdaToLastModule();
+            this.avgServiceTimeMu = module.getAverageServiceTimeMuInLastModule();
+            this.averageQueriesL = module.getAverageQueriesLInLastModule();
+            this.averageQueriesLS = module.getAverageQueriesInServiceInLastModule();
+            this.averageTimeW = module.getAverageTimeWInLastModule();
+            this.averageTimeWQ = module.getAverageTimeInQueueInLastModule();
+        }
+    }
+
+    public void setTrueLambda(double trueLambda) {
+        this.trueLambda = trueLambda;
+    }
+
+    public void setAvgServiceTimeMu(double avgServiceTimeMu) {
+        this.avgServiceTimeMu = avgServiceTimeMu;
+    }
+
+    public void setAverageQueriesL(double averageQueriesL) {
+        this.averageQueriesL = averageQueriesL;
+    }
+
+    public void setAverageQueriesLS(double averageQueriesLS) {
+        this.averageQueriesLS = averageQueriesLS;
+    }
+
+    public void setAverageTimeW(double averageTimeW) {
+        this.averageTimeW = averageTimeW;
+    }
+
+    public void setAverageTimeWQ(double averageTimeWQ) {
+        this.averageTimeWQ = averageTimeWQ;
     }
 
     public int getTotalProcessedQueries() {
@@ -149,14 +178,6 @@ public class ModuleStatistics {
         this.averageOccupiedTimeRho = averageOccupiedTimeRho;
     }
 
-    public int getRejectedConnections() {
-        return rejectedConnections;
-    }
-
-    public void setRejectedConnections(int rejectedConnections) {
-        this.rejectedConnections = rejectedConnections;
-    }
-
     public double getTrueLambda() {
         return trueLambda;
     }
@@ -165,7 +186,7 @@ public class ModuleStatistics {
         return avgServiceTimeMu;
     }
 
-    public double getAverageQueriesL(){
+    public double getAverageQueriesL() {
         return averageQueriesL;
     }
 

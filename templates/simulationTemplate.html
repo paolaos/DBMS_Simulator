@@ -19,6 +19,8 @@
         background-color: #c6d1d7;
         color: #000000;
     }
+
+
 </style>
 <head>
     <title>Simulation $simulationNumber</title>
@@ -49,6 +51,8 @@
 
 <p><b>Rejected connections:</b> $rejectedConnections connections</p>
 
+<p><b>Kill count:</b> $killCount queries</p>
+
 <br>
 
 
@@ -63,6 +67,7 @@
         <th>Query Processing Module</th>
         <th>Transaction and Data Access Module</th>
         <th>Execution Module</th>
+        <th>Client Connection Module (with resolved queries)</th>
     </tr>
     <tr>
         <td>Stability:</td>
@@ -71,6 +76,7 @@
         <td>$queryProcessingStability</td>
         <td>$transactionAndDataStability</td>
         <td>$executionStability</td>
+        <td>$lastModuleStability</td>
     </tr>
     <tr>
         <td>Arrivals per second:</td>
@@ -79,6 +85,7 @@
         <td>$queryProcessingLambda</td>
         <td>$transactionAndDataLambda</td>
         <td>$executionLambda</td>
+        <td>$lastModuleLambda</td>
     </tr>
     <tr>
         <td>Served queries per second:</td>
@@ -87,6 +94,7 @@
         <td>$queryProcessingMu</td>
         <td>$transactionAndDataMu</td>
         <td>$executionMu</td>
+        <td>$lastModuleMu</td>
     </tr>
     <tr>
         <td>Occupied time:</td>
@@ -95,6 +103,7 @@
         <td>$queryProcessingRho</td>
         <td>$transactionAndDataRho</td>
         <td>$executionRho</td>
+        <td>$lastModuleRho</td>
     </tr>
     <tr>
         <td>Average queries in system:</td>
@@ -103,6 +112,7 @@
         <td>$queryProcessingL</td>
         <td>$transactionAndDataL</td>
         <td>$executionL</td>
+        <td>$lastModuleL</td>
     </tr>
     <tr>
         <td>Average queries in queue:</td>
@@ -111,6 +121,7 @@
         <td>$queryProcessingLq</td>
         <td>$transactionAndDataLq</td>
         <td>$executionLq</td>
+        <td>$lastModuleLq</td>
     </tr>
     <tr>
         <td>Average queries in service:</td>
@@ -119,6 +130,7 @@
         <td>$queryProcessingLs</td>
         <td>$transactionAndDataLs</td>
         <td>$executionLs</td>
+        <td>$lastModuleLs</td>
     </tr>
     <tr>
         <td>Average time in system:</td>
@@ -127,6 +139,7 @@
         <td>$queryProcessingW</td>
         <td>$transactionAndDataW</td>
         <td>$executionW</td>
+        <td>$lastModuleW</td>
     </tr>
     <tr>
         <td>Average time in queue:</td>
@@ -135,6 +148,7 @@
         <td>$queryProcessingWq</td>
         <td>$transactionAndDataWq</td>
         <td>$executionWq</td>
+        <td>$lastModuleWq</td>
     </tr>
     <tr>
         <td>Average time in service:</td>
@@ -143,14 +157,7 @@
         <td>$queryProcessingWs</td>
         <td>$transactionAndDataWs</td>
         <td>$executionWs</td>
-    </tr>
-    <tr>
-        <td>Average queue size:</td>
-        <td>$clientConnectionQueueSize</td>
-        <td>$processManagerQueueSize</td>
-        <td>$queryProcessingQueueSize</td>
-        <td>$transactionAndDataQueueSize</td>
-        <td>$executionQueueSize</td>
+        <td>$lastModuleWs</td>
     </tr>
 </table>
 </body>

@@ -19,7 +19,7 @@ public class QueryModuleStatistics {
     private double timeOfEntryToServer = 0;
 
     /**
-     * TODO poner esto.
+     *
      */
     private double timeOfExitFromModule = 0;
 

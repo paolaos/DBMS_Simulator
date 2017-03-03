@@ -27,6 +27,7 @@ public class Statistics {
     private int mSentences;
     private double rejectedConnections;
     private double avgQueryLifetime;
+    private double killPercentage;
 
     /**
      * Constructor of class statistics
@@ -40,7 +41,6 @@ public class Statistics {
         this.transactionAndDataStatistics = simulation.getTransactionAndDataAccessModule().moduleStatistics;
         this.executionStatistics = simulation.getExecutionModule().moduleStatistics;
         this.clientConnectionStatisticsWithASolvedQueryStatistics = simulation.getClientConnectionModule().getModuleStatisticsOfLastModule();
-        //this.clientConnectionStatisticsWithASolvedQueryStatistics = new ModuleStatistics(simulation.getClientConnectionModule(), false);
 
         this.timeout = simulation.getTimeout();
         this.clock = simulation.getClock();
@@ -56,6 +56,7 @@ public class Statistics {
         this.mSentences = simulation.getmSentences();
         this.rejectedConnections = simulation.getClientConnectionModule().getRejectedConnections();
         this.avgQueryLifetime = simulation.getClientConnectionModule().getAverageQueryLifetime();
+        this.killPercentage = simulation.getKillPercentage();
     }
 
     /**
@@ -65,7 +66,7 @@ public class Statistics {
      */
     public Statistics(List<Statistics> statistics) {
         Statistics statistic = statistics.get(0);
-        this.timeout = statistic.getClock();
+        this.timeout = statistic.getTimeout();
         this.clock = statistic.getClock();
         this.numberOfTrials = statistic.getNumberOfTrials();
         this.timePerTrial = statistic.getTimePerTrial();
@@ -77,7 +78,6 @@ public class Statistics {
         this.nAvailableProcesses = statistic.getnAvailableProcesses();
         this.pQueries = statistic.getpQueries();
         this.mSentences = statistic.getmSentences();
-        this.avgQueryLifetime = statistic.getAvgQueryLifetime();
 
         this.clientConnectionStatistics = new ModuleStatistics();
         this.processManagerStatistics = new ModuleStatistics();
@@ -97,10 +97,14 @@ public class Statistics {
             this.addStatistics(executionStatistics, currentStatistic.getExecutionStatistics());
             this.addStatistics(clientConnectionStatisticsWithASolvedQueryStatistics, currentStatistic.getClientConnectionStatisticsWithASolvedQueryStatistics());
             this.rejectedConnections += currentStatistic.getRejectedConnections();
+            this.avgQueryLifetime += currentStatistic.getAvgQueryLifetime();
+            this.killPercentage += currentStatistic.getKillPercentage();
         }
 
         int totalSimulations = statistics.size();
         this.rejectedConnections /= totalSimulations;
+        this.avgQueryLifetime /= totalSimulations;
+        this.killPercentage /= totalSimulations;
         this.setAverageStatistics(clientConnectionStatistics, totalSimulations);
         this.setAverageStatistics(processManagerStatistics, totalSimulations);
         this.setAverageStatistics(queryProcessingStatistics, totalSimulations);
@@ -126,6 +130,21 @@ public class Statistics {
         average.setAverageUpdateTime(average.getAverageUpdateTime() + toAdd.getAverageUpdateTime());
         average.setAverageJoinTime(average.getAverageJoinTime() + toAdd.getAverageJoinTime());
         average.setAverageSelectTime(average.getAverageSelectTime() + toAdd.getAverageSelectTime());
+
+
+        average.setAverageOccupiedTimeRho(average.getAverageOccupiedTimeRho() + toAdd.getAverageOccupiedTimeRho());
+        average.setTrueLambda(average.getTrueLambda() + toAdd.getTrueLambda());
+        average.setAvgServiceTimeMu(average.getAvgServiceTimeMu() + toAdd.getAvgServiceTimeMu());
+
+        average.setAverageQueriesL(average.getAverageQueriesL() + toAdd.getAverageQueriesL());
+        average.setAverageQueueSize(average.getAverageQueriesLQ() + toAdd.getAverageQueriesLQ());
+        average.setAverageQueriesLS(average.getAverageQueriesLS() + toAdd.getAverageQueriesLS());
+
+        average.setAverageTimeW(average.getAverageTimeW() + toAdd.getAverageTimeW());
+        average.setAverageTimeWQ(average.getAverageTimeWQ() + toAdd.getAverageTimeWQ());
+
+        average.setIdleTime(average.getIdleTime() + toAdd.getIdleTime());
+        average.setAverageQueryLifetime(average.getAverageQueryLifetime() + toAdd.getAverageQueryLifetime());
     }
 
     /**
@@ -143,6 +162,20 @@ public class Statistics {
         moduleStatistics.setAverageUpdateTime(moduleStatistics.getAverageUpdateTime() / total);
         moduleStatistics.setAverageJoinTime(moduleStatistics.getAverageJoinTime() / total);
         moduleStatistics.setAverageSelectTime(moduleStatistics.getAverageSelectTime() / total);
+
+        moduleStatistics.setAverageOccupiedTimeRho(moduleStatistics.getAverageOccupiedTimeRho() / total);
+        moduleStatistics.setTrueLambda(moduleStatistics.getTrueLambda() / total);
+        moduleStatistics.setAvgServiceTimeMu(moduleStatistics.getAvgServiceTimeMu() / total);
+
+        moduleStatistics.setAverageQueriesL(moduleStatistics.getAverageQueriesL() / total);
+        moduleStatistics.setAverageQueueSize(moduleStatistics.getAverageQueueSize() / total);
+        moduleStatistics.setAverageQueriesLS(moduleStatistics.getAverageQueriesLS() / total);
+
+        moduleStatistics.setAverageTimeW(moduleStatistics.getAverageTimeW() / total);
+        moduleStatistics.setAverageTimeWQ(moduleStatistics.getAverageTimeWQ() / total);
+
+        moduleStatistics.setIdleTime(moduleStatistics.getIdleTime() / total);
+        moduleStatistics.setAverageQueryLifetime(moduleStatistics.getAverageQueryLifetime() / total);
     }
 
     public ModuleStatistics getClientConnectionStatistics() {
@@ -163,6 +196,10 @@ public class Statistics {
 
     public ModuleStatistics getExecutionStatistics() {
         return executionStatistics;
+    }
+
+    public ModuleStatistics getClientConnectionStatisticsWithASolvedQueryStatistics() {
+        return clientConnectionStatisticsWithASolvedQueryStatistics;
     }
 
     public double getTimeout() {
@@ -213,19 +250,16 @@ public class Statistics {
         return rejectedConnections;
     }
 
-    public void setRejectedConnections(int rejectedConnections){
-        this.rejectedConnections = rejectedConnections;
-    }
-
     public double getAvgQueryLifetime() {
         return avgQueryLifetime;
-    }
-
-    public ModuleStatistics getClientConnectionStatisticsWithASolvedQueryStatistics() {
-        return clientConnectionStatisticsWithASolvedQueryStatistics;
     }
 
     public int getSystemCalls() {
         return systemCalls;
     }
+
+    public double getKillPercentage() {
+        return killPercentage;
+    }
+
 }
