@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.lang.System;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -215,8 +214,6 @@ public class Simulation {
         while (getClock() < timePerTrial) {
             Event event = eventList.poll();
             clock = event.getTime();
-            if (event.getQuery().getId() == -1)
-                System.out.println(event.getEventType() + " " + event.getDestinationModule());
             switch (event.getEventType()) {
 
                 case ARRIVAL:
@@ -367,7 +364,6 @@ public class Simulation {
 
     public void computeKillPercentage() {
         killPercentage = (double) this.getKillNumber(this.clientConnectionModule.getAllQueries()) / (double) this.clientConnectionModule.getAllQueries().size();
-        System.out.println("Resultado: " + killPercentage);
     }
 
 }

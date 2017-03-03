@@ -218,9 +218,6 @@ public abstract class Module {
     protected int counterArrivals = 0;
 
     public double computeRealLambda() {
-        java.lang.System.out.println("Número de llegadas " + counterArrivals);
-        java.lang.System.out.println("Tiempo de simulación " + this.simulation.getTotalTimeSimulation());
-        java.lang.System.out.println("Promedio de arribos" + this.simulation.getTotalTimeSimulation());
         averageArrivalTimeLambda = counterArrivals / this.simulation.getTotalTimeSimulation();
         return averageArrivalTimeLambda;
     }
@@ -463,4 +460,5 @@ public abstract class Module {
     public double getAverageTimeW() {
         return averageTimeW;
     }
+
 }

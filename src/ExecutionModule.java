@@ -56,7 +56,6 @@ public class ExecutionModule extends Module {
             currentSentences++;
             double time = getTotalTime(query);
             double exitTime = simulation.getClock() + time;
-            //java.lang.System.out.println(time);
             simulation.addEvent(new Event(exitTime, query, EventType.EXIT, ModuleType.EXECUTION_MODULE));
             query.getQueryStatistics().getExecutionStatistics().setTimeOfEntryToServer(simulation.getClock());
             query.getQueryStatistics().getExecutionStatistics().setTimeOfExitFromModule(exitTime);
